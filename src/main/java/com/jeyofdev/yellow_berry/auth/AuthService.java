@@ -3,14 +3,17 @@ package com.jeyofdev.yellow_berry.auth;
 import com.jeyofdev.yellow_berry.auth.model.*;
 import com.jeyofdev.yellow_berry.auth_user.AuthUser;
 import com.jeyofdev.yellow_berry.auth_user.AuthUserRepository;
+import com.jeyofdev.yellow_berry.exception.BadValidationArgumentException;
 import com.jeyofdev.yellow_berry.exception.ExpireTokenException;
 import com.jeyofdev.yellow_berry.exception.InvalidTokenException;
 import com.jeyofdev.yellow_berry.exception.UsernameAlreadyTakenException;
 import com.jeyofdev.yellow_berry.security.service.JwtService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -110,6 +113,80 @@ public class AuthService {
 
         return MessageResponse.builder()
                 .message("Your account is verified")
+                .build();
+    }
+
+    public MessageResponse updatePassword(String oldPassword, String newPassword) throws IllegalStateException, BadValidationArgumentException, AccessDeniedException {
+        String roles  = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+
+        if((roles.equals("[ROLE_ADMIN]")) || (roles.equals("[ROLE_USER]"))) {
+            AuthUser user = authUserRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName())
+                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+            if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
+                throw new IllegalStateException("Old password is incorrect.");
+            }
+
+            if (newPassword == null || newPassword.length() < 8) {
+                throw new BadValidationArgumentException("The new password must contain at least 8 characters.");
+            }
+
+            // update password
+            user.setPassword(passwordEncoder.encode(newPassword));
+            authUserRepository.save(user);
+
+            return MessageResponse.builder()
+                    .message("Your password has been updated successfully.")
+                    .build();
+        } else {
+            throw new AccessDeniedException("You are not authorized to access this resource");
+        }
+    }
+
+    public MessageResponse requestPasswordReset(String email) throws UsernameNotFoundException {
+        // get user by email
+        AuthUser user = authUserRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("No account was found associated with this email address. Please check the email you provided or consider creating a new account."));
+
+        // create additional claims for the reset token
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("type", "reset");
+
+        // generate and save token
+        String jwtToken = jwtService.generateToken(extraClaims, user, 15 * 60 * 1000);
+
+        user.setResetToken(jwtToken);
+        user.setResetTokenExpiration(LocalDateTime.now().plusMinutes(15));
+        authUserRepository.save(user);
+
+        // return token
+        return MessageResponse.builder()
+                .message("your password change request is in progress")
+                .build();
+    }
+
+    public MessageResponse resetPassword(String token, String newPassword) throws IllegalStateException, ExpireTokenException, BadValidationArgumentException {
+        // check token
+        AuthUser user = authUserRepository.findByResetToken(token)
+                .orElseThrow(() -> new IllegalStateException("Invalid or missing reset token"));
+
+        if (user.getResetTokenExpiration().isBefore(LocalDateTime.now())) {
+            throw new ExpireTokenException("Token has expired");
+        }
+
+        if (newPassword == null || newPassword.length() < 8) {
+            throw new BadValidationArgumentException("The new password must contain at least 8 characters.");
+        }
+
+        // update password
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setResetToken(null);
+        user.setResetTokenExpiration(null);
+
+        authUserRepository.save(user);
+
+        return MessageResponse.builder()
+                .message("Your password has been updated successfully. You can now use your new password to log in.")
                 .build();
     }
 }
