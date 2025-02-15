@@ -86,6 +86,21 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * to handle the case where a method was called with one or more arguments that failed validation
+     */
+    @ExceptionHandler(BadValidationArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleBadValidationArgumentException(BadValidationArgumentException exception, HttpServletRequest request) {
+        return handleException(exception, HttpStatus.BAD_REQUEST, request, null);
+    }
+    /**
+     * to handle the case where a method was called with one or more invalid arguments
+     */
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException exception, HttpServletRequest request) {
+        return handleException(exception, HttpStatus.BAD_REQUEST, request, null);
+    }
+
+    /**
      * Others
      */
     private ResponseEntity<ErrorResponse> handleException(Exception exception, HttpStatus status, HttpServletRequest request, String message) {

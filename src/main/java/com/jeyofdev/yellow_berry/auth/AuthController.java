@@ -1,6 +1,7 @@
 package com.jeyofdev.yellow_berry.auth;
 
 import com.jeyofdev.yellow_berry.auth.model.*;
+import jakarta.annotation.security.PermitAll;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,18 @@ public class AuthController {
     @GetMapping("/validate-account")
     public ResponseEntity<MessageResponse> validateAccount(@RequestParam("verificationToken") String verificationToken) {
         MessageResponse messageResponse = authService.validateAccount(verificationToken);
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/update-password")
+    public ResponseEntity<MessageResponse> updatePassword(
+            @RequestBody UpdatePasswordRequest changePasswordRequest
+    ) {
+        MessageResponse messageResponse = authService.updatePassword(
+                changePasswordRequest.getOldPassword(),
+                changePasswordRequest.getNewPassword()
+        );
+
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 }
