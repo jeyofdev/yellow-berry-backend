@@ -28,7 +28,7 @@ public class AuthUserController {
     }
 
     @GetMapping("/email/{email}")
-    public ResponseEntity<AuthUserDTO> getUserByEmail(@PathVariable("email") String email, HttpServletRequest request) {
+    public ResponseEntity<AuthUserDTO> getUserByEmail(@PathVariable("email") String email) {
         AuthUser authUser = authUserService.findUserByEmail(email);
         AuthUserDTO authUserDTO = authUserMapper.mapFromEntity(authUser);
 

@@ -1,5 +1,7 @@
 package com.example.demo.auth;
 
+import com.example.demo.auth.model.AuthResponse;
+import com.example.demo.auth.model.LoginRequest;
 import com.example.demo.auth.model.RegisterRequest;
 import com.example.demo.auth.model.RegisterResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,5 +22,11 @@ public class AuthController {
     public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
         RegisterResponse registerResponse = authService.register(request);
         return new ResponseEntity<>(registerResponse, HttpStatus.OK);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
+        AuthResponse authenticationResponse = authService.login(request);
+        return new ResponseEntity<>(authenticationResponse, HttpStatus.OK);
     }
 }
