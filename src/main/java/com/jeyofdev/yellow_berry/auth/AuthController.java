@@ -1,16 +1,10 @@
 package com.jeyofdev.yellow_berry.auth;
 
-import com.jeyofdev.yellow_berry.auth.model.AuthResponse;
-import com.jeyofdev.yellow_berry.auth.model.LoginRequest;
-import com.jeyofdev.yellow_berry.auth.model.RegisterRequest;
-import com.jeyofdev.yellow_berry.auth.model.RegisterResponse;
+import com.jeyofdev.yellow_berry.auth.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/auth")
@@ -28,5 +22,11 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         AuthResponse authenticationResponse = authService.login(request);
         return new ResponseEntity<>(authenticationResponse, HttpStatus.OK);
+    }
+
+    @GetMapping("/validate-account")
+    public ResponseEntity<MessageResponse> validateAccount(@RequestParam("verificationToken") String verificationToken) {
+        MessageResponse messageResponse = authService.validateAccount(verificationToken);
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
 }

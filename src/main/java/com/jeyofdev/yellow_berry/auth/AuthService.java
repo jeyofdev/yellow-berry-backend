@@ -1,11 +1,10 @@
 package com.jeyofdev.yellow_berry.auth;
 
-import com.jeyofdev.yellow_berry.auth.model.AuthResponse;
-import com.jeyofdev.yellow_berry.auth.model.LoginRequest;
-import com.jeyofdev.yellow_berry.auth.model.RegisterRequest;
-import com.jeyofdev.yellow_berry.auth.model.RegisterResponse;
+import com.jeyofdev.yellow_berry.auth.model.*;
 import com.jeyofdev.yellow_berry.auth_user.AuthUser;
 import com.jeyofdev.yellow_berry.auth_user.AuthUserRepository;
+import com.jeyofdev.yellow_berry.exception.ExpireTokenException;
+import com.jeyofdev.yellow_berry.exception.InvalidTokenException;
 import com.jeyofdev.yellow_berry.exception.UsernameAlreadyTakenException;
 import com.jeyofdev.yellow_berry.security.service.JwtService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +15,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -34,7 +34,13 @@ public class AuthService {
                     .email(request.getEmail())
                     .password(passwordEncoder.encode(request.getPassword()))
                     .role("ROLE_" + request.getRole().toUpperCase())
+                    .isVerified(false)
                     .build();
+
+            // generate validation token
+            String verificationToken = jwtService.generateToken(Map.of("type", "verification"), user, 24 * 60 * 60 * 1000);
+            user.setVerificationToken(verificationToken);
+            user.setVerificationTokenExpiration(LocalDateTime.now().plusDays(1));
 
             authUserRepository.save(user);
 
@@ -80,5 +86,30 @@ public class AuthService {
         } catch (BadCredentialsException exception) {
             throw new BadCredentialsException("Login failed. Please verify your credentials and try again.");
         }
+    }
+
+    public MessageResponse validateAccount(String verificationToken) throws InvalidTokenException, ExpireTokenException {
+        if (verificationToken.isEmpty()) {
+            throw new InvalidTokenException("The token must be provided");
+        }
+
+        AuthUser user = authUserRepository.findByVerificationToken(verificationToken)
+                .orElseThrow(() -> new InvalidTokenException("Invalid verification token"));
+
+        // check if the token is expired
+        if (user.getVerificationTokenExpiration().isBefore(LocalDateTime.now())) {
+            throw new ExpireTokenException("Verification token has expired");
+        }
+
+        // mark user as verified and save user
+        user.setVerified(true);
+        user.setVerificationToken(null);
+        user.setVerificationTokenExpiration(null);
+
+        authUserRepository.save(user);
+
+        return MessageResponse.builder()
+                .message("Your account is verified")
+                .build();
     }
 }

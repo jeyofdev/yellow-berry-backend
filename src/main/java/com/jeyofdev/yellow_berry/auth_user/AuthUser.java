@@ -7,6 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -34,6 +35,18 @@ public class AuthUser implements UserDetails {
     @JsonIgnore
     @Column(name = "role", columnDefinition = "VARCHAR(20)")
     private String role;
+
+    @JsonIgnore
+    @Column(name = "is_verified", columnDefinition = "BOOLEAN")
+    private boolean isVerified;
+
+    @JsonIgnore
+    @Column(name = "verification_token", columnDefinition = "VARCHAR(255)")
+    private String verificationToken;
+
+    @JsonIgnore
+    @Column(name = "verification_token_expiration", columnDefinition = "TIMESTAMP")
+    private LocalDateTime verificationTokenExpiration;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
