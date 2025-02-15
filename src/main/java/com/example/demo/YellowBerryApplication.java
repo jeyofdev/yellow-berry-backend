@@ -1,5 +1,6 @@
 package com.example.demo;
 
+import com.example.demo.auth_user.AuthUser;
 import com.example.demo.config.DatabaseConfig;
 import com.example.demo.util.DatabaseInitializer;
 import org.springframework.boot.SpringApplication;
@@ -20,8 +21,6 @@ public class YellowBerryApplication {
 				dbConfig.getDbPassword(),
 				dbConfig.getDbName()
 		);
-
-		System.out.println("hello world");
 	}
 
 }
