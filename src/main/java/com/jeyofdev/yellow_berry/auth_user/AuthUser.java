@@ -48,6 +48,14 @@ public class AuthUser implements UserDetails {
     @Column(name = "verification_token_expiration", columnDefinition = "TIMESTAMP")
     private LocalDateTime verificationTokenExpiration;
 
+    @JsonIgnore
+    @Column(name = "reset_token", columnDefinition = "VARCHAR(255)")
+    private String resetToken;
+
+    @JsonIgnore
+    @Column(name = "reset_token_expiration", columnDefinition = "TIMESTAMP")
+    private LocalDateTime resetTokenExpiration;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role));

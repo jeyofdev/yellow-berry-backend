@@ -142,4 +142,26 @@ public class AuthService {
             throw new AccessDeniedException("You are not authorized to access this resource");
         }
     }
+
+    public MessageResponse requestPasswordReset(String email) throws UsernameNotFoundException {
+        // get user by email
+        AuthUser user = authUserRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("No account was found associated with this email address. Please check the email you provided or consider creating a new account."));
+
+        // create additional claims for the reset token
+        Map<String, Object> extraClaims = new HashMap<>();
+        extraClaims.put("type", "reset");
+
+        // generate and save token
+        String jwtToken = jwtService.generateToken(extraClaims, user, 15 * 60 * 1000);
+
+        user.setResetToken(jwtToken);
+        user.setResetTokenExpiration(LocalDateTime.now().plusMinutes(15));
+        authUserRepository.save(user);
+
+        // return token
+        return MessageResponse.builder()
+                .message("your password change request is in progress")
+                .build();
+    }
 }

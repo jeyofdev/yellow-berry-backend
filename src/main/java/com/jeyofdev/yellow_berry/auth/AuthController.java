@@ -42,4 +42,10 @@ public class AuthController {
 
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
     }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<MessageResponse> requestPasswordReset(@RequestParam("email") String email) {
+        MessageResponse requestPasswordResetResponse = authService.requestPasswordReset(email);
+        return new ResponseEntity<>(requestPasswordResetResponse, HttpStatus.OK);
+    }
 }
