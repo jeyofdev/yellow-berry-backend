@@ -164,4 +164,29 @@ public class AuthService {
                 .message("your password change request is in progress")
                 .build();
     }
+
+    public MessageResponse resetPassword(String token, String newPassword) throws IllegalStateException, ExpireTokenException, BadValidationArgumentException {
+        // check token
+        AuthUser user = authUserRepository.findByResetToken(token)
+                .orElseThrow(() -> new IllegalStateException("Invalid or missing reset token"));
+
+        if (user.getResetTokenExpiration().isBefore(LocalDateTime.now())) {
+            throw new ExpireTokenException("Token has expired");
+        }
+
+        if (newPassword == null || newPassword.length() < 8) {
+            throw new BadValidationArgumentException("The new password must contain at least 8 characters.");
+        }
+
+        // update password
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setResetToken(null);
+        user.setResetTokenExpiration(null);
+
+        authUserRepository.save(user);
+
+        return MessageResponse.builder()
+                .message("Your password has been updated successfully. You can now use your new password to log in.")
+                .build();
+    }
 }

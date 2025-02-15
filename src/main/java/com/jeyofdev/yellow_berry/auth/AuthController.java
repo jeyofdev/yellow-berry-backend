@@ -48,4 +48,14 @@ public class AuthController {
         MessageResponse requestPasswordResetResponse = authService.requestPasswordReset(email);
         return new ResponseEntity<>(requestPasswordResetResponse, HttpStatus.OK);
     }
+
+    @PostMapping("/reset-password")
+    @PermitAll
+    public ResponseEntity<MessageResponse> resetPassword(
+            @RequestParam("resetToken") String resetToken,
+            @RequestParam("newPassword") String newPassword
+    ) {
+        MessageResponse messageResponse = authService.resetPassword(resetToken, newPassword);
+        return new ResponseEntity<>(messageResponse, HttpStatus.OK);
+    }
 }
