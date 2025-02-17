@@ -1,5 +1,6 @@
 package com.jeyofdev.yellow_berry.auth;
 
+import com.jeyofdev.yellow_berry.core.constant.Url;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +23,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendPasswordResetEmail(String email, String resetToken) {
-        String resetUrl = MessageFormat.format("http://localhost:8080/api/v1/auth/reset-password?resetToken={0}", resetToken);
+        String resetUrl = MessageFormat.format("{0}/auth/reset-password?resetToken={1}", Url.getFullBaseUrl(), resetToken);
 
         sendEmail(
                 email,
@@ -42,7 +43,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendValidationEmail(String email, String verificationToken) {
-        String verificationUrl = MessageFormat.format("http://localhost:8080/api/v1/auth/validate-account?verificationToken={0}", verificationToken);
+        String verificationUrl = MessageFormat.format("{0}/auth/validate-account?verificationToken={1}", Url.getFullBaseUrl(), verificationToken);
 
         sendEmail(
                 email,
