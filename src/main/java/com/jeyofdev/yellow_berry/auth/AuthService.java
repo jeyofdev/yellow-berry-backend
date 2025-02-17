@@ -24,6 +24,8 @@ import org.springframework.validation.BindingResult;
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -66,7 +68,7 @@ public class AuthService {
             authUserRepository.save(user);
 
             // send email
-            /*emailService.sendValidationEmail(user.getEmail(), verificationToken);*/
+            emailService.sendValidationEmail(user.getEmail(), verificationToken);
 
             // response to client
             return RegisterResponse.builder()
@@ -121,7 +123,7 @@ public class AuthService {
 
     public MessageResponse validateAccount(String verificationToken) throws InvalidTokenException, ExpireTokenException {
         if (verificationToken.isEmpty()) {
-            throw new InvalidTokenException("The token must be provided");
+            throw new InvalidTokenException("The verification token must be provided");
         }
 
         AuthUser user = authUserRepository.findByVerificationToken(verificationToken)
@@ -147,7 +149,7 @@ public class AuthService {
                 .build();
     }
 
-    public MessageResponse updatePassword(String oldPassword, String newPassword) throws IllegalStateException, BadValidationArgumentException, AccessDeniedException {
+    public MessageResponse updatePassword(String oldPassword, String newPassword, BindingResult bindingResult) throws IllegalStateException, BadValidationArgumentException, AccessDeniedException {
         String roles  = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
 
         if((roles.equals("[ROLE_ADMIN]")) || (roles.equals("[ROLE_USER]"))) {
@@ -158,8 +160,11 @@ public class AuthService {
                 throw new IllegalStateException("Old password is incorrect.");
             }
 
-            if (newPassword == null || newPassword.length() < 8) {
-                throw new BadValidationArgumentException("The new password must contain at least 8 characters.");
+            // check if validation errors exists
+            if (bindingResult.hasErrors()) {
+                StringBuilder errors = new StringBuilder();
+                bindingResult.getAllErrors().forEach(error -> errors.append(error.getDefaultMessage()).append("; "));
+                throw new ConstraintViolationException(errors.toString(), null);
             }
 
             // update password
@@ -178,6 +183,19 @@ public class AuthService {
     }
 
     public MessageResponse requestPasswordReset(String email) throws UsernameNotFoundException {
+        if (email == null || email.isEmpty()) {
+            throw new ConstraintViolationException("The email field is required.", null);
+        } else {
+            String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
+
+            Pattern pattern = Pattern.compile(emailRegex);
+            Matcher matcher = pattern.matcher(email);
+
+            if (!matcher.matches()) {
+                throw new ConstraintViolationException("The email is not in the correct format.", null);
+            }
+        }
+
         // get user by email
         AuthUser user = authUserRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("No account was found associated with this email address. Please check the email you provided or consider creating a new account."));

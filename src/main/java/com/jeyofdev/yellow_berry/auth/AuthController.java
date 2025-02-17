@@ -35,11 +35,13 @@ public class AuthController {
 
     @PostMapping("/update-password")
     public ResponseEntity<MessageResponse> updatePassword(
-            @RequestBody UpdatePasswordRequest changePasswordRequest
+            @Valid @RequestBody UpdatePasswordRequest updatePasswordRequest,
+            BindingResult bindingResult
     ) {
         MessageResponse messageResponse = authService.updatePassword(
-                changePasswordRequest.getOldPassword(),
-                changePasswordRequest.getNewPassword()
+                updatePasswordRequest.getOldPassword(),
+                updatePasswordRequest.getNewPassword(),
+                bindingResult
         );
 
         return new ResponseEntity<>(messageResponse, HttpStatus.OK);
