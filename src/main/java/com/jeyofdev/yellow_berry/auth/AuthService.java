@@ -3,11 +3,13 @@ package com.jeyofdev.yellow_berry.auth;
 import com.jeyofdev.yellow_berry.auth.model.*;
 import com.jeyofdev.yellow_berry.auth_user.AuthUser;
 import com.jeyofdev.yellow_berry.auth_user.AuthUserRepository;
+import com.jeyofdev.yellow_berry.core.enums.RoleEnum;
 import com.jeyofdev.yellow_berry.exception.BadValidationArgumentException;
 import com.jeyofdev.yellow_berry.exception.ExpireTokenException;
 import com.jeyofdev.yellow_berry.exception.InvalidTokenException;
 import com.jeyofdev.yellow_berry.exception.UsernameAlreadyTakenException;
 import com.jeyofdev.yellow_berry.security.service.JwtService;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
@@ -31,7 +34,22 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
 
-    public RegisterResponse register(RegisterRequest request) throws UsernameAlreadyTakenException {
+    public RegisterResponse register(RegisterRequest request, BindingResult bindingResult) throws UsernameAlreadyTakenException {
+        // check if validation errors exists
+        if (bindingResult.hasErrors()) {
+            StringBuilder errors = new StringBuilder();
+            bindingResult.getAllErrors().forEach(error -> errors.append(error.getDefaultMessage()).append("; "));
+            throw new ConstraintViolationException(errors.toString(), null);
+        }
+
+        RoleEnum roleEnum;
+
+        try {
+            roleEnum = RoleEnum.valueOf(request.getRole().toUpperCase());
+        } catch(IllegalArgumentException e) {
+            throw new IllegalArgumentException("The role must be either admin or user");
+        }
+
         if (authUserRepository.findByEmail(request.getEmail()).isEmpty()) {
             AuthUser user = AuthUser.builder()
                     .email(request.getEmail())
@@ -48,7 +66,7 @@ public class AuthService {
             authUserRepository.save(user);
 
             // send email
-            emailService.sendValidationEmail(user.getEmail(), verificationToken);
+            /*emailService.sendValidationEmail(user.getEmail(), verificationToken);*/
 
             // response to client
             return RegisterResponse.builder()
@@ -61,7 +79,14 @@ public class AuthService {
         }
     }
 
-    public AuthResponse login(LoginRequest request) throws BadCredentialsException, UsernameNotFoundException {
+    public AuthResponse login(LoginRequest request, BindingResult bindingResult) throws BadCredentialsException, UsernameNotFoundException {
+        // check if validation errors exists
+        if (bindingResult.hasErrors()) {
+            StringBuilder errors = new StringBuilder();
+            bindingResult.getAllErrors().forEach(error -> errors.append(error.getDefaultMessage()).append("; "));
+            throw new ConstraintViolationException(errors.toString(), null);
+        }
+
         // check credentials
         // if the user was found
         // check that the user is authorized to access protected resources
@@ -74,11 +99,11 @@ public class AuthService {
             );
 
             // get user by email
-            AuthUser user = authUserRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found in Database"));
+            AuthUser user = authUserRepository.findByEmail(request.getEmail()).orElse(null);
 
             // extract user infos
             Map<String, Object> extraClaims = new HashMap<>();
+            assert user != null;
             extraClaims.put("role", user.getRole());
             extraClaims.put("id", user.getId());
 

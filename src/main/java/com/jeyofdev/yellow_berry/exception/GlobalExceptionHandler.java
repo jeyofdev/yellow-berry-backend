@@ -115,8 +115,13 @@ public class GlobalExceptionHandler {
     private ResponseEntity<ErrorResponse> handleException(Exception exception, HttpStatus status, HttpServletRequest request, String message) {
         exception.printStackTrace();
 
+        String finalMessage = (message != null && !message.isEmpty())
+                ? message
+                : exception.getMessage().trim().replaceAll(";$", "")
+                .split(";")[0].trim();
+
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .message(message != null ? message : exception.getMessage())
+                .message(finalMessage)
                 .status(status.value())
                 .exceptionName(exception.getClass().getSimpleName())
                 .date(Helper.simpleDateFormat())

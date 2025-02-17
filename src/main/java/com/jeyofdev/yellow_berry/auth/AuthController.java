@@ -2,9 +2,11 @@ package com.jeyofdev.yellow_berry.auth;
 
 import com.jeyofdev.yellow_berry.auth.model.*;
 import jakarta.annotation.security.PermitAll;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,14 +16,14 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request) {
-        RegisterResponse registerResponse = authService.register(request);
+    public ResponseEntity<RegisterResponse> register(@Valid @RequestBody RegisterRequest request, BindingResult bindingResult) {
+        RegisterResponse registerResponse = authService.register(request, bindingResult);
         return new ResponseEntity<>(registerResponse, HttpStatus.OK);
     }
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody LoginRequest request) {
-        AuthResponse authenticationResponse = authService.login(request);
+    public ResponseEntity<?> login(@Valid @RequestBody LoginRequest request, BindingResult bindingResult) {
+        AuthResponse authenticationResponse = authService.login(request, bindingResult);
         return new ResponseEntity<>(authenticationResponse, HttpStatus.OK);
     }
 
