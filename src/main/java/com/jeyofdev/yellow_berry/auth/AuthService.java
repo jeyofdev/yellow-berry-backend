@@ -3,11 +3,13 @@ package com.jeyofdev.yellow_berry.auth;
 import com.jeyofdev.yellow_berry.auth.model.*;
 import com.jeyofdev.yellow_berry.auth_user.AuthUser;
 import com.jeyofdev.yellow_berry.auth_user.AuthUserRepository;
+import com.jeyofdev.yellow_berry.core.enums.RoleEnum;
 import com.jeyofdev.yellow_berry.exception.BadValidationArgumentException;
 import com.jeyofdev.yellow_berry.exception.ExpireTokenException;
 import com.jeyofdev.yellow_berry.exception.InvalidTokenException;
 import com.jeyofdev.yellow_berry.exception.UsernameAlreadyTakenException;
 import com.jeyofdev.yellow_berry.security.service.JwtService;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,10 +19,13 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +36,22 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
 
-    public RegisterResponse register(RegisterRequest request) throws UsernameAlreadyTakenException {
+    public RegisterResponse register(RegisterRequest request, BindingResult bindingResult) throws UsernameAlreadyTakenException {
+        // check if validation errors exists
+        if (bindingResult.hasErrors()) {
+            StringBuilder errors = new StringBuilder();
+            bindingResult.getAllErrors().forEach(error -> errors.append(error.getDefaultMessage()).append("; "));
+            throw new ConstraintViolationException(errors.toString(), null);
+        }
+
+        RoleEnum roleEnum;
+
+        try {
+            roleEnum = RoleEnum.valueOf(request.getRole().toUpperCase());
+        } catch(IllegalArgumentException e) {
+            throw new IllegalArgumentException("The role must be either admin or user");
+        }
+
         if (authUserRepository.findByEmail(request.getEmail()).isEmpty()) {
             AuthUser user = AuthUser.builder()
                     .email(request.getEmail())
@@ -61,7 +81,14 @@ public class AuthService {
         }
     }
 
-    public AuthResponse login(LoginRequest request) throws BadCredentialsException, UsernameNotFoundException {
+    public AuthResponse login(LoginRequest request, BindingResult bindingResult) throws BadCredentialsException, UsernameNotFoundException {
+        // check if validation errors exists
+        if (bindingResult.hasErrors()) {
+            StringBuilder errors = new StringBuilder();
+            bindingResult.getAllErrors().forEach(error -> errors.append(error.getDefaultMessage()).append("; "));
+            throw new ConstraintViolationException(errors.toString(), null);
+        }
+
         // check credentials
         // if the user was found
         // check that the user is authorized to access protected resources
@@ -74,11 +101,11 @@ public class AuthService {
             );
 
             // get user by email
-            AuthUser user = authUserRepository.findByEmail(request.getEmail())
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found in Database"));
+            AuthUser user = authUserRepository.findByEmail(request.getEmail()).orElse(null);
 
             // extract user infos
             Map<String, Object> extraClaims = new HashMap<>();
+            assert user != null;
             extraClaims.put("role", user.getRole());
             extraClaims.put("id", user.getId());
 
@@ -96,7 +123,7 @@ public class AuthService {
 
     public MessageResponse validateAccount(String verificationToken) throws InvalidTokenException, ExpireTokenException {
         if (verificationToken.isEmpty()) {
-            throw new InvalidTokenException("The token must be provided");
+            throw new InvalidTokenException("The verification token must be provided");
         }
 
         AuthUser user = authUserRepository.findByVerificationToken(verificationToken)
@@ -122,7 +149,7 @@ public class AuthService {
                 .build();
     }
 
-    public MessageResponse updatePassword(String oldPassword, String newPassword) throws IllegalStateException, BadValidationArgumentException, AccessDeniedException {
+    public MessageResponse updatePassword(String oldPassword, String newPassword, BindingResult bindingResult) throws IllegalStateException, BadValidationArgumentException, AccessDeniedException {
         String roles  = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
 
         if((roles.equals("[ROLE_ADMIN]")) || (roles.equals("[ROLE_USER]"))) {
@@ -133,8 +160,11 @@ public class AuthService {
                 throw new IllegalStateException("Old password is incorrect.");
             }
 
-            if (newPassword == null || newPassword.length() < 8) {
-                throw new BadValidationArgumentException("The new password must contain at least 8 characters.");
+            // check if validation errors exists
+            if (bindingResult.hasErrors()) {
+                StringBuilder errors = new StringBuilder();
+                bindingResult.getAllErrors().forEach(error -> errors.append(error.getDefaultMessage()).append("; "));
+                throw new ConstraintViolationException(errors.toString(), null);
             }
 
             // update password
@@ -153,6 +183,19 @@ public class AuthService {
     }
 
     public MessageResponse requestPasswordReset(String email) throws UsernameNotFoundException {
+        if (email == null || email.isEmpty()) {
+            throw new ConstraintViolationException("The email field is required.", null);
+        } else {
+            String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
+
+            Pattern pattern = Pattern.compile(emailRegex);
+            Matcher matcher = pattern.matcher(email);
+
+            if (!matcher.matches()) {
+                throw new ConstraintViolationException("The email is not in the correct format.", null);
+            }
+        }
+
         // get user by email
         AuthUser user = authUserRepository.findByEmail(email)
                 .orElseThrow(() -> new UsernameNotFoundException("No account was found associated with this email address. Please check the email you provided or consider creating a new account."));

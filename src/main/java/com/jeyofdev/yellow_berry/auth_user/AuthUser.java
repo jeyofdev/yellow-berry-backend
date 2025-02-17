@@ -25,7 +25,7 @@ public class AuthUser implements UserDetails {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(name = "email", columnDefinition = "VARCHAR(100)")
+    @Column(name = "email", columnDefinition = "VARCHAR(100)", unique = true)
     private String email;
 
     @JsonIgnore

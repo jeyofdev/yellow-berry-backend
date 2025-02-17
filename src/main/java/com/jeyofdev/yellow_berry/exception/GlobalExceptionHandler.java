@@ -4,6 +4,7 @@ import com.jeyofdev.yellow_berry.exception.model.ErrorResponse;
 import com.jeyofdev.yellow_berry.util.Helper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -95,6 +96,14 @@ public class GlobalExceptionHandler {
     /**
      * to handle the case where a method was called with one or more invalid arguments
      */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException exception, HttpServletRequest request) {
+        return handleException(exception, HttpStatus.BAD_REQUEST, request, null);
+    }
+
+    /**
+     * to handle the case where a method was called with one or more invalid arguments
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ErrorResponse> handleIllegalArgumentException(IllegalArgumentException exception, HttpServletRequest request) {
         return handleException(exception, HttpStatus.BAD_REQUEST, request, null);
@@ -106,8 +115,13 @@ public class GlobalExceptionHandler {
     private ResponseEntity<ErrorResponse> handleException(Exception exception, HttpStatus status, HttpServletRequest request, String message) {
         exception.printStackTrace();
 
+        String finalMessage = (message != null && !message.isEmpty())
+                ? message
+                : exception.getMessage().trim().replaceAll(";$", "")
+                .split(";")[0].trim();
+
         ErrorResponse errorResponse = ErrorResponse.builder()
-                .message(message != null ? message : exception.getMessage())
+                .message(finalMessage)
                 .status(status.value())
                 .exceptionName(exception.getClass().getSimpleName())
                 .date(Helper.simpleDateFormat())
