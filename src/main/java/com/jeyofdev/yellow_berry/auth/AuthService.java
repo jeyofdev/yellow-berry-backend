@@ -25,11 +25,11 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-
     private final AuthUserRepository authUserRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
+    private final EmailService emailService;
 
     public RegisterResponse register(RegisterRequest request) throws UsernameAlreadyTakenException {
         if (authUserRepository.findByEmail(request.getEmail()).isEmpty()) {
@@ -47,9 +47,12 @@ public class AuthService {
 
             authUserRepository.save(user);
 
+            // send email
+            emailService.sendValidationEmail(user.getEmail(), verificationToken);
+
             // response to client
             return RegisterResponse.builder()
-                    .message("Your registration has been successfully recorded.")
+                    .message("Your registration has been successfully recorded. A validation email has been sent to you. Please check your inbox and follow the instructions to complete your registration.")
                     .userId(String.valueOf(user.getId()))
                     .build();
 
@@ -111,8 +114,11 @@ public class AuthService {
 
         authUserRepository.save(user);
 
+        // send email
+        emailService.sendSuccessValidationEmail(user.getEmail());
+
         return MessageResponse.builder()
-                .message("Your account is verified")
+                .message("Your email is verified! You now have full access to your account.")
                 .build();
     }
 
@@ -134,6 +140,9 @@ public class AuthService {
             // update password
             user.setPassword(passwordEncoder.encode(newPassword));
             authUserRepository.save(user);
+
+            // send email
+            emailService.sendSuccessUpdatePasswordEmail(user.getEmail());
 
             return MessageResponse.builder()
                     .message("Your password has been updated successfully.")
@@ -159,9 +168,12 @@ public class AuthService {
         user.setResetTokenExpiration(LocalDateTime.now().plusMinutes(15));
         authUserRepository.save(user);
 
+        // send password reset email
+        emailService.sendPasswordResetEmail(user.getEmail(), jwtToken);
+
         // return token
         return MessageResponse.builder()
-                .message("your password change request is in progress")
+                .message("An email containing a link to reset your password has been sent to your address. Please check your inbox and follow the instructions.")
                 .build();
     }
 
@@ -184,6 +196,9 @@ public class AuthService {
         user.setResetTokenExpiration(null);
 
         authUserRepository.save(user);
+
+        // send email
+        emailService.sendSuccessUpdatePasswordEmail(user.getEmail());
 
         return MessageResponse.builder()
                 .message("Your password has been updated successfully. You can now use your new password to log in.")
