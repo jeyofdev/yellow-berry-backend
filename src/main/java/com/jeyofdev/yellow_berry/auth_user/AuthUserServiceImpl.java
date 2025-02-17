@@ -1,5 +1,6 @@
 package com.jeyofdev.yellow_berry.auth_user;
 
+import com.jeyofdev.yellow_berry.core.constant.Regex;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
@@ -37,12 +38,7 @@ public class AuthUserServiceImpl implements AuthUserService {
         if (email == null || email.isEmpty()) {
             throw new ConstraintViolationException("The email field is required.", null);
         } else {
-            String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
-
-            Pattern pattern = Pattern.compile(emailRegex);
-            Matcher matcher = pattern.matcher(email);
-
-            if (!matcher.matches()) {
+            if (!Pattern.matches(Regex.EMAIL_PATTERN, email)) {
                 throw new ConstraintViolationException("The email is not in the correct format.", null);
             }
         }

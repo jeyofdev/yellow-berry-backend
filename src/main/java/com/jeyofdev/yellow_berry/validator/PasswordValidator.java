@@ -1,6 +1,7 @@
 package com.jeyofdev.yellow_berry.validator;
 
 import com.jeyofdev.yellow_berry.annotation.ValidPassword;
+import com.jeyofdev.yellow_berry.core.constant.Regex;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 
@@ -27,15 +28,13 @@ public class PasswordValidator implements ConstraintValidator<ValidPassword, Str
             return false;
         }
 
-        // Vérification de la longueur
         if (value.length() < min || value.length() > max) {
             addConstraintViolation(context, lengthMessage);
             return false;
         }
 
 
-        // Vérification des critères : minuscule, majuscule, chiffre, caractère spécial
-        if (!value.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{" + min + "," + max + "}$")) {
+        if (!value.matches(Regex.PASSWORD_PATTERN)) {
             addConstraintViolation(context, formatMessage);
             return false;
         }
