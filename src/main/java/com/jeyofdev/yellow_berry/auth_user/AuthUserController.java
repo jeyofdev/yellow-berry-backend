@@ -13,12 +13,12 @@ import java.util.UUID;
 @RequestMapping("/api/v1/users")
 @RequiredArgsConstructor
 public class AuthUserController {
-    private final AuthUserService authUserService;
+    private final AuthUserServiceImpl authUserServiceImpl;
     private final AuthUserMapper authUserMapper;
 
     @GetMapping
     public ResponseEntity<List<AuthUserDTO>> getAllUsers()  {
-        List<AuthUser> authUserList = authUserService.findAll();
+        List<AuthUser> authUserList = authUserServiceImpl.findAll();
         List<AuthUserDTO> authUserDTOList = authUserList.stream()
                 .map(authUserMapper::mapFromEntity)
                 .toList();
@@ -28,7 +28,7 @@ public class AuthUserController {
 
     @GetMapping("/email/{email}")
     public ResponseEntity<AuthUserDTO> getUserByEmail(@PathVariable("email") String email) {
-        AuthUser authUser = authUserService.findUserByEmail(email);
+        AuthUser authUser = authUserServiceImpl.findUserByEmail(email);
         AuthUserDTO authUserDTO = authUserMapper.mapFromEntity(authUser);
 
         return new ResponseEntity<>(authUserDTO, HttpStatus.OK);
@@ -36,7 +36,7 @@ public class AuthUserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<AuthUserDTO> getUserById(@PathVariable("userId") UUID userId) {
-        AuthUser authUser = authUserService.findUserById(userId);
+        AuthUser authUser = authUserServiceImpl.findUserById(userId);
         AuthUserDTO authUserDTO = authUserMapper.mapFromEntity(authUser);
         return new ResponseEntity<>(authUserDTO, HttpStatus.OK);
     }
