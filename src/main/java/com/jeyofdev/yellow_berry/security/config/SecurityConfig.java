@@ -39,9 +39,9 @@ public class SecurityConfig {
 
                 // Liste des routes protégées / non protégées
                 .authorizeHttpRequests((requests) -> requests
+                        .requestMatchers("/api/v1/auth/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/v1/users/**").hasAnyRole(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
                         .requestMatchers(HttpMethod.POST, "/api/v1/auth/update-password").hasAnyRole(RoleEnum.ADMIN.name(), RoleEnum.USER.name())
-                        .requestMatchers("/api/v1/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
 

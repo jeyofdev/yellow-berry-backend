@@ -4,6 +4,7 @@ import com.jeyofdev.yellow_berry.exception.model.ErrorResponse;
 import com.jeyofdev.yellow_berry.util.Helper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -92,6 +93,14 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleBadValidationArgumentException(BadValidationArgumentException exception, HttpServletRequest request) {
         return handleException(exception, HttpStatus.BAD_REQUEST, request, null);
     }
+    /**
+     * to handle the case where a method was called with one or more invalid arguments
+     */
+    @ExceptionHandler(ConstraintViolationException.class)
+    public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException exception, HttpServletRequest request) {
+        return handleException(exception, HttpStatus.BAD_REQUEST, request, null);
+    }
+
     /**
      * to handle the case where a method was called with one or more invalid arguments
      */
