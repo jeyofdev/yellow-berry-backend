@@ -15,12 +15,12 @@ import java.util.UUID;
 @RequestMapping("/api/v1/faq")
 @RequiredArgsConstructor
 public class FaqController {
-    private final FaqServiceImpl faqServiceImpl;
+    private final FaqService faqService;
     private final FaqMapper faqMapper;
 
     @GetMapping
     public ResponseEntity<DomainSuccessResponse<List<FaqDTO>>> findAllFaq() {
-        List<Faq> faqList = faqServiceImpl.findAll();
+        List<Faq> faqList = faqService.findAll();
         List<FaqDTO> faqDTOList = faqList.stream().map(faqMapper::mapFromEntity).toList();
 
         return DomainSuccessResponse.get(HttpStatus.OK, faqDTOList);
@@ -28,16 +28,16 @@ public class FaqController {
 
     @GetMapping("/{faqId}")
     public ResponseEntity<DomainSuccessResponse<FaqDTO>> findFaqById(@PathVariable("faqId") UUID faqId) {
-        Faq faq = faqServiceImpl.findById(faqId);
-        FaqDTO cityDTO = faqMapper.mapFromEntity(faq);
+        Faq faq = faqService.findById(faqId);
+        FaqDTO faqDTO = faqMapper.mapFromEntity(faq);
 
-        return DomainSuccessResponse.get(HttpStatus.OK, cityDTO);
+        return DomainSuccessResponse.get(HttpStatus.OK, faqDTO);
     }
 
     @PostMapping
     public ResponseEntity<DomainSuccessResponse<FaqDTO>> saveFaq(@RequestBody SaveFaqDTO saveFaqDTO) {
         Faq faq = faqMapper.mapToEntity(saveFaqDTO);
-        Faq newFaq = faqServiceImpl.save(faq);
+        Faq newFaq = faqService.save(faq);
         FaqDTO newFaqDTO = faqMapper.mapFromEntity(newFaq);
 
         return DomainSuccessResponse.get(HttpStatus.CREATED, newFaqDTO);
@@ -49,7 +49,7 @@ public class FaqController {
             @RequestBody SaveFaqDTO saveFaqDTO
     ) {
         Faq faq = faqMapper.mapToEntity(saveFaqDTO);
-        Faq updateFaq = faqServiceImpl.updateById(faqId, faq);
+        Faq updateFaq = faqService.updateById(faqId, faq);
         FaqDTO updateFaqDTO = faqMapper.mapFromEntity(updateFaq);
 
         return DomainSuccessResponse.get(HttpStatus.OK, updateFaqDTO);
@@ -57,7 +57,7 @@ public class FaqController {
 
     @DeleteMapping("/{faqId}")
     public ResponseEntity<DomainSuccessResponse<Object>> deleteFaqById(@PathVariable("faqId") UUID faqId) {
-        String message = faqServiceImpl.deleteById(faqId);
+        String message = faqService.deleteById(faqId);
 
         return DomainSuccessResponse.get(HttpStatus.OK, message);
 
