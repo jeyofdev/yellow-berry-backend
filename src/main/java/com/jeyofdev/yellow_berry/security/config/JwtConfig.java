@@ -1,6 +1,7 @@
 package com.jeyofdev.yellow_berry.security.config;
 
 import com.jeyofdev.yellow_berry.auth_user.AuthUserRepository;
+import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -24,7 +25,7 @@ public class JwtConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> repository.findByEmail(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                .orElseThrow(() -> new UsernameNotFoundException(ErrorMessage.USER_NOT_FOUND));
     }
 
     // authentication provider that allows you

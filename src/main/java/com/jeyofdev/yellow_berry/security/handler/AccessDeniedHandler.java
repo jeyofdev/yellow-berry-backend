@@ -1,6 +1,7 @@
 package com.jeyofdev.yellow_berry.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.access.AccessDeniedException;
@@ -26,7 +27,7 @@ public class AccessDeniedHandler implements org.springframework.security.web.acc
 
         Map<String, String> error = new HashMap<>();
         error.put("access_denied", "true");
-        error.put("message", "You do not have sufficient rights");
+        error.put("message", ErrorMessage.NO_SUFFICIENT_RIGHT);
 
         new ObjectMapper().writeValue(response.getOutputStream(), error);
     }

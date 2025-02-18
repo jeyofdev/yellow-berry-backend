@@ -1,5 +1,6 @@
 package com.jeyofdev.yellow_berry.annotation;
 
+import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.validator.PasswordValidator;
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -14,9 +15,9 @@ import java.lang.annotation.Target;
 @Constraint(validatedBy = PasswordValidator.class)
 public @interface ValidPassword {
     String message() default "Invalid password";
-    String requiredMessage() default "The password field is required.";
-    String lengthMessage() default "The password must be contain between 8 and 16 characters.";
-    String formatMessage() default "The password must contain at least one lowercase letter, one uppercase letter, one digit, and one special character.";
+    String requiredMessage() default ErrorMessage.PASSWORD_REQUIRED;
+    String lengthMessage() default ErrorMessage.PASSWORD_LENGTH;
+    String formatMessage() default ErrorMessage.PASSWORD_FORMAT;
     int min() default 8;
     int max() default 16;
 

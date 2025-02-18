@@ -1,5 +1,6 @@
 package com.jeyofdev.yellow_berry.security.filter;
 
+import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.security.service.JwtService;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
@@ -41,7 +42,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // check if authHeader begins with "Bearer"
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            request.setAttribute("no_jwt_provided", "No JWT provided");
+            request.setAttribute("no_jwt_provided", ErrorMessage.JWT_MUST_BE_PROVIDED);
             filterChain.doFilter(request, response);
 
             return;

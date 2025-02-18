@@ -3,6 +3,8 @@ package com.jeyofdev.yellow_berry.auth;
 import com.jeyofdev.yellow_berry.auth.model.*;
 import com.jeyofdev.yellow_berry.auth_user.AuthUser;
 import com.jeyofdev.yellow_berry.auth_user.AuthUserRepository;
+import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
+import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.core.enums.RoleEnum;
 import com.jeyofdev.yellow_berry.exception.BadValidationArgumentException;
 import com.jeyofdev.yellow_berry.exception.ExpireTokenException;
@@ -44,7 +46,7 @@ public class AuthServiceImpl implements AuthService {
 
         // check if user exist
         if (authUserRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new UsernameAlreadyTakenException("Username already taken");
+            throw new UsernameAlreadyTakenException(ErrorMessage.USERNAME_ALREADY_TAKEN);
         }
 
         // create user
@@ -63,7 +65,7 @@ public class AuthServiceImpl implements AuthService {
         emailServiceImpl.sendValidationEmail(user.getEmail(), user.getVerificationToken());
 
         return RegisterResponse.builder()
-                .message("Your registration has been successfully recorded. A validation email has been sent to you. Please check your inbox and follow the instructions to complete your registration.")
+                .message(ConfirmMessage.REGISTER)
                 .userId(String.valueOf(user.getId()))
                 .build();
     }
@@ -76,7 +78,7 @@ public class AuthServiceImpl implements AuthService {
 
         // get user by email
         AuthUser user = authUserRepository.findByEmail(request.getEmail()).orElseThrow(
-                () -> new BadCredentialsException("Login failed. Please verify your credentials and try again.")
+                () -> new BadCredentialsException(ErrorMessage.LOGIN_FAILED)
         );
 
         // extract user infos
@@ -90,22 +92,22 @@ public class AuthServiceImpl implements AuthService {
 
         return AuthResponse.builder()
                 .token(jwtToken)
-                .message("Logged In")
+                .message(ConfirmMessage.LOGIN)
                 .build();
     }
 
     @Override
     public MessageResponse validateAccount(String verificationToken) throws InvalidTokenException, ExpireTokenException {
         if (verificationToken.isEmpty()) {
-            throw new InvalidTokenException("The verification token must be provided");
+            throw new InvalidTokenException(ErrorMessage.TOKEN_MUST_BE_PROVIDED);
         }
 
         AuthUser user = authUserRepository.findByVerificationToken(verificationToken)
-            .orElseThrow(() -> new InvalidTokenException("Invalid verification token")
+            .orElseThrow(() -> new InvalidTokenException(ErrorMessage.TOKEN_VERIFICATION_INVALID)
         );
 
         if (user.getVerificationTokenExpiration().isBefore(LocalDateTime.now())) {
-            throw new ExpireTokenException("Verification token has expired");
+            throw new ExpireTokenException(ErrorMessage.TOKEN_VERIFICATION_EXPIRED);
         }
 
         // mark user as verified and save user
@@ -119,7 +121,7 @@ public class AuthServiceImpl implements AuthService {
         emailServiceImpl.sendSuccessValidationEmail(user.getEmail());
 
         return MessageResponse.builder()
-                .message("Your email is verified! You now have full access to your account.")
+                .message(ConfirmMessage.VALIDATE_ACCOUNT)
                 .build();
     }
 
@@ -129,10 +131,10 @@ public class AuthServiceImpl implements AuthService {
 
         if((roles.equals("[ROLE_ADMIN]")) || (roles.equals("[ROLE_USER]"))) {
             AuthUser user = authUserRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName())
-                    .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+                    .orElseThrow(() -> new UsernameNotFoundException(ErrorMessage.USER_NOT_FOUND));
 
             if (!passwordEncoder.matches(oldPassword, user.getPassword())) {
-                throw new IllegalStateException("Old password is incorrect.");
+                throw new IllegalStateException(ErrorMessage.OLD_BAD_PASSWORD);
             }
 
             // check if validation errors exists
@@ -146,23 +148,23 @@ public class AuthServiceImpl implements AuthService {
             emailServiceImpl.sendSuccessUpdatePasswordEmail(user.getEmail());
 
             return MessageResponse.builder()
-                    .message("Your password has been updated successfully.")
+                    .message(ConfirmMessage.PASSWORD_UPDATED)
                     .build();
         } else {
-            throw new AccessDeniedException("You are not authorized to access this resource");
+            throw new AccessDeniedException(ErrorMessage.NO_AUTHORIZED);
         }
     }
 
     @Override
     public MessageResponse requestPasswordReset(String email) throws ConstraintViolationException, UsernameNotFoundException {
         if (email == null || email.isEmpty()) {
-            throw new ConstraintViolationException("The email field is required.", null);
+            throw new ConstraintViolationException(ErrorMessage.EMAIL_REQUIRED, null);
         }
 
         // get user by email
         Validator.emailFormat(email);
         AuthUser user = authUserRepository.findByEmail(email)
-                .orElseThrow(() -> new UsernameNotFoundException("No account was found associated with this email address. Please check the email you provided or consider creating a new account."));
+                .orElseThrow(() -> new UsernameNotFoundException(ErrorMessage.NO_USER_ASSOCIATED_EMAIL));
 
         // create additional claims for the reset token
         Map<String, Object> extraClaims = new HashMap<>();
@@ -177,7 +179,7 @@ public class AuthServiceImpl implements AuthService {
 
         // return token
         return MessageResponse.builder()
-                .message("An email containing a link to reset your password has been sent to your address. Please check your inbox and follow the instructions.")
+                .message(ConfirmMessage.REQUEST_PASSWORD_RESET)
                 .build();
     }
 
@@ -185,10 +187,10 @@ public class AuthServiceImpl implements AuthService {
     public MessageResponse resetPassword(String token, String newPassword) throws IllegalStateException, ExpireTokenException, BadValidationArgumentException {
         // check token
         AuthUser user = authUserRepository.findByResetToken(token)
-                .orElseThrow(() -> new IllegalStateException("Invalid or missing reset token"));
+                .orElseThrow(() -> new IllegalStateException(ErrorMessage.TOKEN_RESET_INVALID));
 
         if (tokenService.isTokenExpired(user.getResetTokenExpiration())) {
-            throw new ExpireTokenException("Verification token has expired");
+            throw new ExpireTokenException(ErrorMessage.TOKEN_RESET_EXPIRED);
         }
 
         Validator.passwordFormat(newPassword);
@@ -204,7 +206,7 @@ public class AuthServiceImpl implements AuthService {
         emailServiceImpl.sendSuccessUpdatePasswordEmail(user.getEmail());
 
         return MessageResponse.builder()
-                .message("Your password has been updated successfully. You can now use your new password to log in.")
+                .message(ConfirmMessage.PASSWORD_UPDATED_AFTER_FORGOT)
                 .build();
     }
 
@@ -218,7 +220,7 @@ public class AuthServiceImpl implements AuthService {
                     new UsernamePasswordAuthenticationToken(email, password)
             );
         } catch (BadCredentialsException exception) {
-            throw new BadCredentialsException("Login failed. Please verify your credentials and try again.");
+            throw new BadCredentialsException(ErrorMessage.LOGIN_FAILED);
         }
     }
 }
