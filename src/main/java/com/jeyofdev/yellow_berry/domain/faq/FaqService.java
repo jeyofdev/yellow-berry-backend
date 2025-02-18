@@ -8,11 +8,11 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
-public class FaqServiceImpl extends AbstractDomainService<Faq, FaqRepository> {
+public class FaqService extends AbstractDomainService<Faq, FaqRepository> {
     private final FaqRepository faqRepository;
 
     @Autowired
-    public FaqServiceImpl(FaqRepository faqRepository) {
+    public FaqService(FaqRepository faqRepository) {
         super(faqRepository, "Faq");
         this.faqRepository = faqRepository;
     }
