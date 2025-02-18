@@ -1,6 +1,7 @@
 package com.jeyofdev.yellow_berry.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.util.Helper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,13 +27,13 @@ public class JwtAuthenticationErrors implements AuthenticationEntryPoint {
         response.setHeader("error", exception.getMessage());
 
         if (request.getAttribute("expired_exception") != null) {
-            error.put("message", "JWT has expired. Please log in again.");
+            error.put("message", ErrorMessage.JWT_EXPIRED);
             error.put("status", "401");
             error.put("exceptionName", "expired_exception");
             error.put("date", Helper.simpleDateFormat());
         }
         else if (request.getAttribute("malformed_exception") != null) {
-            error.put("message", "JWT is malformed. Please verify its integrity.");
+            error.put("message", ErrorMessage.JWT_MALFORMED);
             error.put("status", "401");
             error.put("exceptionName", "malformed_exception");
             error.put("date", Helper.simpleDateFormat());
@@ -44,7 +45,7 @@ public class JwtAuthenticationErrors implements AuthenticationEntryPoint {
             error.put("date", Helper.simpleDateFormat());
         }
         else if (request.getAttribute("no_jwt_provided") != null) {
-            error.put("message", "A jwt token must be provided.");
+            error.put("message", ErrorMessage.JWT_MUST_BE_PROVIDED);
             error.put("status", "401");
             error.put("exceptionName", "no_jwt_provided");
             error.put("date", Helper.simpleDateFormat());

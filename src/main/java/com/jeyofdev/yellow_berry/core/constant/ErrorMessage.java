@@ -21,7 +21,6 @@ public class ErrorMessage {
     public static final String OLD_BAD_PASSWORD = "Old password is incorrect.";
     public static final String NO_USER_ASSOCIATED_EMAIL = "No account was found associated with this email address. Please check the email you provided or consider creating a new account.";
 
-
     // token
     public static final String TOKEN_MUST_BE_PROVIDED = "The verification token must be provided";
     public static final String TOKEN_VERIFICATION_INVALID = "Invalid verification token";
@@ -33,5 +32,11 @@ public class ErrorMessage {
     public static final String LOGIN_FAILED = "Login failed. Please verify your credentials and try again.";
     public static final String LIMIT_ACCESS = "User does not have the correct rights to access to this resource";
     public static final String NO_AUTHORIZED = "You are not authorized to access this resource";
+    public static final String NO_SUFFICIENT_RIGHT = "You do not have sufficient rights";
+
+    // JWT
+    public static final String JWT_EXPIRED = "JWT has expired. Please log in again.";
+    public static final String JWT_MALFORMED = "JWT is malformed. Please verify its integrity.";
+    public static final String JWT_MUST_BE_PROVIDED = "A jwt token must be provided.";
 
 }
