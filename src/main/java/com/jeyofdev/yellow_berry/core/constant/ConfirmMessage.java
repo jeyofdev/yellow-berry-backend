@@ -7,4 +7,7 @@ public class ConfirmMessage {
     public static final String PASSWORD_UPDATED = "Your password has been updated successfully.";
     public static final String REQUEST_PASSWORD_RESET = "An email containing a link to reset your password has been sent to your address. Please check your inbox and follow the instructions.";
     public static final String PASSWORD_UPDATED_AFTER_FORGOT = "Your password has been updated successfully. You can now use your new password to log in.";
+    public static final String FAQ_DELETE = "Faq question and answer has been successfully deleted.";
+
+
 }
