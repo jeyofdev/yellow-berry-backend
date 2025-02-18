@@ -1,5 +1,6 @@
 package com.jeyofdev.yellow_berry.auth_user;
 
+import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.core.constant.Regex;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
@@ -10,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 @Service
@@ -26,7 +26,7 @@ public class AuthUserServiceImpl implements AuthUserService {
         if(roles.equals("[ROLE_ADMIN]")) {
             return authUserRepository.findAll();
         } else {
-            throw new AccessDeniedException("User does not have the correct rights to access to this resource");
+            throw new AccessDeniedException(ErrorMessage.LIMIT_ACCESS);
         }
     }
 
@@ -36,10 +36,10 @@ public class AuthUserServiceImpl implements AuthUserService {
         String roles  = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
 
         if (email == null || email.isEmpty()) {
-            throw new ConstraintViolationException("The email field is required.", null);
+            throw new ConstraintViolationException(ErrorMessage.EMAIL_REQUIRED, null);
         } else {
             if (!Pattern.matches(Regex.EMAIL_PATTERN, email)) {
-                throw new ConstraintViolationException("The email is not in the correct format.", null);
+                throw new ConstraintViolationException(ErrorMessage.EMAIL_FORMAT, null);
             }
         }
 
@@ -47,7 +47,7 @@ public class AuthUserServiceImpl implements AuthUserService {
             return authUserRepository.findByEmail(email)
                     .orElseThrow(() -> new EntityNotFoundException("email " + email +" not found"));
         } else {
-            throw new AccessDeniedException("User does not have the correct rights to access to this resource");
+            throw new AccessDeniedException(ErrorMessage.LIMIT_ACCESS);
         }
     }
 
@@ -61,7 +61,7 @@ public class AuthUserServiceImpl implements AuthUserService {
                     () -> new EntityNotFoundException("User with id " + userId + " not found")
             );
         } else {
-            throw new AccessDeniedException("User does not have the correct rights to access to this resource");
+            throw new AccessDeniedException(ErrorMessage.LIMIT_ACCESS);
         }
 
     }
