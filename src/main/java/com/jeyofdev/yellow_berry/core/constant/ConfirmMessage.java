@@ -10,4 +10,5 @@ public class ConfirmMessage {
 
     public static final String FAQ_DELETE = "Faq question and answer has been successfully deleted.";
     public static final String TEAM_DELETE = "The team member has been successfully deleted.";
+    public static final String SERVICE_DELETE = "The service has been successfully deleted.";
 }
