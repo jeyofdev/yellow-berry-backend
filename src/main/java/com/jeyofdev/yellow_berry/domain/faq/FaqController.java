@@ -1,5 +1,6 @@
 package com.jeyofdev.yellow_berry.domain.faq;
 
+import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
 import com.jeyofdev.yellow_berry.domain.faq.dto.FaqDTO;
 import com.jeyofdev.yellow_berry.domain.faq.dto.SaveFaqDTO;
 import lombok.RequiredArgsConstructor;
@@ -14,51 +15,51 @@ import java.util.UUID;
 @RequestMapping("/api/v1/faq")
 @RequiredArgsConstructor
 public class FaqController {
-    private final FaqService faqService;
+    private final FaqServiceImpl faqServiceImpl;
     private final FaqMapper faqMapper;
 
     @GetMapping
-    public ResponseEntity<List<FaqDTO>> findAllFaq() {
-        List<Faq> faqList = faqService.findAll();
+    public ResponseEntity<DomainSuccessResponse<List<FaqDTO>>> findAllFaq() {
+        List<Faq> faqList = faqServiceImpl.findAll();
         List<FaqDTO> faqDTOList = faqList.stream().map(faqMapper::mapFromEntity).toList();
 
-        return new ResponseEntity<>(faqDTOList, HttpStatus.OK);
+        return DomainSuccessResponse.get(HttpStatus.OK, faqDTOList);
     }
 
     @GetMapping("/{faqId}")
-    public ResponseEntity<FaqDTO> findFaqById(@PathVariable("faqId") UUID faqId) {
-        Faq faq = faqService.findById(faqId);
+    public ResponseEntity<DomainSuccessResponse<FaqDTO>> findFaqById(@PathVariable("faqId") UUID faqId) {
+        Faq faq = faqServiceImpl.findById(faqId);
         FaqDTO cityDTO = faqMapper.mapFromEntity(faq);
 
-        return new ResponseEntity<>(cityDTO, HttpStatus.OK);
+        return DomainSuccessResponse.get(HttpStatus.OK, cityDTO);
     }
 
     @PostMapping
-    public ResponseEntity<FaqDTO> saveFaq(@RequestBody SaveFaqDTO saveFaqDTO) {
+    public ResponseEntity<DomainSuccessResponse<FaqDTO>> saveFaq(@RequestBody SaveFaqDTO saveFaqDTO) {
         Faq faq = faqMapper.mapToEntity(saveFaqDTO);
-        Faq newFaq = faqService.save(faq);
+        Faq newFaq = faqServiceImpl.save(faq);
         FaqDTO newFaqDTO = faqMapper.mapFromEntity(newFaq);
 
-        return new ResponseEntity<>(newFaqDTO, HttpStatus.CREATED);
+        return DomainSuccessResponse.get(HttpStatus.CREATED, newFaqDTO);
     }
 
     @PutMapping("/{faqId}")
-    public ResponseEntity<FaqDTO> updateFaqById(
+    public ResponseEntity<DomainSuccessResponse<FaqDTO>> updateFaqById(
             @PathVariable("faqId") UUID faqId,
             @RequestBody SaveFaqDTO saveFaqDTO
     ) {
         Faq faq = faqMapper.mapToEntity(saveFaqDTO);
-        Faq updateFaq = faqService.updateById(faqId, faq);
+        Faq updateFaq = faqServiceImpl.updateById(faqId, faq);
         FaqDTO updateFaqDTO = faqMapper.mapFromEntity(updateFaq);
 
-        return new ResponseEntity<>(updateFaqDTO, HttpStatus.OK);
-
+        return DomainSuccessResponse.get(HttpStatus.OK, updateFaqDTO);
     }
 
     @DeleteMapping("/{faqId}")
-    public ResponseEntity<Object> deleteFaqById(@PathVariable("faqId") UUID faqId) {
-        String message = faqService.deleteById(faqId);
+    public ResponseEntity<DomainSuccessResponse<Object>> deleteFaqById(@PathVariable("faqId") UUID faqId) {
+        String message = faqServiceImpl.deleteById(faqId);
 
-        return new ResponseEntity<>(message, HttpStatus.OK);
+        return DomainSuccessResponse.get(HttpStatus.OK, message);
+
     }
 }

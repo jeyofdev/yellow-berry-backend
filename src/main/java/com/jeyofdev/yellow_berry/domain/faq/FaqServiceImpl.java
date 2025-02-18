@@ -1,29 +1,20 @@
 package com.jeyofdev.yellow_berry.domain.faq;
 
-import com.jeyofdev.yellow_berry.exception.NotFoundException;
-import lombok.RequiredArgsConstructor;
+import com.jeyofdev.yellow_berry.core.classes.AbstractDomainService;
+import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.text.MessageFormat;
-import java.util.List;
 import java.util.UUID;
 
 @Service
-@RequiredArgsConstructor
-public class FaqService {
+public class FaqServiceImpl extends AbstractDomainService<Faq, FaqRepository> {
     private final FaqRepository faqRepository;
 
-    public List<Faq> findAll() {
-        return faqRepository.findAll();
-    }
-
-    public Faq findById(UUID faqId) throws NotFoundException {
-        return faqRepository.findById(faqId).orElseThrow(
-            () -> new NotFoundException(MessageFormat.format("Entity Faq with id {0} cannot be found", faqId)));
-    }
-
-    public Faq save(Faq faq) {
-        return faqRepository.save(faq);
+    @Autowired
+    public FaqServiceImpl(FaqRepository faqRepository) {
+        super(faqRepository, "Faq");
+        this.faqRepository = faqRepository;
     }
 
     public Faq updateById(UUID faqId, Faq updatedFaq) {
@@ -41,6 +32,6 @@ public class FaqService {
         findById(faqId);
         faqRepository.deleteById(faqId);
 
-        return "Faq question and answer has been successfully deleted.";
+        return ConfirmMessage.FAQ_DELETE;
     }
 }

@@ -119,6 +119,16 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * to handle the case where a when a method is not implemented.
+     */
+    @ExceptionHandler(UnsupportedOperationException.class)
+    public ResponseEntity<ErrorResponse> handleUnsupportedOperationException(UnsupportedOperationException exception, HttpServletRequest request) {
+        return handleException(exception, HttpStatus.BAD_REQUEST, request, null);
+    }
+
+
+
+    /**
      * Others
      */
     private ResponseEntity<ErrorResponse> handleException(Exception exception, HttpStatus status, HttpServletRequest request, String message) {
