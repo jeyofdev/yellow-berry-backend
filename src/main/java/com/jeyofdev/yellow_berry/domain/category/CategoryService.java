@@ -27,9 +27,9 @@ public class CategoryService extends AbstractDomainService<Category, CategoryRep
         return categoryRepository.save(existingCategoryUpdated);
     }
 
-    public String deleteById(UUID teamMemberId) {
-        findById(teamMemberId);
-        categoryRepository.deleteById(teamMemberId);
+    public String deleteById(UUID categoryId) {
+        findById(categoryId);
+        categoryRepository.deleteById(categoryId);
 
         return ConfirmMessage.CATEGORY_DELETE;
     }

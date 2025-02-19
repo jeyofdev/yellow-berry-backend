@@ -30,9 +30,9 @@ public class TestimonialService extends AbstractDomainService<Testimonial, Testi
         return testimonialRepository.save(existingTestimonialUpdated);
     }
 
-    public String deleteById(UUID teamMemberId) {
-        findById(teamMemberId);
-        testimonialRepository.deleteById(teamMemberId);
+    public String deleteById(UUID testimonialId) {
+        findById(testimonialId);
+        testimonialRepository.deleteById(testimonialId);
 
         return ConfirmMessage.TESTIMONIAL_DELETE;
     }

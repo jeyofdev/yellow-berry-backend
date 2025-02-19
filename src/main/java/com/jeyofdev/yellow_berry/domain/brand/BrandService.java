@@ -27,9 +27,9 @@ public class BrandService extends AbstractDomainService<Brand, BrandRepository> 
         return brandRepository.save(existingBrandUpdated);
     }
 
-    public String deleteById(UUID teamMemberId) {
-        findById(teamMemberId);
-        brandRepository.deleteById(teamMemberId);
+    public String deleteById(UUID brandId) {
+        findById(brandId);
+        brandRepository.deleteById(brandId);
 
         return ConfirmMessage.BRAND_DELETE;
     }

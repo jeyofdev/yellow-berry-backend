@@ -27,9 +27,9 @@ public class TagService extends AbstractDomainService<Tag, TagRepository> {
         return tagRepository.save(existingTagUpdated);
     }
 
-    public String deleteById(UUID teamMemberId) {
-        findById(teamMemberId);
-        tagRepository.deleteById(teamMemberId);
+    public String deleteById(UUID tagId) {
+        findById(tagId);
+        tagRepository.deleteById(tagId);
 
         return ConfirmMessage.TAG_DELETE;
     }
