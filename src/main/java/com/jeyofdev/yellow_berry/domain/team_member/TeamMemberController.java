@@ -56,7 +56,7 @@ public class TeamMemberController {
     }
 
     @DeleteMapping("/{teamMemberId}")
-    public ResponseEntity<DomainSuccessResponse<Object>> deleteMemberById(@PathVariable("teamMemberId") UUID teamMemberId) {
+    public ResponseEntity<DomainSuccessResponse<Object>> deleteTeamMemberById(@PathVariable("teamMemberId") UUID teamMemberId) {
         String message = teamMemberService.deleteById(teamMemberId);
 
         return DomainSuccessResponse.get(HttpStatus.OK, message);
