@@ -20,4 +20,5 @@ public class ConfirmMessage {
     public static final String COMMENT_DELETE = "The comment has been successfully deleted.";
     public static final String PRODUCT_DETAILS_DELETE = "The product details has been successfully deleted.";
     public static final String WISHLIST_DELETE = "The wishlist has been successfully deleted.";
+    public static final String CART_DELETE = "The cart has been successfully deleted.";
 }

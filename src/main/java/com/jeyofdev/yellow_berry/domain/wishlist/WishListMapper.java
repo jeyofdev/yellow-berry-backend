@@ -6,6 +6,6 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")
 public interface WishListMapper {
-    WishlistDTO mapFromEntity(WishList tag);
+    WishlistDTO mapFromEntity(WishList wishlist);
     WishList mapToEntity(SaveWishlistDTO saveWishListDTO);
 }
