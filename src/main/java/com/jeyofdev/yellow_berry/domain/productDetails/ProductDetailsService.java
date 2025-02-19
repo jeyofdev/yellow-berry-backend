@@ -17,10 +17,10 @@ public class ProductDetailsService extends AbstractDomainService<ProductDetails,
         this.productDetailsRepository = productDetailsRepository;
     }
 
-    public ProductDetails updateById(UUID faqId, ProductDetails updatedProductDetails) {
-        ProductDetails existingProductDetails = findById(faqId);
+    public ProductDetails updateById(UUID productDetails, ProductDetails updatedProductDetails) {
+        ProductDetails existingProductDetails = findById(productDetails);
         ProductDetails existingProductDetailsUpdated = ProductDetails.builder()
-                .id(faqId)
+                .id(productDetails)
                 .description(updatedProductDetails.getDescription() != null ? updatedProductDetails.getDescription() : existingProductDetails.getDescription())
                 .seller(updatedProductDetails.getSeller() != null ? updatedProductDetails.getSeller() : existingProductDetails.getSeller())
                 .service(updatedProductDetails.getService() != null ? updatedProductDetails.getService() : existingProductDetails.getService())
@@ -29,9 +29,9 @@ public class ProductDetailsService extends AbstractDomainService<ProductDetails,
         return productDetailsRepository.save(existingProductDetailsUpdated);
     }
 
-    public String deleteById(UUID faqId) {
-        findById(faqId);
-        productDetailsRepository.deleteById(faqId);
+    public String deleteById(UUID productDetails) {
+        findById(productDetails);
+        productDetailsRepository.deleteById(productDetails);
 
         return ConfirmMessage.PRODUCT_DETAILS_DELETE;
     }

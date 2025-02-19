@@ -1,0 +1,11 @@
+package com.jeyofdev.yellow_berry.domain.wishlist;
+
+import com.jeyofdev.yellow_berry.domain.wishlist.dto.SaveWishlistDTO;
+import com.jeyofdev.yellow_berry.domain.wishlist.dto.WishlistDTO;
+import org.mapstruct.Mapper;
+
+@Mapper(componentModel = "spring")
+public interface WishListMapper {
+    WishlistDTO mapFromEntity(WishList tag);
+    WishList mapToEntity(SaveWishlistDTO saveWishListDTO);
+}
