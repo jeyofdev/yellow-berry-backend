@@ -16,4 +16,5 @@ public class ConfirmMessage {
     public static final String CATEGORY_DELETE = "The brand has been successfully deleted.";
     public static final String TAG_DELETE = "The tag has been successfully deleted.";
     public static final String PRODUCT_DELETE = "The product has been successfully deleted.";
+    public static final String PRODUCT_INFORMATION_DELETE = "The product informations has been successfully deleted.";
 }
