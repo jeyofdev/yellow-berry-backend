@@ -11,4 +11,15 @@ public class ConfirmMessage {
     public static final String FAQ_DELETE = "Faq question and answer has been successfully deleted.";
     public static final String TEAM_DELETE = "The team member has been successfully deleted.";
     public static final String SERVICE_DELETE = "The service has been successfully deleted.";
+    public static final String TESTIMONIAL_DELETE = "The testimonial has been successfully deleted.";
+    public static final String BRAND_DELETE = "The brand has been successfully deleted.";
+    public static final String CATEGORY_DELETE = "The brand has been successfully deleted.";
+    public static final String TAG_DELETE = "The tag has been successfully deleted.";
+    public static final String PRODUCT_DELETE = "The product has been successfully deleted.";
+    public static final String PRODUCT_INFORMATION_DELETE = "The product informations has been successfully deleted.";
+    public static final String COMMENT_DELETE = "The comment has been successfully deleted.";
+    public static final String PRODUCT_DETAILS_DELETE = "The product details has been successfully deleted.";
+    public static final String WISHLIST_DELETE = "The wishlist has been successfully deleted.";
+    public static final String CART_DELETE = "The cart has been successfully deleted.";
+    public static final String PROFILE_DELETE = "The profile has been successfully deleted.";
 }

@@ -17,10 +17,10 @@ public class TeamMemberService extends AbstractDomainService<TeamMember, TeamMem
         this.teamMemberRepository = teamMemberRepository;
     }
 
-    public TeamMember updateById(UUID teamId, TeamMember updatedTeamMember) {
-        TeamMember existingTeamMember = findById(teamId);
+    public TeamMember updateById(UUID teamMemberId, TeamMember updatedTeamMember) {
+        TeamMember existingTeamMember = findById(teamMemberId);
         TeamMember existingTeamMemberUpdated = TeamMember.builder()
-                .id(teamId)
+                .id(teamMemberId)
                 .firstname(updatedTeamMember.getFirstname() != null ? updatedTeamMember.getFirstname() : existingTeamMember.getFirstname())
                 .lastname(updatedTeamMember.getLastname() != null ? updatedTeamMember.getLastname() : existingTeamMember.getLastname())
                 .job(updatedTeamMember.getJob() != null ? updatedTeamMember.getJob() : existingTeamMember.getJob())
