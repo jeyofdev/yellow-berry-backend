@@ -17,10 +17,10 @@ public class CategoryService extends AbstractDomainService<Category, CategoryRep
         this.categoryRepository = categoryRepository;
     }
 
-    public Category updateById(UUID teamId, Category updatedCategory) {
-        Category existingCategory = findById(teamId);
+    public Category updateById(UUID categoryId, Category updatedCategory) {
+        Category existingCategory = findById(categoryId);
         Category existingCategoryUpdated = Category.builder()
-                .id(teamId)
+                .id(categoryId)
                 .name(updatedCategory.getName() != null ? updatedCategory.getName() : existingCategory.getName())
                 .build();
 

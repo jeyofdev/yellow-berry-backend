@@ -17,10 +17,10 @@ public class TestimonialService extends AbstractDomainService<Testimonial, Testi
         this.testimonialRepository = testimonialRepository;
     }
 
-    public Testimonial updateById(UUID teamId, Testimonial updatedTestimonial) {
-        Testimonial existingTestimonial = findById(teamId);
+    public Testimonial updateById(UUID testimonialId, Testimonial updatedTestimonial) {
+        Testimonial existingTestimonial = findById(testimonialId);
         Testimonial existingTestimonialUpdated = Testimonial.builder()
-                .id(teamId)
+                .id(testimonialId)
                 .firstname(updatedTestimonial.getFirstname() != null ? updatedTestimonial.getFirstname() : existingTestimonial.getFirstname())
                 .lastname(updatedTestimonial.getLastname() != null ? updatedTestimonial.getLastname() : existingTestimonial.getLastname())
                 .job(updatedTestimonial.getJob() != null ? updatedTestimonial.getJob() : existingTestimonial.getJob())

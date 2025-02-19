@@ -16,10 +16,10 @@ public class AboutService extends AbstractDomainService<About, AboutRepository> 
         this.aboutRepository = aboutRepository;
     }
 
-    public About updateById(UUID serviceId, About updatedAbout) {
-        About existingAbout = findById(serviceId);
+    public About updateById(UUID aboutId, About updatedAbout) {
+        About existingAbout = findById(aboutId);
         About existingAboutUpdated = About.builder()
-                .id(serviceId)
+                .id(aboutId)
                 .title(updatedAbout.getTitle() != null ? updatedAbout.getTitle() : existingAbout.getTitle())
                 .subtitle(updatedAbout.getSubtitle() != null ? updatedAbout.getSubtitle() : existingAbout.getSubtitle())
                 .description(updatedAbout.getDescription() != null ? updatedAbout.getDescription() : existingAbout.getDescription())

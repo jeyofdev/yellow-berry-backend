@@ -17,10 +17,10 @@ public class BrandService extends AbstractDomainService<Brand, BrandRepository> 
         this.brandRepository = brandRepository;
     }
 
-    public Brand updateById(UUID teamId, Brand updatedBrand) {
-        Brand existingBrand = findById(teamId);
+    public Brand updateById(UUID brandId, Brand updatedBrand) {
+        Brand existingBrand = findById(brandId);
         Brand existingBrandUpdated = Brand.builder()
-                .id(teamId)
+                .id(brandId)
                 .name(updatedBrand.getName() != null ? updatedBrand.getName() : existingBrand.getName())
                 .build();
 
