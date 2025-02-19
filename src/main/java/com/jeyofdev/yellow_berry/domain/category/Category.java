@@ -1,4 +1,4 @@
-package com.jeyofdev.yellow_berry.domain.brand;
+package com.jeyofdev.yellow_berry.domain.category;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -11,8 +11,8 @@ import java.util.UUID;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-@Table(name = "brand")
-public class Brand {
+@Table(name = "category")
+public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
