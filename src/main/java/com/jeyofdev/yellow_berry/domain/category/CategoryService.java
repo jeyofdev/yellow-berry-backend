@@ -2,19 +2,29 @@ package com.jeyofdev.yellow_berry.domain.category;
 
 import com.jeyofdev.yellow_berry.core.classes.AbstractDomainService;
 import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
+import com.jeyofdev.yellow_berry.domain.product.Product;
+import com.jeyofdev.yellow_berry.domain.product.ProductRepository;
+import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
 public class CategoryService extends AbstractDomainService<Category, CategoryRepository> {
     private final CategoryRepository categoryRepository;
+    private final ProductRepository productRepository;
 
     @Autowired
-    public CategoryService(CategoryRepository categoryRepository) {
+    public CategoryService(CategoryRepository categoryRepository, ProductRepository productRepository) {
         super(categoryRepository, "Category");
         this.categoryRepository = categoryRepository;
+        this.productRepository = productRepository;
+    }
+
+    public List<Category> getCategoriesByIds(List<UUID> categoryIds) {
+        return categoryIds == null || categoryIds.isEmpty() ? List.of() : categoryRepository.findAllById(categoryIds);
     }
 
     public Category updateById(UUID categoryId, Category updatedCategory) {
@@ -28,6 +38,14 @@ public class CategoryService extends AbstractDomainService<Category, CategoryRep
     }
 
     public String deleteById(UUID categoryId) {
+        Category category = findById(categoryId);
+        List<Product> productList = productRepository.findByCategory(category);
+
+        for (Product product : productList) {
+            product.getCategoryList().remove(category);
+            productRepository.save(product);
+        }
+
         findById(categoryId);
         categoryRepository.deleteById(categoryId);
 

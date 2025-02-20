@@ -1,10 +1,15 @@
 package com.jeyofdev.yellow_berry.domain.product;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jeyofdev.yellow_berry.core.enums.StockEnum;
 import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
+import com.jeyofdev.yellow_berry.domain.category.Category;
+import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -44,4 +49,22 @@ public class Product {
     @Enumerated(EnumType.STRING)
     @Column(name = "weight", columnDefinition = "VARCHAR(30)")
     private WeightEnum weight;
+
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(
+            name = "product_tag",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "tag_id")
+    )
+    @JsonIgnore
+    private List<Tag> tagList = new ArrayList<>();
+
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(
+            name = "product_category",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    @JsonIgnore
+    private List<Category> categoryList = new ArrayList<>();
 }
