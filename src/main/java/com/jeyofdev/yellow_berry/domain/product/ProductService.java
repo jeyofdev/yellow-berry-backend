@@ -2,6 +2,8 @@ package com.jeyofdev.yellow_berry.domain.product;
 
 import com.jeyofdev.yellow_berry.core.classes.AbstractDomainService;
 import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
+import com.jeyofdev.yellow_berry.domain.category.Category;
+import com.jeyofdev.yellow_berry.domain.category.CategoryRepository;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import com.jeyofdev.yellow_berry.domain.tag.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,18 +16,25 @@ import java.util.UUID;
 public class ProductService extends AbstractDomainService<Product, ProductRepository> {
     private final ProductRepository productRepository;
     private final TagRepository tagRepository;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, TagRepository tagRepository) {
+    public ProductService(ProductRepository productRepository, TagRepository tagRepository, CategoryRepository categoryRepository) {
         super(productRepository, "Product");
         this.productRepository = productRepository;
         this.tagRepository = tagRepository;
+        this.categoryRepository = categoryRepository;
     }
 
     public Product save(Product product) {
         if (product.getTagList() != null && !product.getTagList().isEmpty()) {
             List<UUID> tagIds = product.getTagList().stream().map(Tag::getId).toList();
             product.setTagList(tagRepository.findAllById(tagIds));
+        }
+
+        if (product.getCategoryList() != null && !product.getCategoryList().isEmpty()) {
+            List<UUID> categoryIds = product.getCategoryList().stream().map(Category::getId).toList();
+            product.setCategoryList(categoryRepository.findAllById(categoryIds));
         }
 
         return productRepository.save(product);
@@ -43,6 +52,15 @@ public class ProductService extends AbstractDomainService<Product, ProductReposi
             updatedTags = existingProduct.getTagList();
         }
 
+        List<Category> updatedCategories;
+        if (updatedProduct.getCategoryList() != null && !updatedProduct.getCategoryList().isEmpty()) {
+            updatedCategories = categoryRepository.findAllById(
+                updatedProduct.getCategoryList().stream().map(Category::getId).toList()
+            );
+        } else {
+            updatedCategories = existingProduct.getCategoryList();
+        }
+
         Product existingProductUpdated = Product.builder()
                 .id(productId)
                 .name(updatedProduct.getName() != null ? updatedProduct.getName() : existingProduct.getName())
@@ -54,6 +72,7 @@ public class ProductService extends AbstractDomainService<Product, ProductReposi
                 .stock(updatedProduct.getStock() != null ? updatedProduct.getStock() : existingProduct.getStock())
                 .weight(updatedProduct.getWeight() != null ? updatedProduct.getWeight() : existingProduct.getWeight())
                 .tagList(updatedTags)
+                .categoryList(updatedCategories)
                 .build();
 
         return productRepository.save(existingProductUpdated);

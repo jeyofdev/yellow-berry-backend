@@ -15,6 +15,7 @@ public record SaveProductDTO(
         Double discount,
         StockEnum stock,
         WeightEnum weight,
-        List<UUID> tagIds
+        List<UUID> tagIds,
+        List<UUID> categoryIds
 ) {
 }

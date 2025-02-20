@@ -3,6 +3,7 @@ package com.jeyofdev.yellow_berry.domain.product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jeyofdev.yellow_berry.core.enums.StockEnum;
 import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
+import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import jakarta.persistence.*;
 import lombok.*;
@@ -57,4 +58,13 @@ public class Product {
     )
     @JsonIgnore
     private List<Tag> tagList = new ArrayList<>();
+
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(
+            name = "product_category",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    @JsonIgnore
+    private List<Category> categoryList = new ArrayList<>();
 }

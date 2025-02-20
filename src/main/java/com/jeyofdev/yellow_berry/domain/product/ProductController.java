@@ -1,6 +1,7 @@
 package com.jeyofdev.yellow_berry.domain.product;
 
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
+import com.jeyofdev.yellow_berry.domain.category.CategoryService;
 import com.jeyofdev.yellow_berry.domain.product.dto.SaveProductDTO;
 import com.jeyofdev.yellow_berry.domain.product.dto.ProductDTO;
 import com.jeyofdev.yellow_berry.domain.tag.TagService;
@@ -19,6 +20,7 @@ public class ProductController {
     private final ProductService productService;
     private final ProductMapper productMapper;
     private final TagService tagService;
+    private final CategoryService categoryService;
 
     @GetMapping
     public ResponseEntity<DomainSuccessResponse<List<ProductDTO>>> findAllProducts() {
@@ -38,7 +40,7 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<DomainSuccessResponse<ProductDTO>> saveProduct(@RequestBody SaveProductDTO saveProductDTO) {
-        Product product = productMapper.mapToEntity(saveProductDTO, tagService);
+        Product product = productMapper.mapToEntity(saveProductDTO, tagService, categoryService);
         Product newProduct = productService.save(product);
         ProductDTO newProductDTO = productMapper.mapFromEntity(newProduct);
 
@@ -50,7 +52,7 @@ public class ProductController {
             @PathVariable("productId") UUID productId,
             @RequestBody SaveProductDTO saveProductDTO
     ) {
-        Product product = productMapper.mapToEntity(saveProductDTO, tagService);
+        Product product = productMapper.mapToEntity(saveProductDTO, tagService, categoryService);
         Product updateProduct = productService.updateById(productId, product);
         ProductDTO updateProductDTO = productMapper.mapFromEntity(updateProduct);
 

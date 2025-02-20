@@ -1,5 +1,7 @@
 package com.jeyofdev.yellow_berry.domain.product;
 
+import com.jeyofdev.yellow_berry.domain.category.Category;
+import com.jeyofdev.yellow_berry.domain.category.CategoryService;
 import com.jeyofdev.yellow_berry.domain.product.dto.SaveProductDTO;
 import com.jeyofdev.yellow_berry.domain.product.dto.ProductDTO;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
@@ -17,10 +19,16 @@ public interface ProductMapper {
     ProductDTO mapFromEntity(Product product);
 
     @Mapping(target = "tagList", source = "tagIds", qualifiedByName = "mapTagIdsToTags")
-    Product mapToEntity(SaveProductDTO saveProductDTO, @Context TagService tagService);
+    @Mapping(target = "categoryList", source = "categoryIds", qualifiedByName = "mapCategoryIdsToCategories")
+    Product mapToEntity(SaveProductDTO saveProductDTO, @Context TagService tagService, @Context CategoryService categoryService);
 
     @Named("mapTagIdsToTags")
     default List<Tag> mapTagIdsToTags(List<UUID> tagIds, @Context TagService tagService) {
         return tagService.getTagsByIds(tagIds);
+    }
+
+    @Named("mapCategoryIdsToCategories")
+    default List<Category> mapCategoryIdsToCategories(List<UUID> categoryIds, @Context CategoryService categoryService) {
+        return categoryService.getCategoriesByIds(categoryIds);
     }
 }

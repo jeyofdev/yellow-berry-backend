@@ -1,5 +1,6 @@
 package com.jeyofdev.yellow_berry.domain.product;
 
+import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -21,4 +22,7 @@ ProductRepository extends JpaRepository<Product, UUID> {
 
     @Query("SELECT p FROM Product p JOIN p.tagList t WHERE t = :tag")
     List<Product> findByTag(@Param("tag") Tag tag);
+
+    @Query("SELECT p FROM Product p JOIN p.categoryList c WHERE c = :category")
+    List<Product> findByCategory(@Param("category") Category category);
 }
