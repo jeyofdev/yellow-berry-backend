@@ -1,5 +1,7 @@
 package com.jeyofdev.yellow_berry.domain.productDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jeyofdev.yellow_berry.domain.product.Product;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -10,7 +12,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = "product")
 @Table(name = "product_details")
 public class ProductDetails {
     @Id
@@ -25,4 +27,9 @@ public class ProductDetails {
 
     @Column(name = "service", columnDefinition = "VARCHAR(255)")
     private String service;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Product product;
 }

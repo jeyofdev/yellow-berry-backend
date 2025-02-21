@@ -5,6 +5,7 @@ import com.jeyofdev.yellow_berry.core.enums.StockEnum;
 import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
 import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.comment.Comment;
+import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetails;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import jakarta.persistence.*;
 import lombok.*;
@@ -18,7 +19,7 @@ import java.util.UUID;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString
+@ToString(exclude = "productDetails")
 @Table(name = "product")
 public class Product {
     @Id
@@ -72,4 +73,9 @@ public class Product {
     @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Comment> commentList = new ArrayList<>();
+
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_details_id", referencedColumnName = "id")
+    @JsonIgnore
+    private ProductDetails productDetails;
 }

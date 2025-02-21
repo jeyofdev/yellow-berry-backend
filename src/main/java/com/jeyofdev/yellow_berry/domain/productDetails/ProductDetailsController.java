@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/product/details")
+@RequestMapping("/api/v1/product_details")
 @RequiredArgsConstructor
 public class ProductDetailsController {
     private final ProductDetailsService productDetailsService;
@@ -34,10 +34,13 @@ public class ProductDetailsController {
         return DomainSuccessResponse.get(HttpStatus.OK, productDetailsDTO);
     }
 
-    @PostMapping
-    public ResponseEntity<DomainSuccessResponse<ProductDetailsDTO>> saveProductDetails(@RequestBody SaveProductDetailsDTO saveProductDetailsDTO) {
+    @PostMapping("/product/{productId}")
+    public ResponseEntity<DomainSuccessResponse<ProductDetailsDTO>> saveProductDetails(
+            @PathVariable("productId") UUID productId,
+            @RequestBody SaveProductDetailsDTO saveProductDetailsDTO
+    ) {
         ProductDetails productDetails = productDetailsMapper.mapToEntity(saveProductDetailsDTO);
-        ProductDetails newProductDetails = productDetailsService.save(productDetails);
+        ProductDetails newProductDetails = productDetailsService.save(productId, productDetails);
         ProductDetailsDTO newProductDetailsDTO = productDetailsMapper.mapFromEntity(newProductDetails);
 
         return DomainSuccessResponse.get(HttpStatus.CREATED, newProductDetailsDTO);
