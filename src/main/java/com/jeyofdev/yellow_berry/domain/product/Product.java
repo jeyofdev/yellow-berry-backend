@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jeyofdev.yellow_berry.core.enums.StockEnum;
 import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
 import com.jeyofdev.yellow_berry.domain.category.Category;
+import com.jeyofdev.yellow_berry.domain.comment.Comment;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import jakarta.persistence.*;
 import lombok.*;
@@ -67,4 +68,8 @@ public class Product {
     )
     @JsonIgnore
     private List<Category> categoryList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<Comment> commentList = new ArrayList<>();
 }

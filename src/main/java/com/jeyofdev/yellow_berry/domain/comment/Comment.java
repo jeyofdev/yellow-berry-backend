@@ -1,5 +1,7 @@
 package com.jeyofdev.yellow_berry.domain.comment;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jeyofdev.yellow_berry.domain.product.Product;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -28,4 +30,9 @@ public class Comment {
 
     @Column(name = "body", columnDefinition = "TEXT")
     private String body;
+
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Product product;
 }

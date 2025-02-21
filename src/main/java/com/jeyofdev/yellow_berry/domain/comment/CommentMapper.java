@@ -7,5 +7,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface CommentMapper {
     CommentDTO mapFromEntity(Comment comment);
+
     Comment mapToEntity(SaveCommentDTO saveCommentDTO);
 }
