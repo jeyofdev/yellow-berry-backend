@@ -34,10 +34,13 @@ public class CommentController {
         return DomainSuccessResponse.get(HttpStatus.OK, faqDTO);
     }
 
-    @PostMapping
-    public ResponseEntity<DomainSuccessResponse<CommentDTO>> saveComment(@RequestBody SaveCommentDTO saveCommentDTO) {
+    @PostMapping("/product/{productId}")
+    public ResponseEntity<DomainSuccessResponse<CommentDTO>> saveComment(
+            @PathVariable("productId") UUID productId,
+            @RequestBody SaveCommentDTO saveCommentDTO
+    ) {
         Comment comment = commentMapper.mapToEntity(saveCommentDTO);
-        Comment newComment = commentService.save(comment);
+        Comment newComment = commentService.save(productId, comment);
         CommentDTO newCommentDTO = commentMapper.mapFromEntity(newComment);
 
         return DomainSuccessResponse.get(HttpStatus.CREATED, newCommentDTO);
@@ -60,6 +63,5 @@ public class CommentController {
         String message = commentService.deleteById(commentId);
 
         return DomainSuccessResponse.get(HttpStatus.OK, message);
-
     }
 }

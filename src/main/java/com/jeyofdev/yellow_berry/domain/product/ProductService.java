@@ -4,6 +4,8 @@ import com.jeyofdev.yellow_berry.core.classes.AbstractDomainService;
 import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
 import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.category.CategoryRepository;
+import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetails;
+import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetailsRepository;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import com.jeyofdev.yellow_berry.domain.tag.TagRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +21,12 @@ public class ProductService extends AbstractDomainService<Product, ProductReposi
     private final CategoryRepository categoryRepository;
 
     @Autowired
-    public ProductService(ProductRepository productRepository, TagRepository tagRepository, CategoryRepository categoryRepository) {
+    public ProductService(
+            ProductRepository productRepository,
+            TagRepository tagRepository,
+            CategoryRepository categoryRepository
+
+    ) {
         super(productRepository, "Product");
         this.productRepository = productRepository;
         this.tagRepository = tagRepository;

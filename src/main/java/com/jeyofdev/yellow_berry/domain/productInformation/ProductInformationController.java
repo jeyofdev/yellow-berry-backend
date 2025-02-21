@@ -1,6 +1,9 @@
 package com.jeyofdev.yellow_berry.domain.productInformation;
 
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
+import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetails;
+import com.jeyofdev.yellow_berry.domain.productDetails.dto.ProductDetailsDTO;
+import com.jeyofdev.yellow_berry.domain.productDetails.dto.SaveProductDetailsDTO;
 import com.jeyofdev.yellow_berry.domain.productInformation.dto.ProductInformationDTO;
 import com.jeyofdev.yellow_berry.domain.productInformation.dto.SaveProductInformationDTO;
 import lombok.RequiredArgsConstructor;
@@ -12,7 +15,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/api/v1/product/information")
+@RequestMapping("/api/v1/product_information")
 @RequiredArgsConstructor
 public class ProductInformationController {
     private final ProductInformationService productInformationService;
@@ -34,10 +37,13 @@ public class ProductInformationController {
         return DomainSuccessResponse.get(HttpStatus.OK, productInformationDTO);
     }
 
-    @PostMapping
-    public ResponseEntity<DomainSuccessResponse<ProductInformationDTO>> saveProductInformation(@RequestBody SaveProductInformationDTO saveProductInformationDTO) {
+    @PostMapping("/product/{productId}")
+    public ResponseEntity<DomainSuccessResponse<ProductInformationDTO>> saveProductInformation(
+            @RequestBody SaveProductInformationDTO saveProductInformationDTO,
+            @PathVariable("productId") UUID productId
+    ) {
         ProductInformation productInformation = productInformationMapper.mapToEntity(saveProductInformationDTO);
-        ProductInformation newProductInformation = productInformationService.save(productInformation);
+        ProductInformation newProductInformation = productInformationService.save(productId, productInformation);
         ProductInformationDTO newProductInformationDTO = productInformationMapper.mapFromEntity(newProductInformation);
 
         return DomainSuccessResponse.get(HttpStatus.CREATED, newProductInformationDTO);
