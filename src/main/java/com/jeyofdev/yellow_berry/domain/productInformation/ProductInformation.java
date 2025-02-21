@@ -1,7 +1,9 @@
 package com.jeyofdev.yellow_berry.domain.productInformation;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jeyofdev.yellow_berry.core.enums.ColorEnum;
 import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
+import com.jeyofdev.yellow_berry.domain.product.Product;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -36,4 +38,9 @@ public class ProductInformation {
 
     @Column(name = "quantity", columnDefinition = "INT")
     private Integer quantity;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Product product;
 }

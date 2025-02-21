@@ -6,6 +6,7 @@ import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
 import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.comment.Comment;
 import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetails;
+import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformation;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import jakarta.persistence.*;
 import lombok.*;
@@ -78,4 +79,9 @@ public class Product {
     @JoinColumn(name = "product_details_id", referencedColumnName = "id")
     @JsonIgnore
     private ProductDetails productDetails;
+
+    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+    @JoinColumn(name = "product_information_id", referencedColumnName = "id")
+    @JsonIgnore
+    private ProductInformation productInformation;
 }
