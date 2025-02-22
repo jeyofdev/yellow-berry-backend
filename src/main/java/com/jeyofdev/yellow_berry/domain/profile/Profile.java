@@ -2,6 +2,7 @@ package com.jeyofdev.yellow_berry.domain.profile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jeyofdev.yellow_berry.auth_user.AuthUser;
+import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -47,4 +48,9 @@ public class Profile {
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
     private AuthUser user;
+
+    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL)
+    @JoinColumn(name = "wishlist_id", referencedColumnName = "id")
+    @JsonIgnore
+    private WishList wishlist;
 }

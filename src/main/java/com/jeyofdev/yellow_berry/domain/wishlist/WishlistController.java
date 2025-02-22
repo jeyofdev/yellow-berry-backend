@@ -34,10 +34,13 @@ public class WishlistController {
         return DomainSuccessResponse.get(HttpStatus.OK, wishListDTO);
     }
 
-    @PostMapping
-    public ResponseEntity<DomainSuccessResponse<WishlistDTO>> saveWishlist(@RequestBody SaveWishlistDTO saveWishListDTO) {
+    @PostMapping("/profile/{profileId}")
+    public ResponseEntity<DomainSuccessResponse<WishlistDTO>> saveWishlist(
+            @PathVariable("profileId") UUID profileId,
+            @RequestBody SaveWishlistDTO saveWishListDTO
+    ) {
         WishList wishlist = wishlistMapper.mapToEntity(saveWishListDTO);
-        WishList newWishlist = wishlistService.save(wishlist);
+        WishList newWishlist = wishlistService.save(profileId, wishlist);
         WishlistDTO newWishlistDTO = wishlistMapper.mapFromEntity(newWishlist);
 
         return DomainSuccessResponse.get(HttpStatus.CREATED, newWishlistDTO);

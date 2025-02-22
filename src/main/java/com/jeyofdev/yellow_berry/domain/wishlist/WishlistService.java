@@ -2,9 +2,10 @@ package com.jeyofdev.yellow_berry.domain.wishlist;
 
 import com.jeyofdev.yellow_berry.core.classes.AbstractDomainService;
 import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
-import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.product.Product;
 import com.jeyofdev.yellow_berry.domain.product.ProductRepository;
+import com.jeyofdev.yellow_berry.domain.profile.Profile;
+import com.jeyofdev.yellow_berry.domain.profile.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +16,21 @@ import java.util.UUID;
 public class WishlistService extends AbstractDomainService<WishList, WishlistRepository> {
     private final WishlistRepository wishlistRepository;
     private final ProductRepository productRepository;
+    private final ProfileService profileService;
 
     @Autowired
-    public WishlistService(WishlistRepository wishlistRepository, ProductRepository productRepository) {
+    public WishlistService(WishlistRepository wishlistRepository, ProductRepository productRepository, ProfileService profileService) {
         super(wishlistRepository, "Wishlist");
         this.wishlistRepository = wishlistRepository;
         this.productRepository = productRepository;
+        this.profileService = profileService;
+    }
+
+    public WishList save(UUID profileId, WishList wishlist) {
+        Profile profile = profileService.findById(profileId);
+        wishlist.setProfile(profile);
+
+        return wishlistRepository.save(wishlist);
     }
 
     public List<WishList> getWishlistsByIds(List<UUID> wishlistIds) {
@@ -33,12 +43,9 @@ public class WishlistService extends AbstractDomainService<WishList, WishlistRep
 
     public WishList updateById(UUID wishlistId, WishList updatedWishlist) {
         WishList existingWishlist = findById(wishlistId);
-        WishList existingWishlistUpdated = WishList.builder()
-                .id(wishlistId)
-                .name(updatedWishlist.getName() != null ? updatedWishlist.getName() : existingWishlist.getName())
-                .build();
+        existingWishlist.setName(updatedWishlist.getName() != null ? updatedWishlist.getName() : existingWishlist.getName());
 
-        return wishlistRepository.save(existingWishlistUpdated);
+        return wishlistRepository.save(existingWishlist);
     }
 
     public String deleteById(UUID wishlistId) {
