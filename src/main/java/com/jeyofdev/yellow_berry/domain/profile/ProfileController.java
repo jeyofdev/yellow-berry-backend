@@ -34,10 +34,13 @@ public class ProfileController {
         return DomainSuccessResponse.get(HttpStatus.OK, profileDTO);
     }
 
-    @PostMapping
-    public ResponseEntity<DomainSuccessResponse<ProfileDTO>> saveProfile(@RequestBody SaveProfileDTO saveProfileDTO) {
+    @PostMapping("/user/{userId}")
+    public ResponseEntity<DomainSuccessResponse<ProfileDTO>> saveProfile(
+            @PathVariable("userId") UUID userId,
+            @RequestBody SaveProfileDTO saveProfileDTO
+    ) {
         Profile profile = profileMapper.mapToEntity(saveProfileDTO);
-        Profile newProfile = profileService.save(profile);
+        Profile newProfile = profileService.save(userId, profile);
         ProfileDTO newProfileDTO = profileMapper.mapFromEntity(newProfile);
 
         return DomainSuccessResponse.get(HttpStatus.CREATED, newProfileDTO);

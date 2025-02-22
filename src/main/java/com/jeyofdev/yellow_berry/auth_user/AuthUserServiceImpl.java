@@ -6,7 +6,9 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,16 +55,27 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     @Override
     public AuthUser findUserById(UUID userId) throws AccessDeniedException, EntityNotFoundException {
-        UUID id = ((AuthUser) SecurityContextHolder.getContext().getAuthentication().getPrincipal()).getId();
-        String roles  = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        Object principal = authentication.getPrincipal();
+        UUID id;
 
-        if (id.equals(userId) || roles.equals("[ROLE_ADMIN]")) {
-            return authUserRepository.findById(userId).orElseThrow(
-                    () -> new EntityNotFoundException("User with id " + userId + " not found")
-            );
+        if (principal instanceof AuthUser authUser) {
+            id = authUser.getId();
+        } else if (principal instanceof User user) {
+            AuthUser authUser = authUserRepository.findByEmail(user.getUsername())
+                    .orElseThrow(() -> new EntityNotFoundException("User not found"));
+            id = authUser.getId();
         } else {
             throw new AccessDeniedException(ErrorMessage.LIMIT_ACCESS);
         }
 
+        String roles = authentication.getAuthorities().toString();
+
+        if (id.equals(userId) || roles.equals("[ROLE_ADMIN]")) {
+            return authUserRepository.findById(userId)
+                    .orElseThrow(() -> new EntityNotFoundException("User with ID " + userId + " not found"));
+        } else {
+            throw new AccessDeniedException(ErrorMessage.LIMIT_ACCESS);
+        }
     }
 }
