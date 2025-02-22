@@ -8,6 +8,9 @@ import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetails;
 import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetailsRepository;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import com.jeyofdev.yellow_berry.domain.tag.TagRepository;
+import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
+import com.jeyofdev.yellow_berry.domain.wishlist.WishlistRepository;
+import com.jeyofdev.yellow_berry.domain.wishlist.WishlistService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,18 +22,21 @@ public class ProductService extends AbstractDomainService<Product, ProductReposi
     private final ProductRepository productRepository;
     private final TagRepository tagRepository;
     private final CategoryRepository categoryRepository;
+    private final WishlistService wishlistService;
 
     @Autowired
     public ProductService(
             ProductRepository productRepository,
             TagRepository tagRepository,
-            CategoryRepository categoryRepository
+            CategoryRepository categoryRepository,
+            WishlistService wishlistService
 
     ) {
         super(productRepository, "Product");
         this.productRepository = productRepository;
         this.tagRepository = tagRepository;
         this.categoryRepository = categoryRepository;
+        this.wishlistService = wishlistService;
     }
 
     public Product save(Product product) {
@@ -83,6 +89,19 @@ public class ProductService extends AbstractDomainService<Product, ProductReposi
                 .build();
 
         return productRepository.save(existingProductUpdated);
+    }
+
+    public Product addOrRemoveProductToWishlist(UUID productId, UUID wishlistId) {
+        Product product = findById(productId);
+        WishList wishlist = wishlistService.findById(wishlistId);
+
+        if (!product.getWishlists().contains(wishlist)) {
+            product.getWishlists().add(wishlist);
+        } else {
+            product.getWishlists().remove(wishlist);
+        }
+
+        return save(product);
     }
 
     public String deleteById(UUID productId) {

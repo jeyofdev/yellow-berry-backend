@@ -7,6 +7,7 @@ import com.jeyofdev.yellow_berry.domain.comment.Comment;
 import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetails;
 import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformation;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
+import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
 
 import java.util.List;
 import java.util.UUID;
@@ -25,6 +26,7 @@ public record ProductDTO(
         List<Category> categoryList,
         List<Comment> commentList,
         ProductDetails productDetails,
-        ProductInformation productInformation
+        ProductInformation productInformation,
+        List<WishList> wishLists
 ) {
 }

@@ -8,6 +8,7 @@ import com.jeyofdev.yellow_berry.domain.comment.Comment;
 import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetails;
 import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformation;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
+import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -84,4 +85,13 @@ public class Product {
     @JoinColumn(name = "product_information_id", referencedColumnName = "id")
     @JsonIgnore
     private ProductInformation productInformation;
+
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(
+            name = "wishlist_product",
+            joinColumns = @JoinColumn(name = "product_id"),
+            inverseJoinColumns = @JoinColumn(name = "wishlist_id")
+    )
+    @JsonIgnore
+    private List<WishList> wishlists = new ArrayList<>();
 }

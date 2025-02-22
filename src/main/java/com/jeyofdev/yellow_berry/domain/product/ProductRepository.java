@@ -2,6 +2,7 @@ package com.jeyofdev.yellow_berry.domain.product;
 
 import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
+import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -25,4 +26,7 @@ ProductRepository extends JpaRepository<Product, UUID> {
 
     @Query("SELECT p FROM Product p JOIN p.categoryList c WHERE c = :category")
     List<Product> findByCategory(@Param("category") Category category);
+
+    @Query("SELECT p FROM Product p JOIN p.wishlists c WHERE c = :wishlist")
+    List<Product> findByWishlist(@Param("wishlist") WishList wishlist);
 }
