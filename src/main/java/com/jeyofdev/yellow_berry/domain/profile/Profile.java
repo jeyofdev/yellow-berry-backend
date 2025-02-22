@@ -1,9 +1,8 @@
 package com.jeyofdev.yellow_berry.domain.profile;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jeyofdev.yellow_berry.auth_user.AuthUser;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.UUID;
@@ -43,4 +42,9 @@ public class Profile {
 
     @Column(name = "city", columnDefinition = "VARCHAR(30)")
     private String city;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @JsonIgnore
+    private AuthUser user;
 }
