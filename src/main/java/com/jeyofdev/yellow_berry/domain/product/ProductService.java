@@ -79,21 +79,18 @@ public class ProductService extends AbstractDomainService<Product, ProductReposi
             updatedCategories = existingProduct.getCategoryList();
         }
 
-        Product existingProductUpdated = Product.builder()
-                .id(productId)
-                .name(updatedProduct.getName() != null ? updatedProduct.getName() : existingProduct.getName())
-                .rating(updatedProduct.getRating() != null ? updatedProduct.getRating() : existingProduct.getRating())
-                .description(updatedProduct.getDescription() != null ? updatedProduct.getDescription() : existingProduct.getDescription())
-                .price(updatedProduct.getPrice() != null ? updatedProduct.getPrice() : existingProduct.getPrice())
-                .priceDiscount(updatedProduct.getPriceDiscount() != null ? updatedProduct.getPriceDiscount() : existingProduct.getPriceDiscount())
-                .discount(updatedProduct.getDiscount() != null ? updatedProduct.getDiscount() : existingProduct.getDiscount())
-                .stock(updatedProduct.getStock() != null ? updatedProduct.getStock() : existingProduct.getStock())
-                .weight(updatedProduct.getWeight() != null ? updatedProduct.getWeight() : existingProduct.getWeight())
-                .tagList(updatedTags)
-                .categoryList(updatedCategories)
-                .build();
+        existingProduct.setName(updatedProduct.getName() != null ? updatedProduct.getName() : existingProduct.getName());
+        existingProduct.setRating(updatedProduct.getRating() != null ? updatedProduct.getRating() : existingProduct.getRating());
+        existingProduct.setDescription(updatedProduct.getDescription() != null ? updatedProduct.getDescription() : existingProduct.getDescription());
+        existingProduct.setPrice(updatedProduct.getPrice() != null ? updatedProduct.getPrice() : existingProduct.getPrice());
+        existingProduct.setPriceDiscount(updatedProduct.getPriceDiscount() != null ? updatedProduct.getPriceDiscount() : existingProduct.getPriceDiscount());
+        existingProduct.setDiscount(updatedProduct.getDiscount() != null ? updatedProduct.getDiscount() : existingProduct.getDiscount());
+        existingProduct.setStock(updatedProduct.getStock() != null ? updatedProduct.getStock() : existingProduct.getStock());
+        existingProduct.setWeight(updatedProduct.getWeight() != null ? updatedProduct.getWeight() : existingProduct.getWeight());
+        existingProduct.setTagList(updatedTags);
+        existingProduct.setCategoryList(updatedCategories);
 
-        return productRepository.save(existingProductUpdated);
+        return productRepository.save(existingProduct);
     }
 
     public Product addOrRemoveProductToWishlist(UUID productId, UUID wishlistId) {
