@@ -3,6 +3,7 @@ package com.jeyofdev.yellow_berry.domain.product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jeyofdev.yellow_berry.core.enums.StockEnum;
 import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
+import com.jeyofdev.yellow_berry.domain.brand.Brand;
 import com.jeyofdev.yellow_berry.domain.cart.Cart;
 import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.comment.Comment;
@@ -104,4 +105,9 @@ public class Product {
     )
     @JsonIgnore
     private List<Cart> cartList = new ArrayList<>();
+
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "brand_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Brand brand;
 }

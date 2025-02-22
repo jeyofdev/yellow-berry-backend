@@ -1,6 +1,7 @@
 package com.jeyofdev.yellow_berry.domain.product;
 
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
+import com.jeyofdev.yellow_berry.domain.brand.BrandService;
 import com.jeyofdev.yellow_berry.domain.cart.CartService;
 import com.jeyofdev.yellow_berry.domain.category.CategoryService;
 import com.jeyofdev.yellow_berry.domain.product.dto.SaveProductDTO;
@@ -25,6 +26,7 @@ public class ProductController {
     private final CategoryService categoryService;
     private final WishlistService wishlistService;
     private final CartService cartService;
+    private final BrandService brandService;
 
     @GetMapping
     public ResponseEntity<DomainSuccessResponse<List<ProductDTO>>> findAllProducts() {
@@ -44,7 +46,7 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<DomainSuccessResponse<ProductDTO>> saveProduct(@RequestBody SaveProductDTO saveProductDTO) {
-        Product product = productMapper.mapToEntity(saveProductDTO, tagService, categoryService, wishlistService, cartService);
+        Product product = productMapper.mapToEntity(saveProductDTO, tagService, categoryService, wishlistService, cartService, brandService);
         Product newProduct = productService.save(product);
         ProductDTO newProductDTO = productMapper.mapFromEntity(newProduct);
 
@@ -56,7 +58,7 @@ public class ProductController {
             @PathVariable("productId") UUID productId,
             @RequestBody SaveProductDTO saveProductDTO
     ) {
-        Product product = productMapper.mapToEntity(saveProductDTO, tagService, categoryService, wishlistService, cartService);
+        Product product = productMapper.mapToEntity(saveProductDTO, tagService, categoryService, wishlistService, cartService, brandService);
         Product updateProduct = productService.updateById(productId, product);
         ProductDTO updateProductDTO = productMapper.mapFromEntity(updateProduct);
 

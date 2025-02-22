@@ -2,6 +2,7 @@ package com.jeyofdev.yellow_berry.domain.product.dto;
 
 import com.jeyofdev.yellow_berry.core.enums.StockEnum;
 import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
+import com.jeyofdev.yellow_berry.domain.brand.Brand;
 import com.jeyofdev.yellow_berry.domain.cart.Cart;
 import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.comment.Comment;
@@ -29,6 +30,7 @@ public record ProductDTO(
         ProductDetails productDetails,
         ProductInformation productInformation,
         List<WishList> wishLists,
-        List<Cart> cartList
+        List<Cart> cartList,
+        Brand brand
 ) {
 }
