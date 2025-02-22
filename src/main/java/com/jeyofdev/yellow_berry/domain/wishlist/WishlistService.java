@@ -50,7 +50,6 @@ public class WishlistService extends AbstractDomainService<WishList, WishlistRep
             productRepository.save(product);
         }
 
-        findById(wishlistId);
         wishlistRepository.deleteById(wishlistId);
 
         return ConfirmMessage.WISHLIST_DELETE;

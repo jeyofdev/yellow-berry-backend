@@ -2,6 +2,8 @@ package com.jeyofdev.yellow_berry.domain.product;
 
 import com.jeyofdev.yellow_berry.core.classes.AbstractDomainService;
 import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
+import com.jeyofdev.yellow_berry.domain.cart.Cart;
+import com.jeyofdev.yellow_berry.domain.cart.CartService;
 import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.category.CategoryRepository;
 import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetails;
@@ -23,13 +25,15 @@ public class ProductService extends AbstractDomainService<Product, ProductReposi
     private final TagRepository tagRepository;
     private final CategoryRepository categoryRepository;
     private final WishlistService wishlistService;
+    private final CartService cartService;
 
     @Autowired
     public ProductService(
             ProductRepository productRepository,
             TagRepository tagRepository,
             CategoryRepository categoryRepository,
-            WishlistService wishlistService
+            WishlistService wishlistService,
+            CartService cartService
 
     ) {
         super(productRepository, "Product");
@@ -37,6 +41,7 @@ public class ProductService extends AbstractDomainService<Product, ProductReposi
         this.tagRepository = tagRepository;
         this.categoryRepository = categoryRepository;
         this.wishlistService = wishlistService;
+        this.cartService = cartService;
     }
 
     public Product save(Product product) {
@@ -99,6 +104,30 @@ public class ProductService extends AbstractDomainService<Product, ProductReposi
             product.getWishlists().add(wishlist);
         } else {
             product.getWishlists().remove(wishlist);
+        }
+
+        return save(product);
+    }
+
+    public Product addProductToCart(UUID productId, UUID cartId) {
+        Product product = findById(productId);
+        Cart cart = cartService.findById(cartId);
+
+        if (!product.getCartList().contains(cart)) {
+            product.getCartList().add(cart);
+            return save(product);
+        }
+
+        return product;
+    }
+
+    public Product removeProductToCart(UUID productId, UUID cartId) {
+        Product product = findById(productId);
+        Cart cart = cartService.findById(cartId);
+
+        if (product.getCartList().contains(cart)) {
+            product.getCartList().remove(cart);
+            return save(product);
         }
 
         return save(product);
