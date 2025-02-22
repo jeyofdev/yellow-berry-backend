@@ -1,10 +1,12 @@
 package com.jeyofdev.yellow_berry.domain.product;
 
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
+import com.jeyofdev.yellow_berry.domain.cart.CartService;
 import com.jeyofdev.yellow_berry.domain.category.CategoryService;
 import com.jeyofdev.yellow_berry.domain.product.dto.SaveProductDTO;
 import com.jeyofdev.yellow_berry.domain.product.dto.ProductDTO;
 import com.jeyofdev.yellow_berry.domain.tag.TagService;
+import com.jeyofdev.yellow_berry.domain.wishlist.WishlistService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,8 @@ public class ProductController {
     private final ProductMapper productMapper;
     private final TagService tagService;
     private final CategoryService categoryService;
+    private final WishlistService wishlistService;
+    private final CartService cartService;
 
     @GetMapping
     public ResponseEntity<DomainSuccessResponse<List<ProductDTO>>> findAllProducts() {
@@ -40,7 +44,7 @@ public class ProductController {
 
     @PostMapping
     public ResponseEntity<DomainSuccessResponse<ProductDTO>> saveProduct(@RequestBody SaveProductDTO saveProductDTO) {
-        Product product = productMapper.mapToEntity(saveProductDTO, tagService, categoryService);
+        Product product = productMapper.mapToEntity(saveProductDTO, tagService, categoryService, wishlistService, cartService);
         Product newProduct = productService.save(product);
         ProductDTO newProductDTO = productMapper.mapFromEntity(newProduct);
 
@@ -52,11 +56,44 @@ public class ProductController {
             @PathVariable("productId") UUID productId,
             @RequestBody SaveProductDTO saveProductDTO
     ) {
-        Product product = productMapper.mapToEntity(saveProductDTO, tagService, categoryService);
+        Product product = productMapper.mapToEntity(saveProductDTO, tagService, categoryService, wishlistService, cartService);
         Product updateProduct = productService.updateById(productId, product);
         ProductDTO updateProductDTO = productMapper.mapFromEntity(updateProduct);
 
         return DomainSuccessResponse.get(HttpStatus.OK, updateProductDTO);
+    }
+
+    @PostMapping("/{productId}/wishlist/{wishlistId}")
+    public ResponseEntity<DomainSuccessResponse<Object>> addOrRemoveProductToWishlist(
+            @PathVariable("productId") UUID productId,
+            @PathVariable("wishlistId") UUID wishlistId
+    ) {
+        Product product = productService.addOrRemoveProductToWishlist(productId, wishlistId);
+        ProductDTO productDTO = productMapper.mapFromEntity(product);
+
+        return DomainSuccessResponse.get(HttpStatus.OK, productDTO);
+    }
+
+    @PostMapping("/{productId}/add/cart/{cartId}")
+    public ResponseEntity<DomainSuccessResponse<Object>> addProductToCart(
+            @PathVariable("productId") UUID productId,
+            @PathVariable("cartId") UUID cartId
+    ) {
+        Product product = productService.addProductToCart(productId, cartId);
+        ProductDTO productDTO = productMapper.mapFromEntity(product);
+
+        return DomainSuccessResponse.get(HttpStatus.OK, productDTO);
+    }
+
+    @PostMapping("/{productId}/remove/cart/{cartId}")
+    public ResponseEntity<DomainSuccessResponse<Object>> addRemoveToCart(
+            @PathVariable("productId") UUID productId,
+            @PathVariable("cartId") UUID cartId
+    ) {
+        Product product = productService.removeProductToCart(productId, cartId);
+        ProductDTO productDTO = productMapper.mapFromEntity(product);
+
+        return DomainSuccessResponse.get(HttpStatus.OK, productDTO);
     }
 
     @DeleteMapping("/{productId}")
