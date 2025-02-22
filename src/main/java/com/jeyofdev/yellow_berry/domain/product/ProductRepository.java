@@ -1,5 +1,6 @@
 package com.jeyofdev.yellow_berry.domain.product;
 
+import com.jeyofdev.yellow_berry.domain.brand.Brand;
 import com.jeyofdev.yellow_berry.domain.cart.Cart;
 import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
@@ -33,4 +34,7 @@ ProductRepository extends JpaRepository<Product, UUID> {
 
     @Query("SELECT p FROM Product p JOIN p.cartList c WHERE c = :cart")
     List<Product> findByCartList(@Param("cart") Cart cart);
+
+    @Query("SELECT p FROM Product p JOIN p.brand t WHERE t = :brand")
+    List<Product> findByBrand(@Param("brand") Brand brand);
 }

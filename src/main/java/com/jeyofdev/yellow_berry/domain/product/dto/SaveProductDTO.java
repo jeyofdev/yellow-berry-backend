@@ -19,6 +19,7 @@ public record SaveProductDTO(
         List<UUID> categoryIds,
         List<UUID> commentIds,
         List<UUID> wishlistIds,
-        List<UUID> cartListIds
+        List<UUID> cartListIds,
+        UUID brandId
 ) {
 }

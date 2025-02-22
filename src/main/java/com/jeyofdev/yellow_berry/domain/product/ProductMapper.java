@@ -1,5 +1,7 @@
 package com.jeyofdev.yellow_berry.domain.product;
 
+import com.jeyofdev.yellow_berry.domain.brand.Brand;
+import com.jeyofdev.yellow_berry.domain.brand.BrandService;
 import com.jeyofdev.yellow_berry.domain.cart.Cart;
 import com.jeyofdev.yellow_berry.domain.cart.CartService;
 import com.jeyofdev.yellow_berry.domain.category.Category;
@@ -30,12 +32,14 @@ public interface ProductMapper {
     @Mapping(target = "commentList", source = "commentIds", qualifiedByName = "mapCommentIdsToComments")
     @Mapping(target = "wishlists", source = "wishlistIds", qualifiedByName = "mapWishlistIdsToWishlists")
     @Mapping(target = "cartList", source = "cartListIds", qualifiedByName = "mapCartListIdsToCart")
+    @Mapping(target = "brand", source = "brandId", qualifiedByName = "mapBrandIdToBrand")
     Product mapToEntity(
             SaveProductDTO saveProductDTO,
             @Context TagService tagService,
             @Context CategoryService categoryService,
             @Context WishlistService wishListService,
-            @Context CartService cartService
+            @Context CartService cartService,
+            @Context BrandService brandService
     );
 
     @Named("mapTagIdsToTags")
@@ -71,5 +75,10 @@ public interface ProductMapper {
     @Named("mapCartListToCart")
     default List<Cart> mapCartListToCart(List<Cart> cartList) {
         return cartList;
+    }
+
+    @Named("mapBrandIdToBrand")
+    default Brand mapBrandIdToBrand(UUID brandId, @Context BrandService brandService) {
+        return brandId != null ? brandService.findById(brandId) : null;
     }
 }

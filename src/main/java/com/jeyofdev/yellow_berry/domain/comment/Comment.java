@@ -5,6 +5,8 @@ import com.jeyofdev.yellow_berry.domain.product.Product;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
