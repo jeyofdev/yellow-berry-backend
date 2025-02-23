@@ -39,8 +39,7 @@ public class ProductInformation {
     @Column(name = "quantity", columnDefinition = "INT")
     private Integer quantity;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "productInformation", cascade = CascadeType.ALL)
     @JsonIgnore
     private Product product;
 }

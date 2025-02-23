@@ -29,8 +29,7 @@ public class WishList {
     @JsonIgnore
     private List<Product> productList = new ArrayList<>();
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "profile_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "wishlist", cascade = CascadeType.ALL)
     @JsonIgnore
     private Profile profile;
 }

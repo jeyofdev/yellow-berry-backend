@@ -28,8 +28,7 @@ public class ProductDetails {
     @Column(name = "service", columnDefinition = "VARCHAR(255)")
     private String service;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "productDetails", cascade = CascadeType.ALL)
     @JsonIgnore
     private Product product;
 }
