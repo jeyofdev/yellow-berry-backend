@@ -14,6 +14,14 @@ public interface CartMapper {
     @Mapping(target = "profile.wishList", ignore = true)
     @Mapping(target = "profile.comments", ignore = true)
     @Mapping(target = "profile.cart", ignore = true)
+    @Mapping(source = "profile", target = "profile")
+    @Mapping(source = "profile.user.email", target = "profile.email")
+    @Mapping(source = "profile.user.role", target = "profile.role")
+    @Mapping(source = "profile.address", target = "profile.addressDetails.address")
+    @Mapping(source = "profile.region", target = "profile.addressDetails.region")
+    @Mapping(source = "profile.department", target = "profile.addressDetails.department")
+    @Mapping(source = "profile.zipCode", target = "profile.addressDetails.zipCode")
+    @Mapping(source = "profile.city", target = "profile.addressDetails.city")
     CartDTO mapFromEntity(Cart cart);
 
     Cart mapToEntity(SaveCartDTO saveCartDTO);

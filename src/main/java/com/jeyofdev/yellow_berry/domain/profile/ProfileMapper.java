@@ -12,6 +12,11 @@ public interface ProfileMapper {
     @Mapping(source = "commentList", target = "comments", qualifiedByName = "toListResponseFormat")
     @Mapping(source = "user.email", target = "email")
     @Mapping(source = "user.role", target = "role")
+    @Mapping(source = "address", target = "addressDetails.address")
+    @Mapping(source = "region", target = "addressDetails.region")
+    @Mapping(source = "department", target = "addressDetails.department")
+    @Mapping(source = "zipCode", target = "addressDetails.city")
+    @Mapping(source = "city", target = "addressDetails.zipCode")
     ProfileDTO mapFromEntity(Profile profile);
 
     @Mapping(target = "wishlist", ignore = true)
