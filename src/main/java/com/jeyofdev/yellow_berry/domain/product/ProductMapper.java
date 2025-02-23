@@ -29,6 +29,9 @@ public interface ProductMapper {
     @Mapping(source = "tagList", target = "tags", qualifiedByName = "toListResponseFormat")
     @Mapping(source = "categoryList", target = "categories", qualifiedByName = "toListResponseFormat")
     @Mapping(source = "commentList", target = "comments", qualifiedByName = "toListResponseFormat")
+    @Mapping(source = "price", target = "priceDetails.price")
+    @Mapping(source = "priceDiscount", target = "priceDetails.priceDiscount")
+    @Mapping(source = "discount", target = "priceDetails.discount")
     ProductDTO mapFromEntity(Product product);
 
     @Mapping(target = "tagList", source = "tagIds", qualifiedByName = "mapTagIdsToTags")

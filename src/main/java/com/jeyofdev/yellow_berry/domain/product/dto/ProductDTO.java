@@ -3,6 +3,7 @@ package com.jeyofdev.yellow_berry.domain.product.dto;
 import com.jeyofdev.yellow_berry.core.enums.StockEnum;
 import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
 import com.jeyofdev.yellow_berry.core.model.ListResponseFormat;
+import com.jeyofdev.yellow_berry.core.model.PriceFormat;
 import com.jeyofdev.yellow_berry.domain.brand.Brand;
 import com.jeyofdev.yellow_berry.domain.cart.Cart;
 import com.jeyofdev.yellow_berry.domain.category.Category;
@@ -19,9 +20,7 @@ public record ProductDTO(
         String name,
         Integer rating,
         String description,
-        Double price,
-        Double priceDiscount,
-        Double discount,
+        PriceFormat priceDetails,
         StockEnum stock,
         WeightEnum weight,
         ListResponseFormat<Tag> tags,
