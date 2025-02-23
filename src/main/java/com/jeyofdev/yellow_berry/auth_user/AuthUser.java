@@ -1,7 +1,6 @@
 package com.jeyofdev.yellow_berry.auth_user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.jeyofdev.yellow_berry.domain.product.Product;
 import com.jeyofdev.yellow_berry.domain.profile.Profile;
 import jakarta.persistence.*;
 import lombok.*;

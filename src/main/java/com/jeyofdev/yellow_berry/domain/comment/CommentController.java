@@ -34,13 +34,14 @@ public class CommentController {
         return DomainSuccessResponse.get(HttpStatus.OK, faqDTO);
     }
 
-    @PostMapping("/product/{productId}")
+    @PostMapping("/product/{productId}/profile/{profileId}")
     public ResponseEntity<DomainSuccessResponse<CommentDTO>> saveComment(
             @PathVariable("productId") UUID productId,
+            @PathVariable("profileId") UUID profileId,
             @RequestBody SaveCommentDTO saveCommentDTO
     ) {
         Comment comment = commentMapper.mapToEntity(saveCommentDTO);
-        Comment newComment = commentService.save(productId, comment);
+        Comment newComment = commentService.save(productId, profileId, comment);
         CommentDTO newCommentDTO = commentMapper.mapFromEntity(newComment);
 
         return DomainSuccessResponse.get(HttpStatus.CREATED, newCommentDTO);

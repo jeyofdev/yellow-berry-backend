@@ -34,10 +34,13 @@ public class CartController {
         return DomainSuccessResponse.get(HttpStatus.OK, cartDTO);
     }
 
-    @PostMapping
-    public ResponseEntity<DomainSuccessResponse<CartDTO>> saveCart(@RequestBody SaveCartDTO saveCartDTO) {
+    @PostMapping("/profile/{profileId}")
+    public ResponseEntity<DomainSuccessResponse<CartDTO>> saveCart(
+            @PathVariable("profileId") UUID profileId,
+            @RequestBody SaveCartDTO saveCartDTO
+    ) {
         Cart cart = cartMapper.mapToEntity(saveCartDTO);
-        Cart newCart = cartService.save(cart);
+        Cart newCart = cartService.save(profileId, cart);
         CartDTO newCartDTO = cartMapper.mapFromEntity(newCart);
 
         return DomainSuccessResponse.get(HttpStatus.CREATED, newCartDTO);

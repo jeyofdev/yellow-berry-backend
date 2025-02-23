@@ -2,6 +2,7 @@ package com.jeyofdev.yellow_berry.domain.wishlist;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jeyofdev.yellow_berry.domain.product.Product;
+import com.jeyofdev.yellow_berry.domain.profile.Profile;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -27,4 +28,9 @@ public class WishList {
     @ManyToMany(mappedBy = "wishlists", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JsonIgnore
     private List<Product> productList = new ArrayList<>();
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "profile_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Profile profile;
 }
