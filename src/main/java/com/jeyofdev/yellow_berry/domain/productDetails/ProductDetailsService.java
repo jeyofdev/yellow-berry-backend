@@ -24,6 +24,7 @@ public class ProductDetailsService extends AbstractDomainService<ProductDetails,
     public ProductDetails save(UUID productId, ProductDetails productDetails) {
         Product product = productService.findById(productId);
         productDetails.setProduct(product);
+        product.setProductDetails(productDetails);
 
         return productDetailsRepository.save(productDetails);
     }

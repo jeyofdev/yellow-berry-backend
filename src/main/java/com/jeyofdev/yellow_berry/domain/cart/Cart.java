@@ -33,8 +33,7 @@ public class Cart {
     @JsonIgnore
     private List<Product> productList = new ArrayList<>();
 
-    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "profile_id", referencedColumnName = "id")
+    @OneToOne(mappedBy = "cart", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JsonIgnore
     private Profile profile;
 }

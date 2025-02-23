@@ -53,7 +53,7 @@ public class Profile {
     @JsonIgnore
     private AuthUser user;
 
-    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "wishlist_id", referencedColumnName = "id")
     @JsonIgnore
     private WishList wishlist;
@@ -62,7 +62,7 @@ public class Profile {
     @JsonIgnore
     private List<Comment> commentList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_id", referencedColumnName = "id")
     @JsonIgnore
     private Cart cart;

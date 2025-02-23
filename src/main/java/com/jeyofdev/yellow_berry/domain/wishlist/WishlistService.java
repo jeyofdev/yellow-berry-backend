@@ -29,6 +29,7 @@ public class WishlistService extends AbstractDomainService<WishList, WishlistRep
     public WishList save(UUID profileId, WishList wishlist) {
         Profile profile = profileService.findById(profileId);
         wishlist.setProfile(profile);
+        profile.setWishlist(wishlist);
 
         return wishlistRepository.save(wishlist);
     }

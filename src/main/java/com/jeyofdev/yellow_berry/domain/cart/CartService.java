@@ -38,6 +38,8 @@ public class CartService extends AbstractDomainService<Cart, CartRepository> {
         cart.setCreatedAt(new Date());
         cart.setUpdatedAt(new Date());
 
+        profile.setCart(cart);
+
         return cartRepository.save(cart);
     }
 

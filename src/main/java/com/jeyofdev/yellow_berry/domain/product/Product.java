@@ -78,19 +78,19 @@ public class Product {
     @JsonIgnore
     private List<Comment> commentList = new ArrayList<>();
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_details_id", referencedColumnName = "id")
     @JsonIgnore
     private ProductDetails productDetails;
 
-    @OneToOne(mappedBy = "product", cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_information_id", referencedColumnName = "id")
     @JsonIgnore
     private ProductInformation productInformation;
 
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(
-            name = "wishlist_product",
+            name = "product_wishlist",
             joinColumns = @JoinColumn(name = "product_id"),
             inverseJoinColumns = @JoinColumn(name = "wishlist_id")
     )

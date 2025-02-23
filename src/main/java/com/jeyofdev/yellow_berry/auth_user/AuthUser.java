@@ -58,7 +58,6 @@ public class AuthUser implements UserDetails {
     private LocalDateTime resetTokenExpiration;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    @JoinColumn(name = "profile_id", referencedColumnName = "id")
     @JsonIgnore
     private Profile profile;
 
