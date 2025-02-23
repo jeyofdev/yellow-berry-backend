@@ -2,6 +2,7 @@ package com.jeyofdev.yellow_berry.domain.cart;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jeyofdev.yellow_berry.domain.product.Product;
+import com.jeyofdev.yellow_berry.domain.profile.Profile;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -31,4 +32,9 @@ public class Cart {
     @ManyToMany(mappedBy = "cartList", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JsonIgnore
     private List<Product> productList = new ArrayList<>();
+
+    @OneToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name = "profile_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Profile profile;
 }

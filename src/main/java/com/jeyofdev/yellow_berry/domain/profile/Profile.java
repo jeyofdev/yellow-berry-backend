@@ -2,6 +2,7 @@ package com.jeyofdev.yellow_berry.domain.profile;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jeyofdev.yellow_berry.auth_user.AuthUser;
+import com.jeyofdev.yellow_berry.domain.cart.Cart;
 import com.jeyofdev.yellow_berry.domain.comment.Comment;
 import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
 import jakarta.persistence.*;
@@ -60,4 +61,9 @@ public class Profile {
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
     @JsonIgnore
     private List<Comment> commentList = new ArrayList<>();
+
+    @OneToOne(mappedBy = "profile", cascade = CascadeType.ALL)
+    @JoinColumn(name = "cart_id", referencedColumnName = "id")
+    @JsonIgnore
+    private Cart cart;
 }

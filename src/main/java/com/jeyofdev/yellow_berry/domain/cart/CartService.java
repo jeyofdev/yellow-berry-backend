@@ -2,10 +2,10 @@ package com.jeyofdev.yellow_berry.domain.cart;
 
 import com.jeyofdev.yellow_berry.core.classes.AbstractDomainService;
 import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
-import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.product.Product;
 import com.jeyofdev.yellow_berry.domain.product.ProductRepository;
-import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
+import com.jeyofdev.yellow_berry.domain.profile.Profile;
+import com.jeyofdev.yellow_berry.domain.profile.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,16 +17,24 @@ import java.util.UUID;
 public class CartService extends AbstractDomainService<Cart, CartRepository> {
     private final CartRepository cartRepository;
     private final ProductRepository productRepository;
+    private final ProfileService profileService;
 
     @Autowired
-    public CartService(CartRepository cartRepository, ProductRepository productRepository) {
+    public CartService(
+            CartRepository cartRepository,
+            ProductRepository productRepository,
+            ProfileService profileService
+    ) {
         super(cartRepository, "Cart");
         this.cartRepository = cartRepository;
         this.productRepository = productRepository;
+        this.profileService = profileService;
     }
 
-    @Override
-    public Cart save(Cart cart) {
+    public Cart save(UUID profileId, Cart cart) {
+        Profile profile = profileService.findById(profileId);
+
+        cart.setProfile(profile);
         cart.setCreatedAt(new Date());
         cart.setUpdatedAt(new Date());
 
@@ -43,13 +51,9 @@ public class CartService extends AbstractDomainService<Cart, CartRepository> {
 
     public Cart updateById(UUID cartId, Cart updatedCart) {
         Cart existingCart = findById(cartId);
-        Cart existingCartUpdated = Cart.builder()
-                .id(cartId)
-                .createdAt(existingCart.getCreatedAt())
-                .updatedAt(new Date())
-                .build();
+        existingCart.setUpdatedAt(new Date());
 
-        return cartRepository.save(existingCartUpdated);
+        return cartRepository.save(existingCart);
     }
 
     public String deleteById(UUID cartId) {
@@ -59,6 +63,10 @@ public class CartService extends AbstractDomainService<Cart, CartRepository> {
         for (Product product : productList) {
             product.getCartList().remove(cart);
             productRepository.save(product);
+        }
+
+        if (cart.getProfile() != null) {
+            cart.getProfile().setCart(null);
         }
 
         cartRepository.deleteById(cartId);

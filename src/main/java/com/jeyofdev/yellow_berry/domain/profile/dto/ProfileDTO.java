@@ -1,6 +1,7 @@
 package com.jeyofdev.yellow_berry.domain.profile.dto;
 
 import com.jeyofdev.yellow_berry.auth_user.AuthUser;
+import com.jeyofdev.yellow_berry.domain.cart.Cart;
 import com.jeyofdev.yellow_berry.domain.comment.Comment;
 import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
 
@@ -19,6 +20,7 @@ public record ProfileDTO(
         String city,
         AuthUser user,
         WishList wishList,
-        List<Comment> commentList
+        List<Comment> commentList,
+        Cart cart
 ) {
 }
