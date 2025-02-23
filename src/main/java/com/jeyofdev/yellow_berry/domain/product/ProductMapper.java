@@ -1,5 +1,6 @@
 package com.jeyofdev.yellow_berry.domain.product;
 
+import com.jeyofdev.yellow_berry.core.mappers.ListResponseFormatMapper;
 import com.jeyofdev.yellow_berry.domain.brand.Brand;
 import com.jeyofdev.yellow_berry.domain.brand.BrandService;
 import com.jeyofdev.yellow_berry.domain.cart.Cart;
@@ -21,10 +22,13 @@ import org.mapstruct.Named;
 import java.util.List;
 import java.util.UUID;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = ListResponseFormatMapper.class)
 public interface ProductMapper {
-    @Mapping(target = "wishLists", source = "wishlists", qualifiedByName = "mapWishlistsToWishlists")
-    @Mapping(target = "cartList", source = "cartList", qualifiedByName = "mapCartListToCart")
+    @Mapping(source = "wishlists", target = "wishlists", qualifiedByName = "toListResponseFormat")
+    @Mapping(source = "cartList", target = "carts", qualifiedByName = "toListResponseFormat")
+    @Mapping(source = "tagList", target = "tags", qualifiedByName = "toListResponseFormat")
+    @Mapping(source = "categoryList", target = "categories", qualifiedByName = "toListResponseFormat")
+    @Mapping(source = "commentList", target = "comments", qualifiedByName = "toListResponseFormat")
     ProductDTO mapFromEntity(Product product);
 
     @Mapping(target = "tagList", source = "tagIds", qualifiedByName = "mapTagIdsToTags")
@@ -62,19 +66,9 @@ public interface ProductMapper {
         return wishlistService.getWishlistsByIds(wishlistIds);
     }
 
-    @Named("mapWishlistsToWishlists")
-    default List<WishList> mapWishlistsToWishlists(List<WishList> wishlists) {
-        return wishlists;
-    }
-
     @Named("mapCartListIdsToCart")
     default List<Cart> mapCartListIdsToCart(List<UUID> cartListIds, @Context CartService cartservice) {
         return cartservice.getCartListByIds(cartListIds);
-    }
-
-    @Named("mapCartListToCart")
-    default List<Cart> mapCartListToCart(List<Cart> cartList) {
-        return cartList;
     }
 
     @Named("mapBrandIdToBrand")
