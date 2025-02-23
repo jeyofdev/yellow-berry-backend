@@ -11,6 +11,9 @@ import org.mapstruct.Mapping;
 public interface CartMapper {
 
     @Mapping(source = "productList", target = "productList.results")
+    @Mapping(target = "profile.wishList", ignore = true)
+    @Mapping(target = "profile.comments", ignore = true)
+    @Mapping(target = "profile.cart", ignore = true)
     CartDTO mapFromEntity(Cart cart);
 
     Cart mapToEntity(SaveCartDTO saveCartDTO);

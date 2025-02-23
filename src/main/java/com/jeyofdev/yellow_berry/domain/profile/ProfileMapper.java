@@ -10,6 +10,8 @@ import org.mapstruct.Mapping;
 public interface ProfileMapper {
     @Mapping(target = "wishList", source = "wishlist")
     @Mapping(source = "commentList", target = "comments", qualifiedByName = "toListResponseFormat")
+    @Mapping(source = "user.email", target = "email")
+    @Mapping(source = "user.role", target = "role")
     ProfileDTO mapFromEntity(Profile profile);
 
     @Mapping(target = "wishlist", ignore = true)
