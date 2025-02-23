@@ -2,6 +2,8 @@ package com.jeyofdev.yellow_berry.domain.product.dto;
 
 import com.jeyofdev.yellow_berry.core.enums.StockEnum;
 import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
+import com.jeyofdev.yellow_berry.core.model.ListResponseFormat;
+import com.jeyofdev.yellow_berry.core.model.PriceFormat;
 import com.jeyofdev.yellow_berry.domain.brand.Brand;
 import com.jeyofdev.yellow_berry.domain.cart.Cart;
 import com.jeyofdev.yellow_berry.domain.category.Category;
@@ -11,7 +13,6 @@ import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformation;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
 
-import java.util.List;
 import java.util.UUID;
 
 public record ProductDTO(
@@ -19,18 +20,16 @@ public record ProductDTO(
         String name,
         Integer rating,
         String description,
-        Double price,
-        Double priceDiscount,
-        Double discount,
+        PriceFormat priceDetails,
         StockEnum stock,
         WeightEnum weight,
-        List<Tag> tagList,
-        List<Category> categoryList,
-        List<Comment> commentList,
+        ListResponseFormat<Tag> tags,
+        ListResponseFormat<Category> categories,
+        ListResponseFormat<Comment> comments,
         ProductDetails productDetails,
         ProductInformation productInformation,
-        List<WishList> wishLists,
-        List<Cart> cartList,
+        ListResponseFormat<WishList> wishlists,
+        ListResponseFormat<Cart> carts,
         Brand brand
 ) {
 }

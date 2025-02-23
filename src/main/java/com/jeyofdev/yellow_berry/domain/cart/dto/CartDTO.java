@@ -1,17 +1,19 @@
 package com.jeyofdev.yellow_berry.domain.cart.dto;
 
-import com.jeyofdev.yellow_berry.domain.product.Product;
-import com.jeyofdev.yellow_berry.domain.profile.Profile;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.jeyofdev.yellow_berry.core.model.ListResponseFormat;
+import com.jeyofdev.yellow_berry.domain.product.dto.ProductDTO;
+import com.jeyofdev.yellow_berry.domain.profile.dto.ProfileDTO;
 
 import java.util.Date;
-import java.util.List;
 import java.util.UUID;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record CartDTO(
         UUID id,
         Date createdAt,
         Date updatedAt,
-        List<Product> productList,
-        Profile profile
+        ListResponseFormat<ProductDTO> productList,
+        ProfileDTO profile
 ) {
 }

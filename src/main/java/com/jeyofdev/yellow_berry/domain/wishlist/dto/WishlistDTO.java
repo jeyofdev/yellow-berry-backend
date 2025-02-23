@@ -1,15 +1,17 @@
 package com.jeyofdev.yellow_berry.domain.wishlist.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.jeyofdev.yellow_berry.core.model.ListResponseFormat;
 import com.jeyofdev.yellow_berry.domain.product.Product;
-import com.jeyofdev.yellow_berry.domain.profile.Profile;
+import com.jeyofdev.yellow_berry.domain.profile.dto.ProfileDTO;
 
-import java.util.List;
 import java.util.UUID;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public record WishlistDTO(
         UUID id,
         String name,
-        List<Product> productList,
-        Profile profile
+        ListResponseFormat<Product> products,
+        ProfileDTO profile
 ) {
 }
