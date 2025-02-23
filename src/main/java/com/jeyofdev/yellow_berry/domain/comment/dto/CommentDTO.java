@@ -1,13 +1,14 @@
 package com.jeyofdev.yellow_berry.domain.comment.dto;
 
 
+import com.jeyofdev.yellow_berry.domain.profile.Profile;
+
 import java.util.UUID;
 
 public record CommentDTO(
         UUID id,
-        String firstname,
-        String lastname,
         Integer rating,
-        String body
+        String body,
+        Profile profile
 ) {
 }
