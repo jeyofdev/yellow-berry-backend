@@ -11,10 +11,9 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", uses = {ListResponseFormatMapper.class, ProductMapper.class})
 public interface CartMapper {
 
-    @Mapping(source = "productList", target = "productList.results")
+    @Mapping(source = "productList", target = "products.results")
     @Mapping(target = "profile.wishList", ignore = true)
     @Mapping(target = "profile.comments", ignore = true)
-    @Mapping(target = "profile.cart", ignore = true)
     @Mapping(source = "profile", target = "profile")
     @Mapping(source = "profile.user.email", target = "profile.email")
     @Mapping(source = "profile.user.role", target = "profile.role")
@@ -28,7 +27,6 @@ public interface CartMapper {
     @Mapping(source = "profile.city", target = "profile.addressDetails.city")
     CartDTO mapFromEntity(Cart cart);
 
-    @Mapping(source = "productList", target = "productList.results")
     @Mapping(source = "profile", target = "profile")
     @Mapping(source = "profile.user.email", target = "profile.email")
     @Mapping(source = "profile.user.role", target = "profile.role")

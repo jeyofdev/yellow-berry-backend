@@ -20,11 +20,11 @@ public class WishlistController {
     private final WishListMapper wishlistMapper;
 
     @GetMapping
-    public ResponseEntity<DomainSuccessResponse<List<WishlistPreviewDTO>>> findAllWishlists() {
+    public ResponseEntity<DomainSuccessResponse<List<WishlistDTO>>> findAllWishlists() {
         List<WishList> tagList = wishlistService.findAll();
-        List<WishlistPreviewDTO> wishlistPreviewDTOs = tagList.stream().map(wishlistMapper::mapFromEntityPreview).toList();
+        List<WishlistDTO> wishlistDTOs = tagList.stream().map(wishlistMapper::mapFromEntity).toList();
 
-        return DomainSuccessResponse.get(HttpStatus.OK, wishlistPreviewDTOs);
+        return DomainSuccessResponse.get(HttpStatus.OK, wishlistDTOs);
     }
 
     @GetMapping("/{wishlistId}")
@@ -36,15 +36,15 @@ public class WishlistController {
     }
 
     @PostMapping("/profile/{profileId}")
-    public ResponseEntity<DomainSuccessResponse<WishlistDTO>> saveWishlist(
+    public ResponseEntity<DomainSuccessResponse<WishlistPreviewDTO>> saveWishlist(
             @PathVariable("profileId") UUID profileId,
             @RequestBody SaveWishlistDTO saveWishListDTO
     ) {
         WishList wishlist = wishlistMapper.mapToEntity(saveWishListDTO);
         WishList newWishlist = wishlistService.save(profileId, wishlist);
-        WishlistDTO newWishlistDTO = wishlistMapper.mapFromEntity(newWishlist);
+        WishlistPreviewDTO newWishlistPreviewDTO = wishlistMapper.mapFromEntityPreview(newWishlist);
 
-        return DomainSuccessResponse.get(HttpStatus.CREATED, newWishlistDTO);
+        return DomainSuccessResponse.get(HttpStatus.CREATED, newWishlistPreviewDTO);
     }
 
     @PutMapping("/{wishlistId}")

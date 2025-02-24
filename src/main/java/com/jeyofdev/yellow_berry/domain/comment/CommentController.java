@@ -2,7 +2,6 @@ package com.jeyofdev.yellow_berry.domain.comment;
 
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
 import com.jeyofdev.yellow_berry.domain.comment.dto.CommentDTO;
-import com.jeyofdev.yellow_berry.domain.comment.dto.CommentPreviewDTO;
 import com.jeyofdev.yellow_berry.domain.comment.dto.SaveCommentDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,11 +19,11 @@ public class CommentController {
     private final CommentMapper commentMapper;
 
     @GetMapping
-    public ResponseEntity<DomainSuccessResponse<List<CommentPreviewDTO>>> findAllComments() {
+    public ResponseEntity<DomainSuccessResponse<List<CommentDTO>>> findAllComments() {
         List<Comment> commentList = commentService.findAll();
-        List<CommentPreviewDTO> commentPreviewDTOList = commentList.stream().map(commentMapper::mapFromEntityPreview).toList();
+        List<CommentDTO> commentDTOList = commentList.stream().map(commentMapper::mapFromEntity).toList();
 
-        return DomainSuccessResponse.get(HttpStatus.OK, commentPreviewDTOList);
+        return DomainSuccessResponse.get(HttpStatus.OK, commentDTOList);
     }
 
     @GetMapping("/{commentId}")

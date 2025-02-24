@@ -2,7 +2,7 @@ package com.jeyofdev.yellow_berry.domain.cart.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.jeyofdev.yellow_berry.core.model.ListResponseFormat;
-import com.jeyofdev.yellow_berry.domain.product.dto.ProductDTO;
+import com.jeyofdev.yellow_berry.domain.product.dto.ProductPreviewDTO;
 import com.jeyofdev.yellow_berry.domain.profile.dto.ProfileDTO;
 
 import java.util.Date;
@@ -13,7 +13,7 @@ public record CartDTO(
         UUID id,
         Date createdAt,
         Date updatedAt,
-        ListResponseFormat<ProductDTO> productList,
+        ListResponseFormat<ProductPreviewDTO> products,
         ProfileDTO profile
 ) {
 }

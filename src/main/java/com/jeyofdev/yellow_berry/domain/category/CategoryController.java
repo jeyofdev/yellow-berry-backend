@@ -20,11 +20,11 @@ public class CategoryController {
     private final CategoryMapper categoryMapper;
 
     @GetMapping
-    public ResponseEntity<DomainSuccessResponse<List<CategoryPreviewDTO>>> findAllCategories() {
+    public ResponseEntity<DomainSuccessResponse<List<CategoryDTO>>> findAllCategories() {
         List<Category> categoryList = categoryService.findAll();
-        List<CategoryPreviewDTO> categoryPreviewDTOList = categoryList.stream().map(categoryMapper::mapFromEntityPreview).toList();
+        List<CategoryDTO> categoryDTOList = categoryList.stream().map(categoryMapper::mapFromEntity).toList();
 
-        return DomainSuccessResponse.get(HttpStatus.OK, categoryPreviewDTOList);
+        return DomainSuccessResponse.get(HttpStatus.OK, categoryDTOList);
     }
 
     @GetMapping("/{categoryId}")
@@ -36,12 +36,12 @@ public class CategoryController {
     }
 
     @PostMapping
-    public ResponseEntity<DomainSuccessResponse<CategoryDTO>> saveCategory(@RequestBody SaveCategoryDTO saveCategoryDTO) {
+    public ResponseEntity<DomainSuccessResponse<CategoryPreviewDTO>> saveCategory(@RequestBody SaveCategoryDTO saveCategoryDTO) {
         Category category = categoryMapper.mapToEntity(saveCategoryDTO);
         Category newCategory = categoryService.save(category);
-        CategoryDTO newCategoryDTO = categoryMapper.mapFromEntity(newCategory);
+        CategoryPreviewDTO newCategoryPreviewDTO = categoryMapper.mapFromEntityPreview(newCategory);
 
-        return DomainSuccessResponse.get(HttpStatus.CREATED, newCategoryDTO);
+        return DomainSuccessResponse.get(HttpStatus.CREATED, newCategoryPreviewDTO);
     }
 
     @PutMapping("/{categoryId}")

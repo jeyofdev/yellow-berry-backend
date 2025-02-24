@@ -1,9 +1,9 @@
 package com.jeyofdev.yellow_berry.domain.brand;
 
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
+import com.jeyofdev.yellow_berry.domain.brand.dto.BrandDTO;
 import com.jeyofdev.yellow_berry.domain.brand.dto.BrandPreviewDTO;
 import com.jeyofdev.yellow_berry.domain.brand.dto.SaveBrandDTO;
-import com.jeyofdev.yellow_berry.domain.brand.dto.BrandDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +20,11 @@ public class BrandController {
     private final BrandMapper brandMapper;
 
     @GetMapping
-    public ResponseEntity<DomainSuccessResponse<List<BrandPreviewDTO>>> findAllBrands() {
+    public ResponseEntity<DomainSuccessResponse<List<BrandDTO>>> findAllBrands() {
         List<Brand> brandList = brandService.findAll();
-        List<BrandPreviewDTO> brandPreviewDTOList = brandList.stream().map(brandMapper::mapFromEntityPreview).toList();
+        List<BrandDTO> brandDTOList = brandList.stream().map(brandMapper::mapFromEntity).toList();
 
-        return DomainSuccessResponse.get(HttpStatus.OK, brandPreviewDTOList);
+        return DomainSuccessResponse.get(HttpStatus.OK, brandDTOList);
     }
 
     @GetMapping("/{brandId}")
@@ -36,12 +36,12 @@ public class BrandController {
     }
 
     @PostMapping
-    public ResponseEntity<DomainSuccessResponse<BrandDTO>> saveBrand(@RequestBody SaveBrandDTO saveBrandDTO) {
+    public ResponseEntity<DomainSuccessResponse<BrandPreviewDTO>> saveBrand(@RequestBody SaveBrandDTO saveBrandDTO) {
         Brand brand = brandMapper.mapToEntity(saveBrandDTO);
         Brand newBrand = brandService.save(brand);
-        BrandDTO newBrandDTO = brandMapper.mapFromEntity(newBrand);
+        BrandPreviewDTO newBrandPreviewDTO = brandMapper.mapFromEntityPreview(newBrand);
 
-        return DomainSuccessResponse.get(HttpStatus.CREATED, newBrandDTO);
+        return DomainSuccessResponse.get(HttpStatus.CREATED, newBrandPreviewDTO);
     }
 
     @PutMapping("/{brandId}")
@@ -61,6 +61,5 @@ public class BrandController {
         String message = brandService.deleteById(brandId);
 
         return DomainSuccessResponse.get(HttpStatus.OK, message);
-
     }
 }

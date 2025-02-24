@@ -13,7 +13,6 @@ public interface CategoryMapper {
     @Mapping(source = "productList", target = "products.results")
     CategoryDTO mapFromEntity(Category category);
 
-    @Mapping(source = "productList", target = "products.results")
     CategoryPreviewDTO mapFromEntityPreview(Category category);
 
     Category mapToEntity(SaveCategoryDTO saveCategoryDTO);

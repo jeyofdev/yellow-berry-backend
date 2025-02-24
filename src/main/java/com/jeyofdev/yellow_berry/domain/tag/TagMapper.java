@@ -13,7 +13,6 @@ public interface TagMapper {
     @Mapping(source = "productList", target = "products.results")
     TagDTO mapFromEntity(Tag tag);
 
-    @Mapping(source = "productList", target = "products.results")
     TagPreviewDTO mapFromEntityPreview(Tag tag);
 
     Tag mapToEntity(SaveTagDTO saveTagDTO);

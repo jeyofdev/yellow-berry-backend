@@ -17,9 +17,6 @@ public record ProfilePreviewDTO(
         String role,
         NameFormat nameDetails,
         String phone,
-        AddressFormat addressDetails,
-        WishList wishList,
-        ListResponseFormat<Comment> comments,
-        Cart cart
+        AddressFormat addressDetails
 ) {
 }

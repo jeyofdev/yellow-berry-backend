@@ -48,15 +48,15 @@ public class ProfileController {
     }
 
     @PutMapping("/{profileId}")
-    public ResponseEntity<DomainSuccessResponse<ProfileDTO>> updateProfileById(
+    public ResponseEntity<DomainSuccessResponse<ProfilePreviewDTO>> updateProfileById(
             @PathVariable("profileId") UUID profileId,
             @RequestBody SaveProfileDTO saveProfileDTO
     ) {
         Profile profile = profileMapper.mapToEntity(saveProfileDTO);
         Profile updateProfile = profileService.updateById(profileId, profile);
-        ProfileDTO updateProfileDTO = profileMapper.mapFromEntity(updateProfile);
+        ProfilePreviewDTO updateProfilePreviewDTO = profileMapper.mapFromEntityPreview(updateProfile);
 
-        return DomainSuccessResponse.get(HttpStatus.OK, updateProfileDTO);
+        return DomainSuccessResponse.get(HttpStatus.OK, updateProfilePreviewDTO);
     }
 
     @DeleteMapping("/{profileId}")

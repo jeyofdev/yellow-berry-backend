@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.jeyofdev.yellow_berry.core.model.AddressFormat;
 import com.jeyofdev.yellow_berry.core.model.ListResponseFormat;
 import com.jeyofdev.yellow_berry.core.model.NameFormat;
-import com.jeyofdev.yellow_berry.domain.cart.Cart;
 import com.jeyofdev.yellow_berry.domain.comment.Comment;
 import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
 
@@ -19,7 +18,6 @@ public record ProfileDTO(
         String phone,
         AddressFormat addressDetails,
         WishList wishList,
-        ListResponseFormat<Comment> comments,
-        Cart cart
+        ListResponseFormat<Comment> comments
 ) {
 }

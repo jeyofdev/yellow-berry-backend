@@ -46,12 +46,12 @@ public class ProductController {
     }
 
     @PostMapping
-    public ResponseEntity<DomainSuccessResponse<ProductDTO>> saveProduct(@RequestBody SaveProductDTO saveProductDTO) {
+    public ResponseEntity<DomainSuccessResponse<ProductPreviewDTO>> saveProduct(@RequestBody SaveProductDTO saveProductDTO) {
         Product product = productMapper.mapToEntity(saveProductDTO, tagService, categoryService, wishlistService, cartService, brandService);
         Product newProduct = productService.save(product);
-        ProductDTO newProductDTO = productMapper.mapFromEntity(newProduct);
+        ProductPreviewDTO newProductPreviewDTO = productMapper.mapFromEntityPreview(newProduct);
 
-        return DomainSuccessResponse.get(HttpStatus.CREATED, newProductDTO);
+        return DomainSuccessResponse.get(HttpStatus.CREATED, newProductPreviewDTO);
     }
 
     @PutMapping("/{productId}")

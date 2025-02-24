@@ -20,11 +20,11 @@ public class TagController {
     private final TagMapper tagMapper;
 
     @GetMapping
-    public ResponseEntity<DomainSuccessResponse<List<TagPreviewDTO>>> findAllTags() {
+    public ResponseEntity<DomainSuccessResponse<List<TagDTO>>> findAllTags() {
         List<Tag> tagList = tagService.findAll();
-        List<TagPreviewDTO> tagPreviewDTOList = tagList.stream().map(tagMapper::mapFromEntityPreview).toList();
+        List<TagDTO> tagDTOList = tagList.stream().map(tagMapper::mapFromEntity).toList();
 
-        return DomainSuccessResponse.get(HttpStatus.OK, tagPreviewDTOList);
+        return DomainSuccessResponse.get(HttpStatus.OK, tagDTOList);
     }
 
     @GetMapping("/{tagId}")
@@ -36,12 +36,12 @@ public class TagController {
     }
 
     @PostMapping
-    public ResponseEntity<DomainSuccessResponse<TagDTO>> saveTag(@RequestBody SaveTagDTO saveTagDTO) {
+    public ResponseEntity<DomainSuccessResponse<TagPreviewDTO>> saveTag(@RequestBody SaveTagDTO saveTagDTO) {
         Tag tag = tagMapper.mapToEntity(saveTagDTO);
         Tag newTag = tagService.save(tag);
-        TagDTO newTagDTO = tagMapper.mapFromEntity(newTag);
+        TagPreviewDTO newTagPreviewDTO = tagMapper.mapFromEntityPreview(newTag);
 
-        return DomainSuccessResponse.get(HttpStatus.CREATED, newTagDTO);
+        return DomainSuccessResponse.get(HttpStatus.CREATED, newTagPreviewDTO);
     }
 
     @PutMapping("/{tagId}")
