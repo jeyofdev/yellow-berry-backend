@@ -4,6 +4,7 @@ import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
 import com.jeyofdev.yellow_berry.domain.brand.BrandService;
 import com.jeyofdev.yellow_berry.domain.cart.CartService;
 import com.jeyofdev.yellow_berry.domain.category.CategoryService;
+import com.jeyofdev.yellow_berry.domain.product.dto.ProductPreviewDTO;
 import com.jeyofdev.yellow_berry.domain.product.dto.SaveProductDTO;
 import com.jeyofdev.yellow_berry.domain.product.dto.ProductDTO;
 import com.jeyofdev.yellow_berry.domain.tag.TagService;
@@ -29,11 +30,11 @@ public class ProductController {
     private final BrandService brandService;
 
     @GetMapping
-    public ResponseEntity<DomainSuccessResponse<List<ProductDTO>>> findAllProducts() {
+    public ResponseEntity<DomainSuccessResponse<List<ProductPreviewDTO>>> findAllProducts() {
         List<Product> productList = productService.findAll();
-        List<ProductDTO> productDTOList = productList.stream().map(productMapper::mapFromEntity).toList();
+        List<ProductPreviewDTO> productPreviewDTOList = productList.stream().map(productMapper::mapFromEntityPreview).toList();
 
-        return DomainSuccessResponse.get(HttpStatus.OK, productDTOList);
+        return DomainSuccessResponse.get(HttpStatus.OK, productPreviewDTOList);
     }
 
     @GetMapping("/{productId}")

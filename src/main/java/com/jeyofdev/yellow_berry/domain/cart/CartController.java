@@ -1,6 +1,7 @@
 package com.jeyofdev.yellow_berry.domain.cart;
 
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
+import com.jeyofdev.yellow_berry.domain.cart.dto.CartPreviewDTO;
 import com.jeyofdev.yellow_berry.domain.cart.dto.SaveCartDTO;
 import com.jeyofdev.yellow_berry.domain.cart.dto.CartDTO;
 import lombok.RequiredArgsConstructor;
@@ -19,9 +20,9 @@ public class CartController {
     private final CartMapper cartMapper;
 
     @GetMapping
-    public ResponseEntity<DomainSuccessResponse<List<CartDTO>>> findAllCarts() {
+    public ResponseEntity<DomainSuccessResponse<List<CartPreviewDTO>>> findAllCarts() {
         List<Cart> tagList = cartService.findAll();
-        List<CartDTO> cart = tagList.stream().map(cartMapper::mapFromEntity).toList();
+        List<CartPreviewDTO> cart = tagList.stream().map(cartMapper::mapFromEntityPreview).toList();
 
         return DomainSuccessResponse.get(HttpStatus.OK, cart);
     }

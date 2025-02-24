@@ -8,6 +8,7 @@ import com.jeyofdev.yellow_berry.domain.cart.CartService;
 import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.category.CategoryService;
 import com.jeyofdev.yellow_berry.domain.comment.Comment;
+import com.jeyofdev.yellow_berry.domain.product.dto.ProductPreviewDTO;
 import com.jeyofdev.yellow_berry.domain.product.dto.SaveProductDTO;
 import com.jeyofdev.yellow_berry.domain.product.dto.ProductDTO;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
@@ -33,6 +34,12 @@ public interface ProductMapper {
     @Mapping(source = "priceDiscount", target = "priceDetails.priceDiscount")
     @Mapping(source = "discount", target = "priceDetails.discount")
     ProductDTO mapFromEntity(Product product);
+
+    @Mapping(source = "categoryList", target = "categories", qualifiedByName = "toListResponseFormat")
+    @Mapping(source = "price", target = "priceDetails.price")
+    @Mapping(source = "priceDiscount", target = "priceDetails.priceDiscount")
+    @Mapping(source = "discount", target = "priceDetails.discount")
+    ProductPreviewDTO mapFromEntityPreview(Product product);
 
     @Mapping(target = "tagList", source = "tagIds", qualifiedByName = "mapTagIdsToTags")
     @Mapping(target = "categoryList", source = "categoryIds", qualifiedByName = "mapCategoryIdsToCategories")

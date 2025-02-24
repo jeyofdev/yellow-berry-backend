@@ -2,6 +2,7 @@ package com.jeyofdev.yellow_berry.domain.comment;
 
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
 import com.jeyofdev.yellow_berry.domain.comment.dto.CommentDTO;
+import com.jeyofdev.yellow_berry.domain.comment.dto.CommentPreviewDTO;
 import com.jeyofdev.yellow_berry.domain.comment.dto.SaveCommentDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,19 +20,19 @@ public class CommentController {
     private final CommentMapper commentMapper;
 
     @GetMapping
-    public ResponseEntity<DomainSuccessResponse<List<CommentDTO>>> findAllComments() {
+    public ResponseEntity<DomainSuccessResponse<List<CommentPreviewDTO>>> findAllComments() {
         List<Comment> commentList = commentService.findAll();
-        List<CommentDTO> faqDTOList = commentList.stream().map(commentMapper::mapFromEntity).toList();
+        List<CommentPreviewDTO> commentPreviewDTOList = commentList.stream().map(commentMapper::mapFromEntityPreview).toList();
 
-        return DomainSuccessResponse.get(HttpStatus.OK, faqDTOList);
+        return DomainSuccessResponse.get(HttpStatus.OK, commentPreviewDTOList);
     }
 
     @GetMapping("/{commentId}")
     public ResponseEntity<DomainSuccessResponse<CommentDTO>> findCommentById(@PathVariable("commentId") UUID commentId) {
         Comment comment = commentService.findById(commentId);
-        CommentDTO faqDTO = commentMapper.mapFromEntity(comment);
+        CommentDTO commentDTO = commentMapper.mapFromEntity(comment);
 
-        return DomainSuccessResponse.get(HttpStatus.OK, faqDTO);
+        return DomainSuccessResponse.get(HttpStatus.OK, commentDTO);
     }
 
     @PostMapping("/product/{productId}/profile/{profileId}")

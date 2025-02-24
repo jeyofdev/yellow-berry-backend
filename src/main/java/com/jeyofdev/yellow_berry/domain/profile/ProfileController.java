@@ -2,6 +2,7 @@ package com.jeyofdev.yellow_berry.domain.profile;
 
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
 import com.jeyofdev.yellow_berry.domain.profile.dto.ProfileDTO;
+import com.jeyofdev.yellow_berry.domain.profile.dto.ProfilePreviewDTO;
 import com.jeyofdev.yellow_berry.domain.profile.dto.SaveProfileDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,11 +20,11 @@ public class ProfileController {
     private final ProfileMapper profileMapper;
 
     @GetMapping
-    public ResponseEntity<DomainSuccessResponse<List<ProfileDTO>>> findAllProfiles() {
+    public ResponseEntity<DomainSuccessResponse<List<ProfilePreviewDTO>>> findAllProfiles() {
         List<Profile> profileList = profileService.findAll();
-        List<ProfileDTO> profileDTOList = profileList.stream().map(profileMapper::mapFromEntity).toList();
+        List<ProfilePreviewDTO> profilePreviewDTOList = profileList.stream().map(profileMapper::mapFromEntityPreview).toList();
 
-        return DomainSuccessResponse.get(HttpStatus.OK, profileDTOList);
+        return DomainSuccessResponse.get(HttpStatus.OK, profilePreviewDTOList);
     }
 
     @GetMapping("/{profileId}")

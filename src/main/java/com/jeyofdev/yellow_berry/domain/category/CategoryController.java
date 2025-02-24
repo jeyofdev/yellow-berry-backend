@@ -2,6 +2,7 @@ package com.jeyofdev.yellow_berry.domain.category;
 
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
 import com.jeyofdev.yellow_berry.domain.category.dto.CategoryDTO;
+import com.jeyofdev.yellow_berry.domain.category.dto.CategoryPreviewDTO;
 import com.jeyofdev.yellow_berry.domain.category.dto.SaveCategoryDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,11 +20,11 @@ public class CategoryController {
     private final CategoryMapper categoryMapper;
 
     @GetMapping
-    public ResponseEntity<DomainSuccessResponse<List<CategoryDTO>>> findAllCategories() {
+    public ResponseEntity<DomainSuccessResponse<List<CategoryPreviewDTO>>> findAllCategories() {
         List<Category> categoryList = categoryService.findAll();
-        List<CategoryDTO> categoryDTOList = categoryList.stream().map(categoryMapper::mapFromEntity).toList();
+        List<CategoryPreviewDTO> categoryPreviewDTOList = categoryList.stream().map(categoryMapper::mapFromEntityPreview).toList();
 
-        return DomainSuccessResponse.get(HttpStatus.OK, categoryDTOList);
+        return DomainSuccessResponse.get(HttpStatus.OK, categoryPreviewDTOList);
     }
 
     @GetMapping("/{categoryId}")

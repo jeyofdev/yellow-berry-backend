@@ -1,6 +1,7 @@
 package com.jeyofdev.yellow_berry.domain.brand;
 
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
+import com.jeyofdev.yellow_berry.domain.brand.dto.BrandPreviewDTO;
 import com.jeyofdev.yellow_berry.domain.brand.dto.SaveBrandDTO;
 import com.jeyofdev.yellow_berry.domain.brand.dto.BrandDTO;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +20,11 @@ public class BrandController {
     private final BrandMapper brandMapper;
 
     @GetMapping
-    public ResponseEntity<DomainSuccessResponse<List<BrandDTO>>> findAllBrands() {
+    public ResponseEntity<DomainSuccessResponse<List<BrandPreviewDTO>>> findAllBrands() {
         List<Brand> brandList = brandService.findAll();
-        List<BrandDTO> brandDTOList = brandList.stream().map(brandMapper::mapFromEntity).toList();
+        List<BrandPreviewDTO> brandPreviewDTOList = brandList.stream().map(brandMapper::mapFromEntityPreview).toList();
 
-        return DomainSuccessResponse.get(HttpStatus.OK, brandDTOList);
+        return DomainSuccessResponse.get(HttpStatus.OK, brandPreviewDTOList);
     }
 
     @GetMapping("/{brandId}")

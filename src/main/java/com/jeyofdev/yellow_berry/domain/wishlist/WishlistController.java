@@ -3,6 +3,7 @@ package com.jeyofdev.yellow_berry.domain.wishlist;
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
 import com.jeyofdev.yellow_berry.domain.wishlist.dto.SaveWishlistDTO;
 import com.jeyofdev.yellow_berry.domain.wishlist.dto.WishlistDTO;
+import com.jeyofdev.yellow_berry.domain.wishlist.dto.WishlistPreviewDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,11 +20,11 @@ public class WishlistController {
     private final WishListMapper wishlistMapper;
 
     @GetMapping
-    public ResponseEntity<DomainSuccessResponse<List<WishlistDTO>>> findAllWishlists() {
+    public ResponseEntity<DomainSuccessResponse<List<WishlistPreviewDTO>>> findAllWishlists() {
         List<WishList> tagList = wishlistService.findAll();
-        List<WishlistDTO> wishlist = tagList.stream().map(wishlistMapper::mapFromEntity).toList();
+        List<WishlistPreviewDTO> wishlistPreviewDTOs = tagList.stream().map(wishlistMapper::mapFromEntityPreview).toList();
 
-        return DomainSuccessResponse.get(HttpStatus.OK, wishlist);
+        return DomainSuccessResponse.get(HttpStatus.OK, wishlistPreviewDTOs);
     }
 
     @GetMapping("/{wishlistId}")
