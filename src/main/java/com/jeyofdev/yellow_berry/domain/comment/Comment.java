@@ -20,12 +20,6 @@ public class Comment {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(name = "firstname", columnDefinition = "VARCHAR(30)")
-    private String firstname;
-
-    @Column(name = "lastname", columnDefinition = "VARCHAR(80)")
-    private String lastname;
-
     @Column(name = "rating", columnDefinition = "INT")
     private Integer rating;
 
