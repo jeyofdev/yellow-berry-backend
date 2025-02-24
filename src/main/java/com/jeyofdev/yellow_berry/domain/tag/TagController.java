@@ -3,6 +3,7 @@ package com.jeyofdev.yellow_berry.domain.tag;
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
 import com.jeyofdev.yellow_berry.domain.tag.dto.TagDTO;
 import com.jeyofdev.yellow_berry.domain.tag.dto.SaveTagDTO;
+import com.jeyofdev.yellow_berry.domain.tag.dto.TagPreviewDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,12 +36,12 @@ public class TagController {
     }
 
     @PostMapping
-    public ResponseEntity<DomainSuccessResponse<TagDTO>> saveTag(@RequestBody SaveTagDTO saveTagDTO) {
+    public ResponseEntity<DomainSuccessResponse<TagPreviewDTO>> saveTag(@RequestBody SaveTagDTO saveTagDTO) {
         Tag tag = tagMapper.mapToEntity(saveTagDTO);
         Tag newTag = tagService.save(tag);
-        TagDTO newTagDTO = tagMapper.mapFromEntity(newTag);
+        TagPreviewDTO newTagPreviewDTO = tagMapper.mapFromEntityPreview(newTag);
 
-        return DomainSuccessResponse.get(HttpStatus.CREATED, newTagDTO);
+        return DomainSuccessResponse.get(HttpStatus.CREATED, newTagPreviewDTO);
     }
 
     @PutMapping("/{tagId}")

@@ -5,7 +5,7 @@ import com.jeyofdev.yellow_berry.domain.product.dto.ProductPreviewDTO;
 
 import java.util.UUID;
 
-public record BrandDTO(
+public record BrandPreviewDTO(
         UUID id,
         String name,
         ListResponseFormat<ProductPreviewDTO> products

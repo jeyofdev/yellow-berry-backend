@@ -1,8 +1,9 @@
 package com.jeyofdev.yellow_berry.domain.cart;
 
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
-import com.jeyofdev.yellow_berry.domain.cart.dto.SaveCartDTO;
 import com.jeyofdev.yellow_berry.domain.cart.dto.CartDTO;
+import com.jeyofdev.yellow_berry.domain.cart.dto.CartPreviewDTO;
+import com.jeyofdev.yellow_berry.domain.cart.dto.SaveCartDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,15 +36,15 @@ public class CartController {
     }
 
     @PostMapping("/profile/{profileId}")
-    public ResponseEntity<DomainSuccessResponse<CartDTO>> saveCart(
+    public ResponseEntity<DomainSuccessResponse<CartPreviewDTO>> saveCart(
             @PathVariable("profileId") UUID profileId,
             @RequestBody SaveCartDTO saveCartDTO
     ) {
         Cart cart = cartMapper.mapToEntity(saveCartDTO);
         Cart newCart = cartService.save(profileId, cart);
-        CartDTO newCartDTO = cartMapper.mapFromEntity(newCart);
+        CartPreviewDTO newCartPreviewDTO = cartMapper.mapFromEntityPreview(newCart);
 
-        return DomainSuccessResponse.get(HttpStatus.CREATED, newCartDTO);
+        return DomainSuccessResponse.get(HttpStatus.CREATED, newCartPreviewDTO);
     }
 
     @PutMapping("/{cartId}")

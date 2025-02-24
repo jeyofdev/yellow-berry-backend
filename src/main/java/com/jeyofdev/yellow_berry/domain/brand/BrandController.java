@@ -1,8 +1,9 @@
 package com.jeyofdev.yellow_berry.domain.brand;
 
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
-import com.jeyofdev.yellow_berry.domain.brand.dto.SaveBrandDTO;
 import com.jeyofdev.yellow_berry.domain.brand.dto.BrandDTO;
+import com.jeyofdev.yellow_berry.domain.brand.dto.BrandPreviewDTO;
+import com.jeyofdev.yellow_berry.domain.brand.dto.SaveBrandDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,12 +36,12 @@ public class BrandController {
     }
 
     @PostMapping
-    public ResponseEntity<DomainSuccessResponse<BrandDTO>> saveBrand(@RequestBody SaveBrandDTO saveBrandDTO) {
+    public ResponseEntity<DomainSuccessResponse<BrandPreviewDTO>> saveBrand(@RequestBody SaveBrandDTO saveBrandDTO) {
         Brand brand = brandMapper.mapToEntity(saveBrandDTO);
         Brand newBrand = brandService.save(brand);
-        BrandDTO newBrandDTO = brandMapper.mapFromEntity(newBrand);
+        BrandPreviewDTO newBrandPreviewDTO = brandMapper.mapFromEntityPreview(newBrand);
 
-        return DomainSuccessResponse.get(HttpStatus.CREATED, newBrandDTO);
+        return DomainSuccessResponse.get(HttpStatus.CREATED, newBrandPreviewDTO);
     }
 
     @PutMapping("/{brandId}")
@@ -60,6 +61,5 @@ public class BrandController {
         String message = brandService.deleteById(brandId);
 
         return DomainSuccessResponse.get(HttpStatus.OK, message);
-
     }
 }

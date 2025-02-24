@@ -21,17 +21,17 @@ public class CommentController {
     @GetMapping
     public ResponseEntity<DomainSuccessResponse<List<CommentDTO>>> findAllComments() {
         List<Comment> commentList = commentService.findAll();
-        List<CommentDTO> faqDTOList = commentList.stream().map(commentMapper::mapFromEntity).toList();
+        List<CommentDTO> commentDTOList = commentList.stream().map(commentMapper::mapFromEntity).toList();
 
-        return DomainSuccessResponse.get(HttpStatus.OK, faqDTOList);
+        return DomainSuccessResponse.get(HttpStatus.OK, commentDTOList);
     }
 
     @GetMapping("/{commentId}")
     public ResponseEntity<DomainSuccessResponse<CommentDTO>> findCommentById(@PathVariable("commentId") UUID commentId) {
         Comment comment = commentService.findById(commentId);
-        CommentDTO faqDTO = commentMapper.mapFromEntity(comment);
+        CommentDTO commentDTO = commentMapper.mapFromEntity(comment);
 
-        return DomainSuccessResponse.get(HttpStatus.OK, faqDTO);
+        return DomainSuccessResponse.get(HttpStatus.OK, commentDTO);
     }
 
     @PostMapping("/product/{productId}/profile/{profileId}")
