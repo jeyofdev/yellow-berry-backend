@@ -47,10 +47,6 @@ public class Product {
     @Max(value = 5, message = ErrorMessage.MAX_RATING)
     private Integer rating;
 
-    @Column(name = "description", columnDefinition = "TEXT")
-    @NotNull(message = ErrorMessage.REQUIRED_DESCRIPTION)
-    private String description;
-
     @Column(name = "price", columnDefinition = "DECIMAL(10, 2)")
     @NotNull(message = ErrorMessage.REQUIRED_PRICE)
     @Min(value = 0, message = ErrorMessage.MIN_PRICE)

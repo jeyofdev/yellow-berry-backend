@@ -11,7 +11,6 @@ public record ProductPreviewDTO(
         UUID id,
         String name,
         Integer rating,
-        String description,
         WeightEnum weight,
         PriceFormat priceDetails,
         ListResponseFormat<Category> categories,

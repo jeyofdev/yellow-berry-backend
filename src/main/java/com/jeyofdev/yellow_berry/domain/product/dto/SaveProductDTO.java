@@ -9,7 +9,6 @@ import java.util.UUID;
 public record SaveProductDTO(
         String name,
         Integer rating,
-        String description,
         Double price,
         Double priceDiscount,
         Double discount,

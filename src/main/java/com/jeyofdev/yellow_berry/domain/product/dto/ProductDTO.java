@@ -17,7 +17,6 @@ public record ProductDTO(
         UUID id,
         String name,
         Integer rating,
-        String description,
         PriceFormat priceDetails,
         StockEnum stock,
         WeightEnum weight,
