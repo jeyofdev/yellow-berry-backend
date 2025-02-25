@@ -130,4 +130,14 @@ public class ErrorMessage {
 
     public static final String REQUIRED_LINKEDIN = "The linkedin field is required.";
     public static final String VALID_LINKEDIN = "The linkedin field must contain between {min} and {max} characters.";
+
+    // relation
+    public static final String PROFILE_NOT_NULL_CART = "An profile must be associated with entity cart.";
+    public static final String PROFILE_NOT_NULL_COMMENT = "An profile must be associated with entity comment.";
+    public static final String PROFILE_NOT_NULL_WISHLIST = "An profile must be associated with entity wishlist.";
+    public static final String PRODUCT_NOT_NULL_PRODUCT_DETAILS = "An product must be associated with entity product details.";
+    public static final String PRODUCT_NOT_NULL_PRODUCT_INFORMATION = "An product must be associated with entity product information.";
+    public static final String AUTH_USER_NOT_NULL_PROFILE = "An user must be associated with entity profile.";
+    public static final String WISHLIST_NOT_NULL_PROFILE = "An wishlist must be associated with entity profile.";
+    public static final String CART_NOT_NULL_PROFILE = "An cart must be associated with entity profile.";
 }

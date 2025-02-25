@@ -73,11 +73,13 @@ public class Profile {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @JsonIgnore
+    @NotNull(message = ErrorMessage.AUTH_USER_NOT_NULL_PROFILE)
     private AuthUser user;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "wishlist_id", referencedColumnName = "id")
     @JsonIgnore
+    @NotNull(message = ErrorMessage.WISHLIST_NOT_NULL_PROFILE)
     private WishList wishlist;
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
@@ -87,5 +89,6 @@ public class Profile {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_id", referencedColumnName = "id")
     @JsonIgnore
+    @NotNull(message = ErrorMessage.CART_NOT_NULL_PROFILE)
     private Cart cart;
 }

@@ -1,9 +1,11 @@
 package com.jeyofdev.yellow_berry.domain.cart;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.domain.product.Product;
 import com.jeyofdev.yellow_berry.domain.profile.Profile;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 
@@ -38,5 +40,6 @@ public class Cart {
 
     @OneToOne(mappedBy = "cart", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JsonIgnore
+    @NotNull(message = ErrorMessage.PROFILE_NOT_NULL_CART)
     private Profile profile;
 }

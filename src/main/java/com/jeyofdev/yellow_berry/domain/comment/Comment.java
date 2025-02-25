@@ -42,5 +42,6 @@ public class Comment {
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "profile_id", referencedColumnName = "id")
     @JsonIgnore
+    @NotNull(message = ErrorMessage.PROFILE_NOT_NULL_COMMENT)
     private Profile profile;
 }
