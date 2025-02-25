@@ -103,11 +103,13 @@ public class Product {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_details_id", referencedColumnName = "id")
     @JsonIgnore
+    @NotNull(message = ErrorMessage.PRODUCT_NOT_NULL_PRODUCT_DETAILS)
     private ProductDetails productDetails;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_information_id", referencedColumnName = "id")
     @JsonIgnore
+    @NotNull(message = ErrorMessage.PRODUCT_NOT_NULL_PRODUCT_INFORMATION)
     private ProductInformation productInformation;
 
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

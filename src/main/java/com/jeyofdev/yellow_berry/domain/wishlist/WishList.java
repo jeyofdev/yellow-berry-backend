@@ -36,5 +36,6 @@ public class WishList {
 
     @OneToOne(mappedBy = "wishlist", cascade = CascadeType.ALL)
     @JsonIgnore
+    @NotNull(message = ErrorMessage.PROFILE_NOT_NULL_WISHLIST)
     private Profile profile;
 }

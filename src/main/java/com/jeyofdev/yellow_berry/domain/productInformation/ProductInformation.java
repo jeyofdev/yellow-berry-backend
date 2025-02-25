@@ -60,5 +60,6 @@ public class ProductInformation {
 
     @OneToOne(mappedBy = "productInformation", cascade = CascadeType.ALL)
     @JsonIgnore
+    @NotNull(message = ErrorMessage.PRODUCT_NOT_NULL_PRODUCT_INFORMATION)
     private Product product;
 }
