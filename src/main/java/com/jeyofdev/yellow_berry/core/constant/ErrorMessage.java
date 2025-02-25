@@ -39,4 +39,95 @@ public class ErrorMessage {
     public static final String JWT_MALFORMED = "JWT is malformed. Please verify its integrity.";
     public static final String JWT_MUST_BE_PROVIDED = "A jwt token must be provided.";
 
+    // Domain fields
+    public static final String REQUIRED_NAME = "The name field is required.";
+    public static final String VALID_NAME = "The name field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_FIRSTNAME = "The firstname field is required.";
+    public static final String VALID_FIRSTNAME = "The firstname field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_LASTNAME = "The lastname field is required.";
+    public static final String VALID_LASTNAME = "The lastname field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_TITLE = "The title field is required.";
+    public static final String VALID_TITLE = "The title field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_SUBTITLE = "The subtitle field is required.";
+    public static final String VALID_SUBTITLE = "The subtitle field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_DESCRIPTION = "The description field is required.";
+    public static final String VALID_DESCRIPTION = "The description field must contain between {min} and {max} characters.";
+    public static final String REQUIRED_BODY = "The body field is required.";
+    public static final String REQUIRED_MESSAGE = "The message field is required.";
+
+    public static final String REQUIRED_RATING = "The rating field is required.";
+    public static final String MIN_RATING = "The minimum rating must be at least {value}.";
+    public static final String MAX_RATING = "The maximum rating must be {value}.";
+
+    public static final String REQUIRED_QUESTION = "The question field is required.";
+    public static final String REQUIRED_ANSWER = "The answer field is required.";
+
+    public static final String REQUIRED_PRICE = "The price field is required.";
+    public static final String MIN_PRICE = "The price must be at least {value}.";
+
+    public static final String REQUIRED_PRICE_DISCOUNT = "The price discount field is required.";
+    public static final String MIN_PRICE_DISCOUNT = "The price discount must be at least {value}.";
+
+    public static final String MIN_DISCOUNT = "The discount field is required.";
+    public static final String MAX_DISCOUNT = "The discount must be at least {value}.";
+
+    public static final String REQUIRED_STOCK = "The stock field is required.";
+    public static final String VALID_STOCK = "The stock field must be a valid stock.";
+
+    public static final String REQUIRED_JOB = "The job field is required.";
+    public static final String VALID_JOB = "The job field must be a valid job.";
+
+    public static final String REQUIRED_WEIGHT = "The weight field is required.";
+    public static final String VALID_WEIGHT = "The weight field must be a valid weight.";
+
+    public static final String REQUIRED_SELLER = "The seller field is required.";
+    public static final String VALID_SELLER = "The seller field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_SERVICE = "The service field is required.";
+    public static final String VALID_SERVICE = "The service field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_DIMENSIONS = "The dimension field is required.";
+    public static final String VALID_DIMENSIONS = "The dimension field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_BRAND = "The brand field is required.";
+    public static final String VALID_BRAND = "The brand field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_QUANTITY = "The quantity field is required.";
+    public static final String MIN_QUANTITY = "The minimum quantity must be at least {value}.";
+    public static final String MAX_QUANTITY = "The maximum quantity must be {value}.";
+
+    public static final String REQUIRED_COLOR = "The color field is required.";
+    public static final String VALID_COLOR = "The color field must be a valid color.";
+
+    public static final String REQUIRED_PHONE = "The phone number field is required.";
+    public static final String VALID_PHONE = "Please provide a valid phone number.";
+
+    public static final String REQUIRED_ADDRESS = "The address field is required.";
+    public static final String VALID_ADDRESS = "The address field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_REGION = "The region field is required.";
+    public static final String VALID_REGION = "The region field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_DEPARTMENT = "The department field is required.";
+    public static final String VALID_DEPARTMENT = "The department field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_ZIP_CODE = "The zip code field is required.";
+    public static final String VALID_ZIP_CODE = "Please provide a valid zip code number.";
+
+    public static final String REQUIRED_CITY = "The city field is required.";
+    public static final String VALID_CITY = "The city field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_TWITTER = "The twitter field is required.";
+    public static final String VALID_TWITTER = "The twitter field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_INSTAGRAM = "The instagram field is required.";
+    public static final String VALID_INSTAGRAM = "The instagram field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_LINKEDIN = "The linkedin field is required.";
+    public static final String VALID_LINKEDIN = "The linkedin field must contain between {min} and {max} characters.";
 }

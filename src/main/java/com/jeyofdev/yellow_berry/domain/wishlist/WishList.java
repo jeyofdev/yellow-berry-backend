@@ -1,9 +1,12 @@
 package com.jeyofdev.yellow_berry.domain.wishlist;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.domain.product.Product;
 import com.jeyofdev.yellow_berry.domain.profile.Profile;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -22,7 +25,9 @@ public class WishList {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(name = "name", columnDefinition = "VARCHAR(255)")
+    @Column(name = "name", columnDefinition = "VARCHAR(100)")
+    @NotNull(message = ErrorMessage.REQUIRED_NAME)
+    @Size(min = 3, max = 100, message = ErrorMessage.VALID_NAME)
     private String name;
 
     @ManyToMany(mappedBy = "wishlists", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

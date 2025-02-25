@@ -1,9 +1,13 @@
 package com.jeyofdev.yellow_berry.domain.comment;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.domain.product.Product;
 import com.jeyofdev.yellow_berry.domain.profile.Profile;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 import java.util.UUID;
@@ -21,9 +25,13 @@ public class Comment {
     private UUID id;
 
     @Column(name = "rating", columnDefinition = "INT")
+    @NotNull(message = ErrorMessage.REQUIRED_RATING)
+    @Min(value = 1, message = ErrorMessage.MIN_RATING)
+    @Max(value = 5, message = ErrorMessage.MAX_RATING)
     private Integer rating;
 
     @Column(name = "body", columnDefinition = "TEXT")
+    @NotNull(message = ErrorMessage.REQUIRED_BODY)
     private String body;
 
     @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

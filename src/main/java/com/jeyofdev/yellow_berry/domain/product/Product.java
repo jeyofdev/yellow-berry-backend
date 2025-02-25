@@ -1,6 +1,8 @@
 package com.jeyofdev.yellow_berry.domain.product;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jeyofdev.yellow_berry.annotation.ValidEnum;
+import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.core.enums.StockEnum;
 import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
 import com.jeyofdev.yellow_berry.domain.brand.Brand;
@@ -12,6 +14,10 @@ import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformation;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -31,29 +37,45 @@ public class Product {
     private UUID id;
 
     @Column(name = "name", columnDefinition = "VARCHAR(100)")
+    @NotNull(message = ErrorMessage.REQUIRED_NAME)
+    @Size(min = 3, max = 100, message = ErrorMessage.VALID_NAME)
     private String name;
 
     @Column(name = "rating", columnDefinition = "INT")
+    @NotNull(message = ErrorMessage.REQUIRED_RATING)
+    @Min(value = 1, message = ErrorMessage.MIN_RATING)
+    @Max(value = 5, message = ErrorMessage.MAX_RATING)
     private Integer rating;
 
     @Column(name = "description", columnDefinition = "TEXT")
+    @NotNull(message = ErrorMessage.REQUIRED_DESCRIPTION)
     private String description;
 
     @Column(name = "price", columnDefinition = "DECIMAL(10, 2)")
+    @NotNull(message = ErrorMessage.REQUIRED_PRICE)
+    @Min(value = 0, message = ErrorMessage.MIN_PRICE)
     private Double price;
 
     @Column(name = "price_discount", columnDefinition = "DECIMAL(10, 2)")
+    @NotNull(message = ErrorMessage.REQUIRED_PRICE_DISCOUNT)
+    @Min(value = 0, message = ErrorMessage.MIN_PRICE_DISCOUNT)
     private Double priceDiscount;
 
-    @Column(name = "discount", columnDefinition = "DECIMAL(10, 2)")
+    @Column(name = "discount", columnDefinition = "INT")
+    @Min(value = 1, message = ErrorMessage.MIN_DISCOUNT)
+    @Max(value = 100, message = ErrorMessage.MAX_DISCOUNT)
     private Double discount;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "stock", columnDefinition = "VARCHAR(30)")
+    @NotNull(message = ErrorMessage.REQUIRED_STOCK)
+    @ValidEnum(enumClass = StockEnum.class, message = ErrorMessage.VALID_STOCK)
     private StockEnum stock;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "weight", columnDefinition = "VARCHAR(30)")
+    @NotNull(message = ErrorMessage.REQUIRED_WEIGHT)
+    @ValidEnum(enumClass = WeightEnum.class, message = ErrorMessage.VALID_WEIGHT)
     private WeightEnum weight;
 
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

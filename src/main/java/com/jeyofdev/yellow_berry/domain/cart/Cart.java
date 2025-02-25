@@ -5,6 +5,7 @@ import com.jeyofdev.yellow_berry.domain.product.Product;
 import com.jeyofdev.yellow_berry.domain.profile.Profile;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -23,9 +24,11 @@ public class Cart {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(name = "created_at", columnDefinition = "TIMESTAMP")
+    @CreationTimestamp
+    @Column(name = "created_at", columnDefinition = "TIMESTAMP", updatable = false)
     private Date createdAt;
 
+    @CreationTimestamp
     @Column(name = "updated_at", columnDefinition = "TIMESTAMP")
     private Date updatedAt;
 

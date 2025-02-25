@@ -7,7 +7,6 @@ import java.util.UUID;
 
 public record BrandPreviewDTO(
         UUID id,
-        String name,
-        ListResponseFormat<ProductPreviewDTO> products
+        String name
 ) {
 }

@@ -1,8 +1,11 @@
 package com.jeyofdev.yellow_berry.core.enums;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.jeyofdev.yellow_berry.core.serializer.WeightDeserializer;
 import lombok.Getter;
 
 @Getter
+@JsonDeserialize(using = WeightDeserializer.class)
 public enum WeightEnum {
     GRAM_250(250),
     GRAM_500(500),
