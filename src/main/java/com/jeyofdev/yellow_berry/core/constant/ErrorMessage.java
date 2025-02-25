@@ -39,4 +39,16 @@ public class ErrorMessage {
     public static final String JWT_MALFORMED = "JWT is malformed. Please verify its integrity.";
     public static final String JWT_MUST_BE_PROVIDED = "A jwt token must be provided.";
 
+    // Domain fields
+    public static final String REQUIRED_NAME = "The name field is required.";
+    public static final String VALID_NAME = "The name field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_TITLE = "The title field is required.";
+    public static final String VALID_TITLE = "The title field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_SUBTITLE = "The subtitle field is required.";
+    public static final String VALID_SUBTITLE = "The subtitle field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_DESCRIPTION = "The description field is required.";
+
 }

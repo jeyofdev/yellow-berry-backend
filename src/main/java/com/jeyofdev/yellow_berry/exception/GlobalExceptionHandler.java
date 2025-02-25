@@ -4,6 +4,7 @@ import com.jeyofdev.yellow_berry.exception.model.ErrorResponse;
 import com.jeyofdev.yellow_berry.util.Helper;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.ConstraintViolation;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -100,7 +101,11 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException exception, HttpServletRequest request) {
-        return handleException(exception, HttpStatus.BAD_REQUEST, request, null);
+        String errorMessage = exception.getConstraintViolations().stream()
+                .map(ConstraintViolation::getMessage)
+                .toList().getFirst();
+
+        return handleException(exception, HttpStatus.BAD_REQUEST, request, errorMessage);
     }
 
     /**
