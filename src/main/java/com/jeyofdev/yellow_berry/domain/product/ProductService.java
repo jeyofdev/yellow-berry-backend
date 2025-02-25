@@ -81,7 +81,6 @@ public class ProductService extends AbstractDomainService<Product, ProductReposi
 
         existingProduct.setName(updatedProduct.getName() != null ? updatedProduct.getName() : existingProduct.getName());
         existingProduct.setRating(updatedProduct.getRating() != null ? updatedProduct.getRating() : existingProduct.getRating());
-        existingProduct.setDescription(updatedProduct.getDescription() != null ? updatedProduct.getDescription() : existingProduct.getDescription());
         existingProduct.setPrice(updatedProduct.getPrice() != null ? updatedProduct.getPrice() : existingProduct.getPrice());
         existingProduct.setPriceDiscount(updatedProduct.getPriceDiscount() != null ? updatedProduct.getPriceDiscount() : existingProduct.getPriceDiscount());
         existingProduct.setDiscount(updatedProduct.getDiscount() != null ? updatedProduct.getDiscount() : existingProduct.getDiscount());
