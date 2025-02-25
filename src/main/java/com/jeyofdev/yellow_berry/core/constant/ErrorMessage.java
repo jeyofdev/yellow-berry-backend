@@ -59,4 +59,18 @@ public class ErrorMessage {
     public static final String REQUIRED_QUESTION = "The question field is required.";
     public static final String REQUIRED_ANSWER = "The answer field is required.";
 
+    public static final String REQUIRED_PRICE = "The price field is required.";
+    public static final String MIN_PRICE = "The price must be at least {value}.";
+
+    public static final String REQUIRED_PRICE_DISCOUNT = "The price discount field is required.";
+    public static final String MIN_PRICE_DISCOUNT = "The price discount must be at least {value}.";
+
+    public static final String MIN_DISCOUNT = "The discount field is required.";
+    public static final String MAX_DISCOUNT = "The discount must be at least {value}.";
+
+    public static final String REQUIRED_STOCK = "The stock field is required.";
+    public static final String VALID_STOCK = "The stock field must be a valid stock.";
+
+    public static final String REQUIRED_WEIGHT = "The weight field is required.";
+    public static final String VALID_WEIGHT = "The weight field must be a valid weight.";
 }
