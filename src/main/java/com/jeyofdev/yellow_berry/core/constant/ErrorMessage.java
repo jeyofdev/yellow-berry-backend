@@ -58,6 +58,7 @@ public class ErrorMessage {
     public static final String REQUIRED_DESCRIPTION = "The description field is required.";
     public static final String VALID_DESCRIPTION = "The description field must contain between {min} and {max} characters.";
     public static final String REQUIRED_BODY = "The body field is required.";
+    public static final String REQUIRED_MESSAGE = "The message field is required.";
 
     public static final String REQUIRED_RATING = "The rating field is required.";
     public static final String MIN_RATING = "The minimum rating must be at least {value}.";
@@ -77,6 +78,9 @@ public class ErrorMessage {
 
     public static final String REQUIRED_STOCK = "The stock field is required.";
     public static final String VALID_STOCK = "The stock field must be a valid stock.";
+
+    public static final String REQUIRED_JOB = "The job field is required.";
+    public static final String VALID_JOB = "The job field must be a valid job.";
 
     public static final String REQUIRED_WEIGHT = "The weight field is required.";
     public static final String VALID_WEIGHT = "The weight field must be a valid weight.";
@@ -117,4 +121,13 @@ public class ErrorMessage {
 
     public static final String REQUIRED_CITY = "The city field is required.";
     public static final String VALID_CITY = "The city field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_TWITTER = "The twitter field is required.";
+    public static final String VALID_TWITTER = "The twitter field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_INSTAGRAM = "The instagram field is required.";
+    public static final String VALID_INSTAGRAM = "The instagram field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_LINKEDIN = "The linkedin field is required.";
+    public static final String VALID_LINKEDIN = "The linkedin field must contain between {min} and {max} characters.";
 }
