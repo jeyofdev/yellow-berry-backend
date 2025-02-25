@@ -32,6 +32,5 @@ public class About {
 
     @Column(name = "description", columnDefinition = "TEXT")
     @NotNull(message = ErrorMessage.REQUIRED_DESCRIPTION)
-    @Lob
     private String description;
 }

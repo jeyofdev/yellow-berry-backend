@@ -73,4 +73,23 @@ public class ErrorMessage {
 
     public static final String REQUIRED_WEIGHT = "The weight field is required.";
     public static final String VALID_WEIGHT = "The weight field must be a valid weight.";
+
+    public static final String REQUIRED_SELLER = "The seller field is required.";
+    public static final String VALID_SELLER = "The seller field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_SERVICE = "The service field is required.";
+    public static final String VALID_SERVICE = "The service field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_DIMENSIONS = "The dimension field is required.";
+    public static final String VALID_DIMENSIONS = "The dimension field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_BRAND = "The brand field is required.";
+    public static final String VALID_BRAND = "The brand field must contain between {min} and {max} characters.";
+
+    public static final String REQUIRED_QUANTITY = "The quantity field is required.";
+    public static final String MIN_QUANTITY = "The minimum quantity must be at least {value}.";
+    public static final String MAX_QUANTITY = "The maximum quantity must be {value}.";
+
+    public static final String REQUIRED_COLOR = "The color field is required.";
+    public static final String VALID_COLOR = "The color field must be a valid color.";
 }
