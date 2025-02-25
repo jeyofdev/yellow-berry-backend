@@ -7,8 +7,7 @@ import java.util.UUID;
 
 public record TeamMemberDTO(
         UUID id,
-        String firstname,
-        String lastname,
+        String name,
         JobEnum job,
         SocialFormat social
 ) {

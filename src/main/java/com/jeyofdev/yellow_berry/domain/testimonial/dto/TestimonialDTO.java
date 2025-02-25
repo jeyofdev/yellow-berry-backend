@@ -6,8 +6,7 @@ import java.util.UUID;
 
 public record TestimonialDTO(
         UUID id,
-        String firstname,
-        String lastname,
+        String name,
         JobEnum job,
         String message
 ) {
