@@ -22,12 +22,12 @@ public class About {
 
     @Column(name = "title", columnDefinition = "VARCHAR(200)")
     @NotNull(message = ErrorMessage.REQUIRED_TITLE)
-    @Size(min = 3, max = 100, message = ErrorMessage.VALID_TITLE)
+    @Size(min = 3, max = 200, message = ErrorMessage.VALID_TITLE)
     private String title;
 
     @Column(name = "subtitle", columnDefinition = "VARCHAR(200)")
     @NotNull(message = ErrorMessage.REQUIRED_SUBTITLE)
-    @Size(min = 3, max = 100, message = ErrorMessage.VALID_SUBTITLE)
+    @Size(min = 3, max = 200, message = ErrorMessage.VALID_SUBTITLE)
     private String subtitle;
 
     @Column(name = "description", columnDefinition = "TEXT")
