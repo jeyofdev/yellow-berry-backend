@@ -7,8 +7,8 @@ import com.jeyofdev.yellow_berry.domain.product.Product;
 import com.jeyofdev.yellow_berry.domain.product.ProductRepository;
 import com.jeyofdev.yellow_berry.domain.profile.Profile;
 import com.jeyofdev.yellow_berry.domain.profile.ProfileService;
-import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import com.jeyofdev.yellow_berry.exception.AlreadyTakenException;
+import com.jeyofdev.yellow_berry.exception.AlreadyAssociatedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -39,11 +39,17 @@ public class WishlistService extends AbstractDomainService<WishList, WishlistRep
     }
 
     public WishList save(UUID profileId, WishList wishlist) {
+        Profile profile = profileService.findById(profileId);
+
+        if (profile.getWishlist() != null) {
+            throw new AlreadyAssociatedException(MessageFormat.format(ErrorMessage.ALREADY_ASSOCIATED, "profile", "wishlist"));
+        }
+
         if (wishlistRepository.existsByName(wishlist.getName())) {
             throw new AlreadyTakenException(MessageFormat.format(ErrorMessage.ALREADY_TAKEN, entityName, "name", wishlist.getName()));
         }
 
-        Profile profile = profileService.findById(profileId);
+
         wishlist.setProfile(profile);
         profile.setWishlist(wishlist);
 

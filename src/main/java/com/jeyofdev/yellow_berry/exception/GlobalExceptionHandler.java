@@ -67,6 +67,14 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * to handle the case when entity is already associated with an entity.
+     */
+    @ExceptionHandler(AlreadyAssociatedException.class)
+    public ResponseEntity<ErrorResponse> handleAlreadyAssociatedException(AlreadyAssociatedException exception, HttpServletRequest request) {
+        return handleException(exception, HttpStatus.BAD_REQUEST, request, null);
+    }
+
+    /**
      * to handle the case when the user does not have the necessary roles
      * to access the requested resource.
      */
