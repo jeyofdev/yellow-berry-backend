@@ -140,4 +140,6 @@ public class ErrorMessage {
     public static final String AUTH_USER_NOT_NULL_PROFILE = "An user must be associated with entity profile.";
     public static final String WISHLIST_NOT_NULL_PROFILE = "An wishlist must be associated with entity profile.";
     public static final String CART_NOT_NULL_PROFILE = "An cart must be associated with entity profile.";
+
+    public static final String ALREADY_TAKEN = "Entity {0} with {1} {2} already taken";
 }

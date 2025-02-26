@@ -12,7 +12,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AbstractDomainService<T, R extends JpaRepository<T, UUID>> implements DomainService<T> {
     private final R repository;
-    private final String entityName;
+    protected final String entityName;
 
     @Override
     public List<T> findAll() {

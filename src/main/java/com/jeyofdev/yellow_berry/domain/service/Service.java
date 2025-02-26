@@ -20,7 +20,7 @@ public class Service {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(name = "name", columnDefinition = "VARCHAR(50)")
+    @Column(name = "name", columnDefinition = "VARCHAR(50)", unique = true)
     @NotNull(message = ErrorMessage.REQUIRED_NAME)
     @Size(min = 3, max = 50, message = ErrorMessage.VALID_NAME)
     private String name;

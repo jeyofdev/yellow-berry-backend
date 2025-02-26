@@ -46,12 +46,6 @@ public class ProductInformation {
     @ValidEnum(enumClass = ColorEnum.class, message = ErrorMessage.VALID_COLOR)
     private ColorEnum color;
 
-    @Column(name = "brand", columnDefinition = "VARCHAR(100)", insertable=false, updatable=false)
-    @NotNull(message = ErrorMessage.REQUIRED_BRAND)
-    @Size(min = 3, max = 100, message = ErrorMessage.VALID_BRAND)
-    private String name;
-    private String brand;
-
     @Column(name = "quantity", columnDefinition = "INT")
     @NotNull(message = ErrorMessage.REQUIRED_QUANTITY)
     @Min(value = 1, message = ErrorMessage.MIN_QUANTITY)

@@ -4,9 +4,12 @@ import com.jeyofdev.yellow_berry.auth_user.AuthUser;
 import com.jeyofdev.yellow_berry.auth_user.AuthUserService;
 import com.jeyofdev.yellow_berry.core.classes.AbstractDomainService;
 import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
+import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
+import com.jeyofdev.yellow_berry.exception.AlreadyTakenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.UUID;
 
 @Service
@@ -22,6 +25,10 @@ public class ProfileService extends AbstractDomainService<Profile, ProfileReposi
     }
 
     public Profile save(UUID userId, Profile profile) {
+        if (profileRepository.existsByPhone(profile.getPhone())) {
+            throw new AlreadyTakenException(MessageFormat.format(ErrorMessage.ALREADY_TAKEN, entityName, "phone", profile.getPhone()));
+        }
+
         AuthUser user = authUserService.findUserById(userId);
         profile.setUser(user);
 

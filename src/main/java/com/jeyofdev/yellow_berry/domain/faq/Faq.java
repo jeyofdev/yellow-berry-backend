@@ -19,7 +19,7 @@ public class Faq {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(name = "question", columnDefinition = "TEXT")
+    @Column(name = "question", columnDefinition = "TEXT", unique = true)
     @NotNull(message = ErrorMessage.REQUIRED_QUESTION)
     private String question;
 

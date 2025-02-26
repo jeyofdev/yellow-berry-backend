@@ -2,11 +2,14 @@ package com.jeyofdev.yellow_berry.domain.brand;
 
 import com.jeyofdev.yellow_berry.core.classes.AbstractDomainService;
 import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
+import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.domain.product.Product;
 import com.jeyofdev.yellow_berry.domain.product.ProductRepository;
+import com.jeyofdev.yellow_berry.exception.AlreadyTakenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 
@@ -20,6 +23,15 @@ public class BrandService extends AbstractDomainService<Brand, BrandRepository> 
         super(brandRepository, "Brand");
         this.brandRepository = brandRepository;
         this.productRepository = productRepository;
+    }
+
+    @Override
+    public Brand save(Brand brand) {
+        if (brandRepository.existsByName(brand.getName())) {
+            throw new AlreadyTakenException(MessageFormat.format(ErrorMessage.ALREADY_TAKEN, entityName, "name", brand.getName()));
+        }
+
+        return brandRepository.save(brand);
     }
 
     public Brand updateById(UUID brandId, Brand updatedBrand) {

@@ -13,4 +13,6 @@ public interface ServiceRepository extends JpaRepository<Service, UUID> {
     Optional<Service> findById(@NonNull UUID id);
 
     void deleteById(@NonNull UUID id);
+
+    boolean existsByName(String name);
 }

@@ -7,7 +7,6 @@ public record SaveProductInformationDTO(
         WeightEnum weight,
         String dimension,
         ColorEnum color,
-        String brand,
         Integer quantity
 ) {
 }

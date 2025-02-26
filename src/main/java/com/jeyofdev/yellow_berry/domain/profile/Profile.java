@@ -40,7 +40,7 @@ public class Profile {
     @Size(min = 3, max = 80, message = ErrorMessage.VALID_LASTNAME)
     private String lastname;
 
-    @Column(name = "phone", columnDefinition = "VARCHAR(19)")
+    @Column(name = "phone", columnDefinition = "VARCHAR(19)", unique = true)
     @NotNull(message = ErrorMessage.REQUIRED_PHONE)
     @Pattern(regexp = Regex.PHONE_PATTERN, message = ErrorMessage.VALID_PHONE)
     private String phone;
@@ -79,7 +79,6 @@ public class Profile {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "wishlist_id", referencedColumnName = "id")
     @JsonIgnore
-    @NotNull(message = ErrorMessage.WISHLIST_NOT_NULL_PROFILE)
     private WishList wishlist;
 
     @OneToMany(mappedBy = "profile", cascade = CascadeType.ALL)
@@ -89,6 +88,5 @@ public class Profile {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "cart_id", referencedColumnName = "id")
     @JsonIgnore
-    @NotNull(message = ErrorMessage.CART_NOT_NULL_PROFILE)
     private Cart cart;
 }

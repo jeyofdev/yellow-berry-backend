@@ -13,4 +13,6 @@ public interface FaqRepository extends JpaRepository<Faq, UUID> {
     Optional<Faq> findById(@NonNull UUID id);
 
     void deleteById(@NonNull UUID id);
+
+    boolean existsByQuestion(String question);
 }

@@ -2,13 +2,17 @@ package com.jeyofdev.yellow_berry.domain.wishlist;
 
 import com.jeyofdev.yellow_berry.core.classes.AbstractDomainService;
 import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
+import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.domain.product.Product;
 import com.jeyofdev.yellow_berry.domain.product.ProductRepository;
 import com.jeyofdev.yellow_berry.domain.profile.Profile;
 import com.jeyofdev.yellow_berry.domain.profile.ProfileService;
+import com.jeyofdev.yellow_berry.domain.tag.Tag;
+import com.jeyofdev.yellow_berry.exception.AlreadyTakenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 
@@ -26,20 +30,24 @@ public class WishlistService extends AbstractDomainService<WishList, WishlistRep
         this.profileService = profileService;
     }
 
-    public WishList save(UUID profileId, WishList wishlist) {
-        Profile profile = profileService.findById(profileId);
-        wishlist.setProfile(profile);
-        profile.setWishlist(wishlist);
-
-        return wishlistRepository.save(wishlist);
-    }
-
     public List<WishList> getWishlistsByIds(List<UUID> wishlistIds) {
         if (wishlistIds == null || wishlistIds.contains(null)) {
             wishlistIds = List.of();
         }
 
         return wishlistRepository.findAllById(wishlistIds);
+    }
+
+    public WishList save(UUID profileId, WishList wishlist) {
+        if (wishlistRepository.existsByName(wishlist.getName())) {
+            throw new AlreadyTakenException(MessageFormat.format(ErrorMessage.ALREADY_TAKEN, entityName, "name", wishlist.getName()));
+        }
+
+        Profile profile = profileService.findById(profileId);
+        wishlist.setProfile(profile);
+        profile.setWishlist(wishlist);
+
+        return wishlistRepository.save(wishlist);
     }
 
     public WishList updateById(UUID wishlistId, WishList updatedWishlist) {
