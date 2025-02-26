@@ -39,17 +39,17 @@ public class TeamMember {
     @ValidEnum(enumClass = JobEnum.class, message = ErrorMessage.VALID_JOB)
     private JobEnum job;
 
-    @Column(name = "twitter", columnDefinition = "VARCHAR(100)")
+    @Column(name = "twitter", columnDefinition = "VARCHAR(100)", unique = true)
     @NotNull(message = ErrorMessage.REQUIRED_TWITTER)
     @Size(min = 3, max = 100, message = ErrorMessage.VALID_TWITTER)
     private String twitter;
 
-    @Column(name = "instagram", columnDefinition = "VARCHAR(100)")
+    @Column(name = "instagram", columnDefinition = "VARCHAR(100)", unique = true)
     @NotNull(message = ErrorMessage.REQUIRED_INSTAGRAM)
     @Size(min = 3, max = 100, message = ErrorMessage.VALID_INSTAGRAM)
     private String instagram;
 
-    @Column(name = "linkedin", columnDefinition = "VARCHAR(100)")
+    @Column(name = "linkedin", columnDefinition = "VARCHAR(100)", unique = true)
     @NotNull(message = ErrorMessage.REQUIRED_LINKEDIN)
     @Size(min = 3, max = 100, message = ErrorMessage.VALID_LINKEDIN)
     private String linkedin;

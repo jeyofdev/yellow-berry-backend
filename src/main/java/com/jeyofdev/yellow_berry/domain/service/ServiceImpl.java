@@ -2,8 +2,12 @@ package com.jeyofdev.yellow_berry.domain.service;
 
 import com.jeyofdev.yellow_berry.core.classes.AbstractDomainService;
 import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
+import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
+import com.jeyofdev.yellow_berry.domain.category.Category;
+import com.jeyofdev.yellow_berry.exception.AlreadyTakenException;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.text.MessageFormat;
 import java.util.UUID;
 
 @org.springframework.stereotype.Service
@@ -14,6 +18,15 @@ public class ServiceImpl extends AbstractDomainService<Service, ServiceRepositor
     public ServiceImpl(ServiceRepository serviceRepository) {
         super(serviceRepository, "Service");
         this.serviceRepository = serviceRepository;
+    }
+
+    @Override
+    public Service save(Service service) {
+        if (serviceRepository.existsByName(service.getName())) {
+            throw new AlreadyTakenException(MessageFormat.format(ErrorMessage.ALREADY_TAKEN, entityName, "name", service.getName()));
+        }
+
+        return serviceRepository.save(service);
     }
 
     public Service updateById(UUID serviceId, Service updatedService) {

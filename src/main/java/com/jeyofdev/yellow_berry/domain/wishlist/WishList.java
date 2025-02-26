@@ -25,7 +25,7 @@ public class WishList {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(name = "name", columnDefinition = "VARCHAR(100)")
+    @Column(name = "name", columnDefinition = "VARCHAR(100)", unique = true)
     @NotNull(message = ErrorMessage.REQUIRED_NAME)
     @Size(min = 3, max = 100, message = ErrorMessage.VALID_NAME)
     private String name;

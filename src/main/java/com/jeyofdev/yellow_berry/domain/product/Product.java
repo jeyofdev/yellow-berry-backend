@@ -36,7 +36,7 @@ public class Product {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Column(name = "name", columnDefinition = "VARCHAR(100)")
+    @Column(name = "name", columnDefinition = "VARCHAR(100)", unique = true)
     @NotNull(message = ErrorMessage.REQUIRED_NAME)
     @Size(min = 3, max = 100, message = ErrorMessage.VALID_NAME)
     private String name;
@@ -99,13 +99,11 @@ public class Product {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_details_id", referencedColumnName = "id")
     @JsonIgnore
-    @NotNull(message = ErrorMessage.PRODUCT_NOT_NULL_PRODUCT_DETAILS)
     private ProductDetails productDetails;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "product_information_id", referencedColumnName = "id")
     @JsonIgnore
-    @NotNull(message = ErrorMessage.PRODUCT_NOT_NULL_PRODUCT_INFORMATION)
     private ProductInformation productInformation;
 
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

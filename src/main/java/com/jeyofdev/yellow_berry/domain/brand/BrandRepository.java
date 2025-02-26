@@ -13,4 +13,6 @@ public interface BrandRepository extends JpaRepository<Brand, UUID> {
     Optional<Brand> findById(@NonNull UUID id);
 
     void deleteById(@NonNull UUID id);
+
+    boolean existsByName(String name);
 }

@@ -20,6 +20,8 @@ public interface ProfileRepository extends JpaRepository<Profile, UUID> {
 
     void deleteById(@NonNull UUID id);
 
+    boolean existsByPhone(String phone);
+
     @Query("SELECT p FROM Profile p JOIN p.commentList c WHERE c = :comment")
     Profile findByComment(@Param("comment") Comment comment);
 

@@ -13,4 +13,10 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, UUID> {
     Optional<TeamMember> findById(@NonNull UUID id);
 
     void deleteById(@NonNull UUID id);
+
+    boolean existsByTwitter(String twitter);
+
+    boolean existsByInstagram(String instagram);
+
+    boolean existsByLinkedin(String linkedin);
 }

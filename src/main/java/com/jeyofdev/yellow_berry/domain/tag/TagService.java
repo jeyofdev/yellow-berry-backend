@@ -2,11 +2,14 @@ package com.jeyofdev.yellow_berry.domain.tag;
 
 import com.jeyofdev.yellow_berry.core.classes.AbstractDomainService;
 import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
+import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.domain.product.Product;
 import com.jeyofdev.yellow_berry.domain.product.ProductRepository;
+import com.jeyofdev.yellow_berry.exception.AlreadyTakenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,6 +27,15 @@ public class TagService extends AbstractDomainService<Tag, TagRepository> {
 
     public List<Tag> getTagsByIds(List<UUID> tagIds) {
         return tagIds == null || tagIds.isEmpty() ? List.of() : tagRepository.findAllById(tagIds);
+    }
+
+    @Override
+    public Tag save(Tag tag) {
+        if (tagRepository.existsByName(tag.getName())) {
+            throw new AlreadyTakenException(MessageFormat.format(ErrorMessage.ALREADY_TAKEN, entityName, "name", tag.getName()));
+        }
+
+        return tagRepository.save(tag);
     }
 
     public Tag updateById(UUID tagId, Tag updatedTag) {

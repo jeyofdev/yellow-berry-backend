@@ -43,12 +43,21 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * to handle the case when the provided data already exists in the database.
+     */
+    @ExceptionHandler(AlreadyTakenException.class)
+    public ResponseEntity<ErrorResponse> handleAlreadyTakenException(AlreadyTakenException exception, HttpServletRequest request) {
+        return handleException(exception, HttpStatus.BAD_REQUEST, request, null);
+    }
+
+    /**
      * to handle the case when the provided username already exists in the database.
      */
     @ExceptionHandler(UsernameAlreadyTakenException.class)
     public ResponseEntity<ErrorResponse> handleUsernameAlreadyTakenException(UsernameAlreadyTakenException exception, HttpServletRequest request) {
         return handleException(exception, HttpStatus.BAD_REQUEST, request, null);
     }
+
     /**
      * to handle the case when the provided username or password are incorrect.
      */
@@ -56,6 +65,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException exception, HttpServletRequest request) {
         return handleException(exception, HttpStatus.BAD_REQUEST, request, null);
     }
+
     /**
      * to handle the case when the user does not have the necessary roles
      * to access the requested resource.

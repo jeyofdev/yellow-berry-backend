@@ -24,6 +24,8 @@ ProductRepository extends JpaRepository<Product, UUID> {
 
     void deleteById(@NonNull UUID id);
 
+    boolean existsByName(String name);
+
     @Query("SELECT p FROM Product p JOIN p.tagList t WHERE t = :tag")
     List<Product> findByTag(@Param("tag") Tag tag);
 
