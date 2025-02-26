@@ -1,4 +1,4 @@
-package com.jeyofdev.yellow_berry.exception.model;
+package com.jeyofdev.yellow_berry.exception;
 
 public class AlreadyAssociatedException extends RuntimeException {
     public AlreadyAssociatedException(String message) {

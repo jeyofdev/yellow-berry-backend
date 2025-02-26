@@ -6,7 +6,7 @@ import com.jeyofdev.yellow_berry.core.classes.AbstractDomainService;
 import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
 import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.exception.AlreadyTakenException;
-import com.jeyofdev.yellow_berry.exception.model.AlreadyAssociatedException;
+import com.jeyofdev.yellow_berry.exception.AlreadyAssociatedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

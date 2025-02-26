@@ -5,7 +5,7 @@ import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
 import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.domain.product.Product;
 import com.jeyofdev.yellow_berry.domain.product.ProductService;
-import com.jeyofdev.yellow_berry.exception.model.AlreadyAssociatedException;
+import com.jeyofdev.yellow_berry.exception.AlreadyAssociatedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

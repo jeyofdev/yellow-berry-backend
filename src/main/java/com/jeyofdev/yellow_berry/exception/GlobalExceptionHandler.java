@@ -1,6 +1,5 @@
 package com.jeyofdev.yellow_berry.exception;
 
-import com.jeyofdev.yellow_berry.exception.model.AlreadyAssociatedException;
 import com.jeyofdev.yellow_berry.exception.model.ErrorResponse;
 import com.jeyofdev.yellow_berry.util.Helper;
 import jakarta.persistence.EntityNotFoundException;
