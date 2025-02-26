@@ -2,11 +2,14 @@ package com.jeyofdev.yellow_berry.domain.productInformation;
 
 import com.jeyofdev.yellow_berry.core.classes.AbstractDomainService;
 import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
+import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.domain.product.Product;
 import com.jeyofdev.yellow_berry.domain.product.ProductService;
+import com.jeyofdev.yellow_berry.exception.model.AlreadyAssociatedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.UUID;
 
 @Service
@@ -23,6 +26,11 @@ public class ProductInformationService extends AbstractDomainService<ProductInfo
 
     public ProductInformation save(UUID productId, ProductInformation productInformation) {
         Product product = productService.findById(productId);
+
+        if (product.getProductInformation() != null) {
+            throw new AlreadyAssociatedException(MessageFormat.format(ErrorMessage.ALREADY_ASSOCIATED, "product", "informations"));
+        }
+
         productInformation.setProduct(product);
         product.setProductInformation(productInformation);
 

@@ -142,4 +142,6 @@ public class ErrorMessage {
     public static final String CART_NOT_NULL_PROFILE = "An cart must be associated with entity profile.";
 
     public static final String ALREADY_TAKEN = "Entity {0} with {1} {2} already taken";
+    public static final String ALREADY_ASSOCIATED = "This {0} already has associated {1}.";
+
 }

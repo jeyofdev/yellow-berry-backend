@@ -2,13 +2,16 @@ package com.jeyofdev.yellow_berry.domain.cart;
 
 import com.jeyofdev.yellow_berry.core.classes.AbstractDomainService;
 import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
+import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.domain.product.Product;
 import com.jeyofdev.yellow_berry.domain.product.ProductRepository;
 import com.jeyofdev.yellow_berry.domain.profile.Profile;
 import com.jeyofdev.yellow_berry.domain.profile.ProfileService;
+import com.jeyofdev.yellow_berry.exception.model.AlreadyAssociatedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -33,6 +36,10 @@ public class CartService extends AbstractDomainService<Cart, CartRepository> {
 
     public Cart save(UUID profileId, Cart cart) {
         Profile profile = profileService.findById(profileId);
+
+        if (profile.getCart() != null) {
+            throw new AlreadyAssociatedException(MessageFormat.format(ErrorMessage.ALREADY_ASSOCIATED, "product", "cart"));
+        }
 
         cart.setProfile(profile);
         cart.setCreatedAt(new Date());

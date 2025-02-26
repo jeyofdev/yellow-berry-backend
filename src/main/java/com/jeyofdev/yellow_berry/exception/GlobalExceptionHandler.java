@@ -1,5 +1,6 @@
 package com.jeyofdev.yellow_berry.exception;
 
+import com.jeyofdev.yellow_berry.exception.model.AlreadyAssociatedException;
 import com.jeyofdev.yellow_berry.exception.model.ErrorResponse;
 import com.jeyofdev.yellow_berry.util.Helper;
 import jakarta.persistence.EntityNotFoundException;
@@ -63,6 +64,14 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException exception, HttpServletRequest request) {
+        return handleException(exception, HttpStatus.BAD_REQUEST, request, null);
+    }
+
+    /**
+     * to handle the case when entity is already associated with an entity.
+     */
+    @ExceptionHandler(AlreadyAssociatedException.class)
+    public ResponseEntity<ErrorResponse> handleAlreadyAssociatedException(AlreadyAssociatedException exception, HttpServletRequest request) {
         return handleException(exception, HttpStatus.BAD_REQUEST, request, null);
     }
 
