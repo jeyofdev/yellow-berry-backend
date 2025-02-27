@@ -3,7 +3,6 @@ package com.jeyofdev.yellow_berry.domain.team_member;
 import com.jeyofdev.yellow_berry.annotation.ValidEnum;
 import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.core.enums.JobEnum;
-import com.jeyofdev.yellow_berry.core.enums.StockEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;

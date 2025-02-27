@@ -7,5 +7,6 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring")
 public interface ProductDetailsMapper {
     ProductDetailsDTO mapFromEntity(ProductDetails productDetails);
+
     ProductDetails mapToEntity(SaveProductDetailsDTO saveProductDetailsDTO);
 }

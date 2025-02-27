@@ -14,7 +14,7 @@ import org.springframework.validation.BindingResult;
 public interface AuthService {
     RegisterResponse register(RegisterRequest request, BindingResult bindingResult) throws IllegalArgumentException, UsernameAlreadyTakenException;
 
-    AuthResponse login(LoginRequest request, BindingResult bindingResult)  throws ConstraintViolationException, BadCredentialsException;
+    AuthResponse login(LoginRequest request, BindingResult bindingResult) throws ConstraintViolationException, BadCredentialsException;
 
     MessageResponse validateAccount(String verificationToken) throws InvalidTokenException, ExpireTokenException;
 

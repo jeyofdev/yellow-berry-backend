@@ -5,18 +5,13 @@ import com.jeyofdev.yellow_berry.auth_user.AuthUserService;
 import com.jeyofdev.yellow_berry.core.classes.AbstractDomainService;
 import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
 import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
-import com.jeyofdev.yellow_berry.domain.product.Product;
-import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
-import com.jeyofdev.yellow_berry.exception.AlreadyTakenException;
 import com.jeyofdev.yellow_berry.exception.AlreadyAssociatedException;
+import com.jeyofdev.yellow_berry.exception.AlreadyTakenException;
 import com.jeyofdev.yellow_berry.security.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
-import java.util.List;
 import java.util.UUID;
 
 @Service

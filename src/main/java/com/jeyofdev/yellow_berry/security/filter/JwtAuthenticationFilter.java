@@ -73,8 +73,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         } catch (Exception error) {
             if (error instanceof ExpiredJwtException) {
                 request.setAttribute("expired_exception", error.getMessage());
-            }
-            else if (error instanceof MalformedJwtException) {
+            } else if (error instanceof MalformedJwtException) {
                 request.setAttribute("malformed_exception", error.getMessage());
             }
         }

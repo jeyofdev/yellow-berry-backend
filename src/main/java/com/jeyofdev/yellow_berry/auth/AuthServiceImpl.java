@@ -103,8 +103,8 @@ public class AuthServiceImpl implements AuthService {
         }
 
         AuthUser user = authUserRepository.findByVerificationToken(verificationToken)
-            .orElseThrow(() -> new InvalidTokenException(ErrorMessage.TOKEN_VERIFICATION_INVALID)
-        );
+                .orElseThrow(() -> new InvalidTokenException(ErrorMessage.TOKEN_VERIFICATION_INVALID)
+                );
 
         if (user.getVerificationTokenExpiration().isBefore(LocalDateTime.now())) {
             throw new ExpireTokenException(ErrorMessage.TOKEN_VERIFICATION_EXPIRED);
@@ -127,9 +127,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public MessageResponse updatePassword(String oldPassword, String newPassword, BindingResult bindingResult) throws IllegalStateException, BadValidationArgumentException, UsernameNotFoundException, AccessDeniedException {
-        String roles  = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
+        String roles = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
 
-        if((roles.equals("[ROLE_ADMIN]")) || (roles.equals("[ROLE_USER]"))) {
+        if ((roles.equals("[ROLE_ADMIN]")) || (roles.equals("[ROLE_USER]"))) {
             AuthUser user = authUserRepository.findByEmail(SecurityContextHolder.getContext().getAuthentication().getName())
                     .orElseThrow(() -> new UsernameNotFoundException(ErrorMessage.USER_NOT_FOUND));
 

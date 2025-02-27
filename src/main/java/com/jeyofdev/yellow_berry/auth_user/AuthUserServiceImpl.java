@@ -24,7 +24,7 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     @Override
     public List<AuthUser> findAll() throws AccessDeniedException {
-        if(SecurityUtil.getAuthenticatedRole().equals("[ROLE_ADMIN]")) {
+        if (SecurityUtil.getAuthenticatedRole().equals("[ROLE_ADMIN]")) {
             return authUserRepository.findAll();
         } else {
             throw new AccessDeniedException(ErrorMessage.LIMIT_ACCESS);
@@ -43,7 +43,7 @@ public class AuthUserServiceImpl implements AuthUserService {
 
         if (SecurityUtil.getAuthenticatedUsername().equals(email) || SecurityUtil.getAuthenticatedRole().equals("[ROLE_ADMIN]")) {
             return authUserRepository.findByEmail(email)
-                    .orElseThrow(() -> new EntityNotFoundException("email " + email +" not found"));
+                    .orElseThrow(() -> new EntityNotFoundException("email " + email + " not found"));
         } else {
             throw new AccessDeniedException(ErrorMessage.LIMIT_ACCESS);
         }

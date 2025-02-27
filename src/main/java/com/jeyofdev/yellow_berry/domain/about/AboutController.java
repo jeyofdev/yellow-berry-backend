@@ -1,8 +1,8 @@
 package com.jeyofdev.yellow_berry.domain.about;
 
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
-import com.jeyofdev.yellow_berry.domain.about.dto.SaveAboutDTO;
 import com.jeyofdev.yellow_berry.domain.about.dto.AboutDTO;
+import com.jeyofdev.yellow_berry.domain.about.dto.SaveAboutDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

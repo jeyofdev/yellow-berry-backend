@@ -1,9 +1,6 @@
 package com.jeyofdev.yellow_berry.domain.productInformation;
 
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
-import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetails;
-import com.jeyofdev.yellow_berry.domain.productDetails.dto.ProductDetailsDTO;
-import com.jeyofdev.yellow_berry.domain.productDetails.dto.SaveProductDetailsDTO;
 import com.jeyofdev.yellow_berry.domain.productInformation.dto.ProductInformationDTO;
 import com.jeyofdev.yellow_berry.domain.productInformation.dto.SaveProductInformationDTO;
 import lombok.RequiredArgsConstructor;
