@@ -119,9 +119,16 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ConstraintViolationException.class)
     public ResponseEntity<ErrorResponse> handleConstraintViolationException(ConstraintViolationException exception, HttpServletRequest request) {
-        String errorMessage = exception.getConstraintViolations().stream()
-                .map(ConstraintViolation::getMessage)
-                .toList().getFirst();
+        String errorMessage;
+
+        if (exception.getConstraintViolations() != null) {
+            errorMessage = exception.getConstraintViolations().stream()
+                    .map(ConstraintViolation::getMessage)
+                    .toList().getFirst();
+        } else {
+            errorMessage = exception.getMessage();
+        }
+
 
         return handleException(exception, HttpStatus.BAD_REQUEST, request, errorMessage);
     }
