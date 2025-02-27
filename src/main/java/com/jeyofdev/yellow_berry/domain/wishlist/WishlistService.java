@@ -10,6 +10,7 @@ import com.jeyofdev.yellow_berry.domain.profile.Profile;
 import com.jeyofdev.yellow_berry.domain.profile.ProfileService;
 import com.jeyofdev.yellow_berry.exception.AlreadyTakenException;
 import com.jeyofdev.yellow_berry.exception.AlreadyAssociatedException;
+import com.jeyofdev.yellow_berry.security.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -43,58 +44,47 @@ public class WishlistService extends AbstractDomainService<WishList, WishlistRep
     }
 
     public WishList save(UUID profileId, WishList wishlist) {
-        String username  = SecurityContextHolder.getContext().getAuthentication().getName();
         Profile profile = profileService.findById(profileId);
+        SecurityUtil.checkAuthenticatedUserOrAdminIsAuthorized(profile.getUser().getUsername(), true);
 
-        if (username.equals(profile.getUser().getUsername())) {
-            if (profile.getWishlist() != null) {
-                throw new AlreadyAssociatedException(MessageFormat.format(ErrorMessage.ALREADY_ASSOCIATED, "profile", "wishlist"));
-            }
-
-            if (wishlistRepository.existsByName(wishlist.getName())) {
-                throw new AlreadyTakenException(MessageFormat.format(ErrorMessage.ALREADY_TAKEN, entityName, "name", wishlist.getName()));
-            }
-
-            wishlist.setProfile(profile);
-            profile.setWishlist(wishlist);
-
-            return wishlistRepository.save(wishlist);
-        } else {
-            throw new AccessDeniedException(ErrorMessage.LIMIT_ACCESS);
+        if (profile.getWishlist() != null) {
+            throw new AlreadyAssociatedException(MessageFormat.format(ErrorMessage.ALREADY_ASSOCIATED, "profile", "wishlist"));
         }
+
+        if (wishlistRepository.existsByName(wishlist.getName())) {
+            throw new AlreadyTakenException(MessageFormat.format(ErrorMessage.ALREADY_TAKEN, entityName, "name", wishlist.getName()));
+        }
+
+        wishlist.setProfile(profile);
+        profile.setWishlist(wishlist);
+
+        return wishlistRepository.save(wishlist);
     }
 
     public WishList updateById(UUID wishlistId, WishList updatedWishlist) {
-        String username  = SecurityContextHolder.getContext().getAuthentication().getName();
         WishList existingWishlist = findById(wishlistId);
+        SecurityUtil.checkAuthenticatedUserOrAdminIsAuthorized(existingWishlist.getProfile().getUser().getUsername(), true);
 
-        if (username.equals(existingWishlist.getProfile().getUser().getUsername())) {
-            existingWishlist.setName(updatedWishlist.getName() != null ? updatedWishlist.getName() : existingWishlist.getName());
+        existingWishlist.setName(updatedWishlist.getName() != null ? updatedWishlist.getName() : existingWishlist.getName());
 
-            return wishlistRepository.save(existingWishlist);
-        } else {
-            throw new AccessDeniedException(ErrorMessage.LIMIT_ACCESS);
-        }
+        return wishlistRepository.save(existingWishlist);
+
     }
 
     public String deleteById(UUID wishlistId) {
-        String username  = SecurityContextHolder.getContext().getAuthentication().getName();
-        String roles  = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
         WishList wishlist = findById(wishlistId);
+        SecurityUtil.checkAuthenticatedUserOrAdminIsAuthorized(wishlist.getProfile().getUser().getUsername(), true);
 
-        if (username.equals(wishlist.getProfile().getUser().getUsername()) || roles.equals("[ROLE_ADMIN]")) {
-            List<Product> productList = productRepository.findByWishlist(wishlist);
+        List<Product> productList = productRepository.findByWishlist(wishlist);
 
-            for (Product product : productList) {
-                product.getWishlists().remove(wishlist);
-                productRepository.save(product);
-            }
-
-            wishlistRepository.deleteById(wishlistId);
-
-            return ConfirmMessage.WISHLIST_DELETE;
-        } else {
-            throw new AccessDeniedException(ErrorMessage.LIMIT_ACCESS);
+        for (Product product : productList) {
+            product.getWishlists().remove(wishlist);
+            productRepository.save(product);
         }
+
+        wishlistRepository.deleteById(wishlistId);
+
+        return ConfirmMessage.WISHLIST_DELETE;
+
     }
 }

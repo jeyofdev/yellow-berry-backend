@@ -2,6 +2,7 @@ package com.jeyofdev.yellow_berry.auth_user;
 
 import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.core.constant.Regex;
+import com.jeyofdev.yellow_berry.security.util.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +24,7 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     @Override
     public List<AuthUser> findAll() throws AccessDeniedException {
-        String roles  = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-
-        if(roles.equals("[ROLE_ADMIN]")) {
+        if(SecurityUtil.getAuthenticatedRole().equals("[ROLE_ADMIN]")) {
             return authUserRepository.findAll();
         } else {
             throw new AccessDeniedException(ErrorMessage.LIMIT_ACCESS);
@@ -34,9 +33,6 @@ public class AuthUserServiceImpl implements AuthUserService {
 
     @Override
     public AuthUser findUserByEmail(String email) throws AccessDeniedException, ConstraintViolationException, EntityNotFoundException {
-        String username  = SecurityContextHolder.getContext().getAuthentication().getName();
-        String roles  = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
-
         if (email == null || email.isEmpty()) {
             throw new ConstraintViolationException(ErrorMessage.EMAIL_REQUIRED, null);
         } else {
@@ -45,7 +41,7 @@ public class AuthUserServiceImpl implements AuthUserService {
             }
         }
 
-        if (username.equals(email) || roles.equals("[ROLE_ADMIN]")) {
+        if (SecurityUtil.getAuthenticatedUsername().equals(email) || SecurityUtil.getAuthenticatedRole().equals("[ROLE_ADMIN]")) {
             return authUserRepository.findByEmail(email)
                     .orElseThrow(() -> new EntityNotFoundException("email " + email +" not found"));
         } else {
