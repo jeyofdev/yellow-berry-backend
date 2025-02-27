@@ -138,7 +138,8 @@ public class SecurityConfig {
                                 "/api/v1/tag/{tagId}",
                                 "/api/v1/team/member/{teamMemberId}",
                                 "/api/v1/testimonial/{testimonialId}",
-                                "/api/v1/product/{productId}/wishlist/{wishlistId}"
+                                "/api/v1/product/{productId}",
+                                "/wishlist/{wishlistId}"
                         ).hasRole(RoleEnum.ADMIN.name())
 
                         .requestMatchers(HttpMethod.DELETE,
