@@ -141,6 +141,6 @@ public class ProductService extends AbstractDomainService<Product, ProductReposi
         findById(productId);
         productRepository.deleteById(productId);
 
-        return ConfirmMessage.PRODUCT_DELETE;
+        return MessageFormat.format(ConfirmMessage.CONFIRM_DELETE, "product");
     }
 }

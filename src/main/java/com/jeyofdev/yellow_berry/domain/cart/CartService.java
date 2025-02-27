@@ -93,6 +93,6 @@ public class CartService extends AbstractDomainService<Cart, CartRepository> {
 
         cartRepository.deleteById(cartId);
 
-        return ConfirmMessage.CART_DELETE;
+        return MessageFormat.format(ConfirmMessage.CONFIRM_DELETE, "cart");
     }
 }

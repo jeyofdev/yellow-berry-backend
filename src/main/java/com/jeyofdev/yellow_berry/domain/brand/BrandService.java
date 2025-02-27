@@ -55,6 +55,6 @@ public class BrandService extends AbstractDomainService<Brand, BrandRepository> 
 
         brandRepository.deleteById(brandId);
 
-        return ConfirmMessage.BRAND_DELETE;
+        return MessageFormat.format(ConfirmMessage.CONFIRM_DELETE, "brand");
     }
 }

@@ -70,7 +70,7 @@ public class ProfileService extends AbstractDomainService<Profile, ProfileReposi
         SecurityUtil.checkAuthenticatedUserOrAdminIsAuthorized(profile.getUser().getUsername(), true);
         profileRepository.deleteById(profileId);
 
-        return ConfirmMessage.PROFILE_DELETE;
+        return MessageFormat.format(ConfirmMessage.CONFIRM_DELETE, "profile");
 
     }
 }

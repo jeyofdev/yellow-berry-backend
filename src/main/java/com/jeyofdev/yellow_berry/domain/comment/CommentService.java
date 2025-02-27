@@ -14,6 +14,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.UUID;
 
@@ -73,6 +74,6 @@ public class CommentService extends AbstractDomainService<Comment, CommentReposi
 
         commentRepository.deleteById(commentId);
 
-        return ConfirmMessage.COMMENT_DELETE;
+        return MessageFormat.format(ConfirmMessage.CONFIRM_DELETE, "comment");
     }
 }
