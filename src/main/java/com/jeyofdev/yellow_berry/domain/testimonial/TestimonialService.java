@@ -5,6 +5,7 @@ import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.UUID;
 
 @Service
@@ -34,6 +35,6 @@ public class TestimonialService extends AbstractDomainService<Testimonial, Testi
         findById(testimonialId);
         testimonialRepository.deleteById(testimonialId);
 
-        return ConfirmMessage.TESTIMONIAL_DELETE;
+        return MessageFormat.format(ConfirmMessage.CONFIRM_DELETE, "testimonial");
     }
 }

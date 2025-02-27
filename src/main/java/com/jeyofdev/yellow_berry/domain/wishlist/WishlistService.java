@@ -84,7 +84,7 @@ public class WishlistService extends AbstractDomainService<WishList, WishlistRep
 
         wishlistRepository.deleteById(wishlistId);
 
-        return ConfirmMessage.WISHLIST_DELETE;
+        return MessageFormat.format(ConfirmMessage.CONFIRM_DELETE, "wishlist");
 
     }
 }

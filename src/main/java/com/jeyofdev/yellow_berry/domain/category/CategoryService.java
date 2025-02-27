@@ -62,6 +62,6 @@ public class CategoryService extends AbstractDomainService<Category, CategoryRep
         findById(categoryId);
         categoryRepository.deleteById(categoryId);
 
-        return ConfirmMessage.CATEGORY_DELETE;
+        return MessageFormat.format(ConfirmMessage.CONFIRM_DELETE, "category");
     }
 }

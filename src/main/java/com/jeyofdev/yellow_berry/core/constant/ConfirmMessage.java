@@ -8,18 +8,6 @@ public class ConfirmMessage {
     public static final String REQUEST_PASSWORD_RESET = "An email containing a link to reset your password has been sent to your address. Please check your inbox and follow the instructions.";
     public static final String PASSWORD_UPDATED_AFTER_FORGOT = "Your password has been updated successfully. You can now use your new password to log in.";
 
-    public static final String FAQ_DELETE = "Faq question and answer has been successfully deleted.";
-    public static final String TEAM_DELETE = "The team member has been successfully deleted.";
-    public static final String SERVICE_DELETE = "The service has been successfully deleted.";
-    public static final String TESTIMONIAL_DELETE = "The testimonial has been successfully deleted.";
-    public static final String BRAND_DELETE = "The brand has been successfully deleted.";
-    public static final String CATEGORY_DELETE = "The brand has been successfully deleted.";
-    public static final String TAG_DELETE = "The tag has been successfully deleted.";
-    public static final String PRODUCT_DELETE = "The product has been successfully deleted.";
-    public static final String PRODUCT_INFORMATION_DELETE = "The product informations has been successfully deleted.";
-    public static final String COMMENT_DELETE = "The comment has been successfully deleted.";
-    public static final String PRODUCT_DETAILS_DELETE = "The product details has been successfully deleted.";
-    public static final String WISHLIST_DELETE = "The wishlist has been successfully deleted.";
-    public static final String CART_DELETE = "The cart has been successfully deleted.";
-    public static final String PROFILE_DELETE = "The profile has been successfully deleted.";
+    public static final String CONFIRM_DELETE = "The {0} has been successfully deleted.";
+    public static final String CONFIRM_DELETE_PLURAL = "The {0} have been successfully deleted.";
 }

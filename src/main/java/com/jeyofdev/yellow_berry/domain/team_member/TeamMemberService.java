@@ -57,6 +57,6 @@ public class TeamMemberService extends AbstractDomainService<TeamMember, TeamMem
         findById(teamMemberId);
         teamMemberRepository.deleteById(teamMemberId);
 
-        return ConfirmMessage.TEAM_DELETE;
+        return MessageFormat.format(ConfirmMessage.CONFIRM_DELETE, "team member");
     }
 }

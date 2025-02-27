@@ -52,6 +52,6 @@ public class ProductInformationService extends AbstractDomainService<ProductInfo
         findById(productInformationId);
         productInformationRepository.deleteById(productInformationId);
 
-        return ConfirmMessage.PRODUCT_INFORMATION_DELETE;
+        return MessageFormat.format(ConfirmMessage.CONFIRM_DELETE_PLURAL, "product informations");
     }
 }
