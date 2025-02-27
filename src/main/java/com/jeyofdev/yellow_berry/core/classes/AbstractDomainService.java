@@ -4,7 +4,6 @@ import com.jeyofdev.yellow_berry.core.interfaces.domain.DomainService;
 import com.jeyofdev.yellow_berry.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -23,7 +22,7 @@ public class AbstractDomainService<T, R extends JpaRepository<T, UUID>> implemen
     @Override
     public T findById(UUID entityId) throws NotFoundException {
         return repository.findById(entityId).orElseThrow(
-            () -> new NotFoundException(MessageFormat.format("Entity {0} with id {1} cannot be found", entityName, entityId)));
+                () -> new NotFoundException(MessageFormat.format("Entity {0} with id {1} cannot be found", entityName, entityId)));
     }
 
     @Override

@@ -9,7 +9,10 @@ import java.util.UUID;
 @Repository
 public interface AuthUserRepository extends JpaRepository<AuthUser, Long> {
     Optional<AuthUser> findByEmail(String email);
+
     Optional<AuthUser> findById(UUID id);
+
     Optional<AuthUser> findByVerificationToken(String verificationToken);
+
     Optional<AuthUser> findByResetToken(String resetToken);
 }

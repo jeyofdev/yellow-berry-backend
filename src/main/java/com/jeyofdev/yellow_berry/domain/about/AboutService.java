@@ -1,7 +1,6 @@
 package com.jeyofdev.yellow_berry.domain.about;
 
 import com.jeyofdev.yellow_berry.core.classes.AbstractDomainService;
-import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.UUID;

@@ -7,12 +7,9 @@ import com.jeyofdev.yellow_berry.domain.cart.Cart;
 import com.jeyofdev.yellow_berry.domain.cart.CartService;
 import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.category.CategoryRepository;
-import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetails;
-import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetailsRepository;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import com.jeyofdev.yellow_berry.domain.tag.TagRepository;
 import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
-import com.jeyofdev.yellow_berry.domain.wishlist.WishlistRepository;
 import com.jeyofdev.yellow_berry.domain.wishlist.WishlistService;
 import com.jeyofdev.yellow_berry.exception.AlreadyTakenException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,7 +46,7 @@ public class ProductService extends AbstractDomainService<Product, ProductReposi
 
     @Override
     public Product save(Product product) {
-           if (productRepository.existsByName(product.getName())) {
+        if (productRepository.existsByName(product.getName())) {
             throw new AlreadyTakenException(MessageFormat.format(ErrorMessage.ALREADY_TAKEN, entityName, "name", product.getName()));
         }
 
@@ -72,7 +69,7 @@ public class ProductService extends AbstractDomainService<Product, ProductReposi
         List<Tag> updatedTags;
         if (updatedProduct.getTagList() != null && !updatedProduct.getTagList().isEmpty()) {
             updatedTags = tagRepository.findAllById(
-                updatedProduct.getTagList().stream().map(Tag::getId).toList()
+                    updatedProduct.getTagList().stream().map(Tag::getId).toList()
             );
         } else {
             updatedTags = existingProduct.getTagList();
@@ -81,7 +78,7 @@ public class ProductService extends AbstractDomainService<Product, ProductReposi
         List<Category> updatedCategories;
         if (updatedProduct.getCategoryList() != null && !updatedProduct.getCategoryList().isEmpty()) {
             updatedCategories = categoryRepository.findAllById(
-                updatedProduct.getCategoryList().stream().map(Category::getId).toList()
+                    updatedProduct.getCategoryList().stream().map(Category::getId).toList()
             );
         } else {
             updatedCategories = existingProduct.getCategoryList();

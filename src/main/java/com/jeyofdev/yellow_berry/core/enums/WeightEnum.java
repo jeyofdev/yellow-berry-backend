@@ -14,7 +14,7 @@ public enum WeightEnum {
 
     private final int grams;
 
-    WeightEnum (int grams) {
+    WeightEnum(int grams) {
         this.grams = grams;
     }
 

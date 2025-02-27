@@ -4,7 +4,10 @@ import com.jeyofdev.yellow_berry.auth_user.dto.AuthUserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 import java.util.UUID;
@@ -17,7 +20,7 @@ public class AuthUserController {
     private final AuthUserMapper authUserMapper;
 
     @GetMapping
-    public ResponseEntity<List<AuthUserDTO>> getAllUsers()  {
+    public ResponseEntity<List<AuthUserDTO>> getAllUsers() {
         List<AuthUser> authUserList = authUserServiceImpl.findAll();
         List<AuthUserDTO> authUserDTOList = authUserList.stream()
                 .map(authUserMapper::mapFromEntity)

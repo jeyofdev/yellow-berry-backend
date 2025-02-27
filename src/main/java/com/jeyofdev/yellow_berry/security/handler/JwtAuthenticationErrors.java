@@ -31,20 +31,17 @@ public class JwtAuthenticationErrors implements AuthenticationEntryPoint {
             error.put("status", "401");
             error.put("exceptionName", "expired_exception");
             error.put("date", Helper.simpleDateFormat());
-        }
-        else if (request.getAttribute("malformed_exception") != null) {
+        } else if (request.getAttribute("malformed_exception") != null) {
             error.put("message", ErrorMessage.JWT_MALFORMED);
             error.put("status", "401");
             error.put("exceptionName", "malformed_exception");
             error.put("date", Helper.simpleDateFormat());
-        }
-        else if (request.getAttribute("jwt_exception") != null) {
+        } else if (request.getAttribute("jwt_exception") != null) {
             error.put("message", "is_jwt_exception.");
             error.put("status", "401");
             error.put("exceptionName", "jwt_exception");
             error.put("date", Helper.simpleDateFormat());
-        }
-        else if (request.getAttribute("no_jwt_provided") != null) {
+        } else if (request.getAttribute("no_jwt_provided") != null) {
             error.put("message", ErrorMessage.JWT_MUST_BE_PROVIDED);
             error.put("status", "401");
             error.put("exceptionName", "no_jwt_provided");

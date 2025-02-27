@@ -9,5 +9,6 @@ import org.mapstruct.Mapping;
 public interface TestimonialMapper {
     @Mapping(target = "name", expression = "java(testimonial.getFirstname() + \" \" + testimonial.getLastname())")
     TestimonialDTO mapFromEntity(Testimonial testimonial);
+
     Testimonial mapToEntity(SaveTestimonialDTO saveTestimonialDTO);
 }

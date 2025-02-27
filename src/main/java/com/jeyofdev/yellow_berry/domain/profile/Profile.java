@@ -6,7 +6,6 @@ import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.core.constant.Regex;
 import com.jeyofdev.yellow_berry.domain.cart.Cart;
 import com.jeyofdev.yellow_berry.domain.comment.Comment;
-import com.jeyofdev.yellow_berry.domain.testimonial.Testimonial;
 import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;

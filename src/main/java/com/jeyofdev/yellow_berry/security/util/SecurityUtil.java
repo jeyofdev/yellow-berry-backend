@@ -4,7 +4,6 @@ import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-
 public class SecurityUtil {
     private SecurityUtil() {
     }
