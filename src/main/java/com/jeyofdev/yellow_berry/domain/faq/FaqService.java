@@ -45,6 +45,6 @@ public class FaqService extends AbstractDomainService<Faq, FaqRepository> {
         findById(faqId);
         faqRepository.deleteById(faqId);
 
-        return ConfirmMessage.FAQ_DELETE;
+        return MessageFormat.format(ConfirmMessage.CONFIRM_DELETE, "question");
     }
 }

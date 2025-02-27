@@ -44,6 +44,6 @@ public class ServiceImpl extends AbstractDomainService<Service, ServiceRepositor
         findById(serviceId);
         serviceRepository.deleteById(serviceId);
 
-        return ConfirmMessage.SERVICE_DELETE;
+        return MessageFormat.format(ConfirmMessage.CONFIRM_DELETE, "service");
     }
 }

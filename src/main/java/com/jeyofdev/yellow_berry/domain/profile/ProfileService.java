@@ -9,6 +9,7 @@ import com.jeyofdev.yellow_berry.domain.product.Product;
 import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
 import com.jeyofdev.yellow_berry.exception.AlreadyTakenException;
 import com.jeyofdev.yellow_berry.exception.AlreadyAssociatedException;
+import com.jeyofdev.yellow_berry.security.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,57 +32,45 @@ public class ProfileService extends AbstractDomainService<Profile, ProfileReposi
     }
 
     public Profile save(UUID userId, Profile profile) {
-        String username  = SecurityContextHolder.getContext().getAuthentication().getName();
         AuthUser user = authUserService.findUserById(userId);
+        SecurityUtil.checkAuthenticatedUserOrAdminIsAuthorized(user.getUsername(), false);
 
-        if (username.equals(user.getUsername())) {
-            if (user.getProfile() != null) {
-                throw new AlreadyAssociatedException(MessageFormat.format(ErrorMessage.ALREADY_ASSOCIATED, "user", "profile"));
-            }
-
-            if (profileRepository.existsByPhone(profile.getPhone())) {
-                throw new AlreadyTakenException(MessageFormat.format(ErrorMessage.ALREADY_TAKEN, entityName, "phone", profile.getPhone()));
-            }
-
-            profile.setUser(user);
-
-            return profileRepository.save(profile);
-        } else {
-            throw new AccessDeniedException(ErrorMessage.LIMIT_ACCESS);
+        if (user.getProfile() != null) {
+            throw new AlreadyAssociatedException(MessageFormat.format(ErrorMessage.ALREADY_ASSOCIATED, "user", "profile"));
         }
+
+        if (profileRepository.existsByPhone(profile.getPhone())) {
+            throw new AlreadyTakenException(MessageFormat.format(ErrorMessage.ALREADY_TAKEN, entityName, "phone", profile.getPhone()));
+        }
+
+        profile.setUser(user);
+
+        return profileRepository.save(profile);
     }
 
     public Profile updateById(UUID profileId, Profile updatedProfile) {
-        String username  = SecurityContextHolder.getContext().getAuthentication().getName();
         Profile existingProfile = findById(profileId);
+        SecurityUtil.checkAuthenticatedUserOrAdminIsAuthorized(existingProfile.getUser().getUsername(), false);
 
-        if (username.equals(existingProfile.getUser().getUsername())) {
-            existingProfile.setFirstname(updatedProfile.getFirstname() != null ? updatedProfile.getFirstname() : existingProfile.getFirstname());
-            existingProfile.setLastname(updatedProfile.getLastname() != null ? updatedProfile.getLastname() : existingProfile.getLastname());
-            existingProfile.setPhone(updatedProfile.getPhone() != null ? updatedProfile.getPhone() : existingProfile.getPhone());
-            existingProfile.setAddress(updatedProfile.getAddress() != null ? updatedProfile.getAddress() : existingProfile.getAddress());
-            existingProfile.setRegion(updatedProfile.getRegion() != null ? updatedProfile.getRegion() : existingProfile.getRegion());
-            existingProfile.setDepartment(updatedProfile.getDepartment() != null ? updatedProfile.getDepartment() : existingProfile.getDepartment());
-            existingProfile.setZipCode(updatedProfile.getZipCode() != null ? updatedProfile.getZipCode() : existingProfile.getZipCode());
-            existingProfile.setCity(updatedProfile.getCity() != null ? updatedProfile.getCity() : existingProfile.getCity());
+        existingProfile.setFirstname(updatedProfile.getFirstname() != null ? updatedProfile.getFirstname() : existingProfile.getFirstname());
+        existingProfile.setLastname(updatedProfile.getLastname() != null ? updatedProfile.getLastname() : existingProfile.getLastname());
+        existingProfile.setPhone(updatedProfile.getPhone() != null ? updatedProfile.getPhone() : existingProfile.getPhone());
+        existingProfile.setAddress(updatedProfile.getAddress() != null ? updatedProfile.getAddress() : existingProfile.getAddress());
+        existingProfile.setRegion(updatedProfile.getRegion() != null ? updatedProfile.getRegion() : existingProfile.getRegion());
+        existingProfile.setDepartment(updatedProfile.getDepartment() != null ? updatedProfile.getDepartment() : existingProfile.getDepartment());
+        existingProfile.setZipCode(updatedProfile.getZipCode() != null ? updatedProfile.getZipCode() : existingProfile.getZipCode());
+        existingProfile.setCity(updatedProfile.getCity() != null ? updatedProfile.getCity() : existingProfile.getCity());
 
-            return profileRepository.save(existingProfile);
-        } else {
-            throw new AccessDeniedException(ErrorMessage.LIMIT_ACCESS);
-        }
+        return profileRepository.save(existingProfile);
+
     }
 
     public String deleteById(UUID profileId) {
-        String username  = SecurityContextHolder.getContext().getAuthentication().getName();
-        String roles  = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
         Profile profile = findById(profileId);
+        SecurityUtil.checkAuthenticatedUserOrAdminIsAuthorized(profile.getUser().getUsername(), true);
+        profileRepository.deleteById(profileId);
 
-        if (username.equals(profile.getUser().getUsername()) || roles.equals("[ROLE_ADMIN]")) {
-            profileRepository.deleteById(profileId);
+        return MessageFormat.format(ConfirmMessage.CONFIRM_DELETE, "profile");
 
-            return ConfirmMessage.PROFILE_DELETE;
-        } else {
-            throw new AccessDeniedException(ErrorMessage.LIMIT_ACCESS);
-        }
     }
 }

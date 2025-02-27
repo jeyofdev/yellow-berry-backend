@@ -9,6 +9,7 @@ import com.jeyofdev.yellow_berry.domain.product.ProductRepository;
 import com.jeyofdev.yellow_berry.domain.profile.Profile;
 import com.jeyofdev.yellow_berry.domain.profile.ProfileService;
 import com.jeyofdev.yellow_berry.exception.AlreadyAssociatedException;
+import com.jeyofdev.yellow_berry.security.util.SecurityUtil;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,24 +42,20 @@ public class CartService extends AbstractDomainService<Cart, CartRepository> {
     }
 
     public Cart save(UUID profileId, Cart cart) {
-        String username  = SecurityContextHolder.getContext().getAuthentication().getName();
         Profile profile = profileService.findById(profileId);
+        SecurityUtil.checkAuthenticatedUserOrAdminIsAuthorized(profile.getUser().getUsername(), false);
 
-        if (username.equals(profile.getUser().getUsername())) {
-            if (profile.getCart() != null) {
-                throw new AlreadyAssociatedException(MessageFormat.format(ErrorMessage.ALREADY_ASSOCIATED, "product", "cart"));
-            }
-
-            cart.setProfile(profile);
-            cart.setCreatedAt(new Date());
-            cart.setUpdatedAt(new Date());
-
-            profile.setCart(cart);
-
-            return cartRepository.save(cart);
-        } else {
-            throw new AccessDeniedException(ErrorMessage.LIMIT_ACCESS);
+        if (profile.getCart() != null) {
+            throw new AlreadyAssociatedException(MessageFormat.format(ErrorMessage.ALREADY_ASSOCIATED, "product", "cart"));
         }
+
+        cart.setProfile(profile);
+        cart.setCreatedAt(new Date());
+        cart.setUpdatedAt(new Date());
+
+        profile.setCart(cart);
+
+        return cartRepository.save(cart);
     }
 
     public List<Cart> getCartListByIds(List<UUID> cartListIds) {
@@ -70,39 +67,32 @@ public class CartService extends AbstractDomainService<Cart, CartRepository> {
     }
 
     public Cart updateById(UUID cartId, Cart updatedCart) {
-        String username  = SecurityContextHolder.getContext().getAuthentication().getName();
         Cart existingCart = findById(cartId);
+        SecurityUtil.checkAuthenticatedUserOrAdminIsAuthorized(existingCart.getProfile().getUser().getUsername(), false);
 
-        if (username.equals(existingCart.getProfile().getUser().getUsername())) {
-            existingCart.setUpdatedAt(new Date());
-            return cartRepository.save(existingCart);
-        } else {
-            throw new AccessDeniedException(ErrorMessage.LIMIT_ACCESS);
-        }
+        existingCart.setUpdatedAt(new Date());
+        return cartRepository.save(existingCart);
+
     }
 
     public String deleteById(UUID cartId) {
-        String username  = SecurityContextHolder.getContext().getAuthentication().getName();
-        String roles  = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
         Cart cart = findById(cartId);
 
-        if (username.equals(cart.getProfile().getUser().getUsername()) || roles.equals("[ROLE_ADMIN]")) {
-            List<Product> productList = productRepository.findByCartList(cart);
+        SecurityUtil.checkAuthenticatedUserOrAdminIsAuthorized(cart.getProfile().getUser().getUsername(), true);
 
-            for (Product product : productList) {
-                product.getCartList().remove(cart);
-                productRepository.save(product);
-            }
+        List<Product> productList = productRepository.findByCartList(cart);
 
-            if (cart.getProfile() != null) {
-                cart.getProfile().setCart(null);
-            }
-
-            cartRepository.deleteById(cartId);
-
-            return ConfirmMessage.CART_DELETE;
-        } else {
-            throw new AccessDeniedException(ErrorMessage.LIMIT_ACCESS);
+        for (Product product : productList) {
+            product.getCartList().remove(cart);
+            productRepository.save(product);
         }
+
+        if (cart.getProfile() != null) {
+            cart.getProfile().setCart(null);
+        }
+
+        cartRepository.deleteById(cartId);
+
+        return MessageFormat.format(ConfirmMessage.CONFIRM_DELETE, "cart");
     }
 }

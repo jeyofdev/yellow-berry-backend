@@ -59,6 +59,6 @@ public class TagService extends AbstractDomainService<Tag, TagRepository> {
 
         tagRepository.deleteById(tagId);
 
-        return ConfirmMessage.TAG_DELETE;
+        return MessageFormat.format(ConfirmMessage.CONFIRM_DELETE, "tag");
     }
 }

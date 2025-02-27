@@ -50,6 +50,6 @@ public class ProductDetailsService extends AbstractDomainService<ProductDetails,
         findById(productDetails);
         productDetailsRepository.deleteById(productDetails);
 
-        return ConfirmMessage.PRODUCT_DETAILS_DELETE;
+        return MessageFormat.format(ConfirmMessage.CONFIRM_DELETE_PLURAL, "product details");
     }
 }
