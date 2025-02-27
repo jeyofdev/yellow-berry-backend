@@ -4,6 +4,7 @@ import com.jeyofdev.yellow_berry.core.interfaces.domain.DomainService;
 import com.jeyofdev.yellow_berry.exception.NotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.text.MessageFormat;
 import java.util.List;

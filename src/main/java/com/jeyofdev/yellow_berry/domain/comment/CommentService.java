@@ -8,6 +8,7 @@ import com.jeyofdev.yellow_berry.domain.product.ProductRepository;
 import com.jeyofdev.yellow_berry.domain.product.ProductService;
 import com.jeyofdev.yellow_berry.domain.profile.Profile;
 import com.jeyofdev.yellow_berry.domain.profile.ProfileService;
+import com.jeyofdev.yellow_berry.security.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -48,40 +49,30 @@ public class CommentService extends AbstractDomainService<Comment, CommentReposi
     }
 
     public Comment updateById(UUID commentId, Comment updatedComment) {
-        String username  = SecurityContextHolder.getContext().getAuthentication().getName();
         Comment existingComment = findById(commentId);
+        SecurityUtil.checkAuthenticatedUserOrAdminIsAuthorized(existingComment.getProfile().getUser().getUsername(), false);
 
-        if (username.equals(existingComment.getProfile().getUser().getUsername())) {
+        existingComment.setRating(updatedComment.getRating() != null ? updatedComment.getRating() : existingComment.getRating());
+        existingComment.setBody(updatedComment.getBody() != null ? updatedComment.getBody() : existingComment.getBody());
 
-            existingComment.setRating(updatedComment.getRating() != null ? updatedComment.getRating() : existingComment.getRating());
-            existingComment.setBody(updatedComment.getBody() != null ? updatedComment.getBody() : existingComment.getBody());
-
-            return commentRepository.save(existingComment);
-        } else {
-            throw new AccessDeniedException(ErrorMessage.LIMIT_ACCESS);
-        }
+        return commentRepository.save(existingComment);
     }
 
     public String deleteById(UUID commentId) {
-        String username  = SecurityContextHolder.getContext().getAuthentication().getName();
-        String roles  = SecurityContextHolder.getContext().getAuthentication().getAuthorities().toString();
         Comment comment = findById(commentId);
+        SecurityUtil.checkAuthenticatedUserOrAdminIsAuthorized(comment.getProfile().getUser().getUsername(), true);
 
-        if (username.equals(comment.getProfile().getUser().getUsername()) || roles.equals("[ROLE_ADMIN]")) {
-            List<Product> productList = productRepository.findByComment(comment);
+        List<Product> productList = productRepository.findByComment(comment);
 
-            for (Product product : productList) {
-                product.getCommentList().remove(comment);
-                productRepository.save(product);
-            }
-
-            comment.setProfile(null);
-
-            commentRepository.deleteById(commentId);
-
-            return ConfirmMessage.COMMENT_DELETE;
-        } else {
-            throw new AccessDeniedException(ErrorMessage.LIMIT_ACCESS);
+        for (Product product : productList) {
+            product.getCommentList().remove(comment);
+            productRepository.save(product);
         }
+
+        comment.setProfile(null);
+
+        commentRepository.deleteById(commentId);
+
+        return ConfirmMessage.COMMENT_DELETE;
     }
 }
