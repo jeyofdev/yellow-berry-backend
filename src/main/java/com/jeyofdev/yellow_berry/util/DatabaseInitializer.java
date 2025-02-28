@@ -6,10 +6,7 @@ import com.jeyofdev.yellow_berry.auth.model.AuthResponse;
 import com.jeyofdev.yellow_berry.auth.model.LoginRequest;
 import com.jeyofdev.yellow_berry.auth.model.RegisterRequest;
 import com.jeyofdev.yellow_berry.auth_user.AuthUserRepository;
-import com.jeyofdev.yellow_berry.core.enums.ColorEnum;
-import com.jeyofdev.yellow_berry.core.enums.RoleEnum;
-import com.jeyofdev.yellow_berry.core.enums.StockEnum;
-import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
+import com.jeyofdev.yellow_berry.core.enums.*;
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
 import com.jeyofdev.yellow_berry.domain.brand.Brand;
 import com.jeyofdev.yellow_berry.domain.brand.BrandController;
@@ -39,9 +36,15 @@ import com.jeyofdev.yellow_berry.domain.profile.ProfileMapper;
 import com.jeyofdev.yellow_berry.domain.profile.ProfileService;
 import com.jeyofdev.yellow_berry.domain.profile.dto.ProfileDTO;
 import com.jeyofdev.yellow_berry.domain.profile.dto.SaveProfileDTO;
+import com.jeyofdev.yellow_berry.domain.service.ServiceController;
+import com.jeyofdev.yellow_berry.domain.service.ServiceRepository;
+import com.jeyofdev.yellow_berry.domain.service.dto.SaveServiceDTO;
 import com.jeyofdev.yellow_berry.domain.tag.TagController;
 import com.jeyofdev.yellow_berry.domain.tag.TagRepository;
 import com.jeyofdev.yellow_berry.domain.tag.dto.SaveTagDTO;
+import com.jeyofdev.yellow_berry.domain.testimonial.TestimonialController;
+import com.jeyofdev.yellow_berry.domain.testimonial.TestimonialRepository;
+import com.jeyofdev.yellow_berry.domain.testimonial.dto.SaveTestimonialDTO;
 import com.jeyofdev.yellow_berry.domain.wishlist.dto.SaveWishlistDTO;
 import com.jeyofdev.yellow_berry.domain.wishlist.dto.WishlistDTO;
 import com.jeyofdev.yellow_berry.security.service.JwtService;
@@ -70,6 +73,12 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     private final TagRepository tagRepository;
     private final TagController tagController;
+
+    private final ServiceRepository serviceRepository;
+    private final ServiceController serviceController;
+
+    private final TestimonialRepository testimonialRepository;
+    private final TestimonialController testimonialController;
 
     private final ProductRepository productRepository;
     private final ProductController productController;
@@ -124,6 +133,8 @@ public class DatabaseInitializer implements CommandLineRunner {
         this.createFakeProductInformations();
         this.createUsers();
         this.createProfiles();
+        this.createFakeServices();
+        this.createFakeTestimonials();
     }
 
     private void createFakeBrands() {
@@ -286,24 +297,23 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         UUID profileId = sendCreationRequest(token, saveProfileDTO, "http://localhost:8080/api/v1/profile/user/" + userId, ProfileDTO.class);
 
-        createCart(profileId, token);
-        createWishlist(profileId, token);
-        createComments(profileId, token);
+        createFakeCarts(profileId, token);
+        createFakeWishlist(profileId, token);
+        createFakeComments(profileId, token);
 
     }
 
-    public void createCart(UUID profileId, String authenticateToken) {
+    public void createFakeCarts(UUID profileId, String authenticateToken) {
         SaveCartDTO saveCartDTO = new SaveCartDTO();
         sendCreationRequest(authenticateToken, saveCartDTO, "http://localhost:8080/api/v1/cart/profile/" + profileId, CartDTO.class);
-
     }
 
-    public void createWishlist(UUID profileId, String authenticateToken) {
+    public void createFakeWishlist(UUID profileId, String authenticateToken) {
         SaveWishlistDTO saveWishlistDTO = new SaveWishlistDTO(faker.name().title());
         sendCreationRequest(authenticateToken, saveWishlistDTO, "http://localhost:8080/api/v1/wishlist/profile/" + profileId, WishlistDTO.class);
     }
 
-    public void createComments(UUID profileId, String authenticateToken) {
+    public void createFakeComments(UUID profileId, String authenticateToken) {
         List<Product> productList = productRepository.findAll();
 
         productList.forEach(product -> {
@@ -319,6 +329,36 @@ public class DatabaseInitializer implements CommandLineRunner {
                 sendCreationRequest(authenticateToken, saveCommentDTO, "http://localhost:8080/api/v1/comment/product/" + productId + "/profile/" + profileId, CommentDTO.class);
             }
         });
+    }
+
+    private void createFakeServices() {
+        if (serviceRepository.count() == 0) {
+            IntStream.range(0, 10).forEach(i -> {
+                String serviceName;
+                do {
+                    serviceName = faker.name().title();
+                } while (serviceRepository.existsByName(serviceName));
+
+                SaveServiceDTO saveServiceDTO = new SaveServiceDTO(serviceName, faker.lorem().sentence(15));
+                serviceController.saveService(saveServiceDTO);
+            });
+        }
+    }
+
+    private void createFakeTestimonials() {
+        if (testimonialRepository.count() == 0) {
+            IntStream.range(0, 10).forEach(i -> {
+                String testimonialFirstname;
+                String testimonialLastname;
+                do {
+                    testimonialFirstname = faker.name().firstName();
+                    testimonialLastname = faker.name().lastName();
+                } while (testimonialRepository.existsByFirstnameAndLastname(testimonialFirstname, testimonialLastname));
+
+                SaveTestimonialDTO saveTestimonialDTO = new SaveTestimonialDTO(testimonialFirstname, testimonialLastname, JobEnum.CEO, faker.lorem().sentence(40));
+                testimonialController.saveTestimonial(saveTestimonialDTO);
+            });
+        }
     }
 
     public List<String> loginUsers() {
