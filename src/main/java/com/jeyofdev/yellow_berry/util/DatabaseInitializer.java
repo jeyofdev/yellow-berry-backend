@@ -1,7 +1,11 @@
 package com.jeyofdev.yellow_berry.util;
 
 import com.github.javafaker.Faker;
+import com.jeyofdev.yellow_berry.auth.AuthServiceImpl;
+import com.jeyofdev.yellow_berry.auth.model.RegisterRequest;
+import com.jeyofdev.yellow_berry.auth_user.AuthUserRepository;
 import com.jeyofdev.yellow_berry.core.enums.ColorEnum;
+import com.jeyofdev.yellow_berry.core.enums.RoleEnum;
 import com.jeyofdev.yellow_berry.core.enums.StockEnum;
 import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
 import com.jeyofdev.yellow_berry.domain.brand.Brand;
@@ -31,6 +35,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.BeanPropertyBindingResult;
 
 import java.io.IOException;
 import java.util.List;
@@ -58,6 +63,9 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     private final ProductInformationRepository productInformationRepository;
     private final ProductInformationMapper productInformationMapper;
+
+    private final AuthUserRepository authUserRepository;
+    private final AuthServiceImpl authServiceImpl;
 
     private final Faker faker = new Faker();
     private final Random random = new Random();
@@ -93,6 +101,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         this.createFakeProducts();
         this.createFakeProductDetails();
         this.createFakeProductInformations();
+        this.createUsers();
     }
 
     private void createFakeBrands() {
@@ -216,5 +225,15 @@ public class DatabaseInitializer implements CommandLineRunner {
                 productRepository.save(product);
             }
         });
+    }
+
+    public void createUsers() {
+        if (authUserRepository.count() == 0) {
+            RegisterRequest user = new RegisterRequest("user@test.fr", "uSer12345*4", RoleEnum.USER.toString());
+            RegisterRequest admin = new RegisterRequest("admin@test.fr", "adMin12345*4", RoleEnum.USER.toString());
+
+            authServiceImpl.register(user, new BeanPropertyBindingResult(user, "user"));
+            authServiceImpl.register(admin, new BeanPropertyBindingResult(admin, "admin"));
+        }
     }
 }
