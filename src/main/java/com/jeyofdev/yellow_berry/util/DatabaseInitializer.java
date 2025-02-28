@@ -40,6 +40,8 @@ import com.jeyofdev.yellow_berry.domain.profile.dto.SaveProfileDTO;
 import com.jeyofdev.yellow_berry.domain.tag.TagController;
 import com.jeyofdev.yellow_berry.domain.tag.TagRepository;
 import com.jeyofdev.yellow_berry.domain.tag.dto.SaveTagDTO;
+import com.jeyofdev.yellow_berry.domain.wishlist.dto.SaveWishlistDTO;
+import com.jeyofdev.yellow_berry.domain.wishlist.dto.WishlistDTO;
 import com.jeyofdev.yellow_berry.security.service.JwtService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
@@ -283,12 +285,18 @@ public class DatabaseInitializer implements CommandLineRunner {
         UUID profileId = sendCreationRequest(token, saveProfileDTO, "http://localhost:8080/api/v1/profile/user/" + userId, ProfileDTO.class);
 
         createCart(profileId, token);
+        createWishlist(profileId, token);
     }
 
     public void createCart(UUID profileId, String authenticateToken) {
-            SaveCartDTO saveCartDTO = new SaveCartDTO();
-            sendCreationRequest(authenticateToken, saveCartDTO, "http://localhost:8080/api/v1/cart/profile/" + profileId, CartDTO.class);
+        SaveCartDTO saveCartDTO = new SaveCartDTO();
+        sendCreationRequest(authenticateToken, saveCartDTO, "http://localhost:8080/api/v1/cart/profile/" + profileId, CartDTO.class);
 
+    }
+
+    public void createWishlist(UUID profileId, String authenticateToken) {
+        SaveWishlistDTO saveWishlistDTO = new SaveWishlistDTO(faker.name().title());
+        sendCreationRequest(authenticateToken, saveWishlistDTO, "http://localhost:8080/api/v1/wishlist/profile/" + profileId, WishlistDTO.class);
     }
 
     public List<String> loginUsers() {
@@ -359,8 +367,4 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         throw new RuntimeException("Failed to create entity");
     }
-
-
-
-
 }
