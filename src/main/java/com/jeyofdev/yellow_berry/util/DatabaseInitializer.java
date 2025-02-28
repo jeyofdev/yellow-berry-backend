@@ -21,6 +21,8 @@ import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.category.CategoryController;
 import com.jeyofdev.yellow_berry.domain.category.CategoryRepository;
 import com.jeyofdev.yellow_berry.domain.category.dto.SaveCategoryDTO;
+import com.jeyofdev.yellow_berry.domain.comment.dto.CommentDTO;
+import com.jeyofdev.yellow_berry.domain.comment.dto.SaveCommentDTO;
 import com.jeyofdev.yellow_berry.domain.product.Product;
 import com.jeyofdev.yellow_berry.domain.product.ProductController;
 import com.jeyofdev.yellow_berry.domain.product.ProductRepository;
@@ -286,6 +288,8 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         createCart(profileId, token);
         createWishlist(profileId, token);
+        createComments(profileId, token);
+
     }
 
     public void createCart(UUID profileId, String authenticateToken) {
@@ -297,6 +301,24 @@ public class DatabaseInitializer implements CommandLineRunner {
     public void createWishlist(UUID profileId, String authenticateToken) {
         SaveWishlistDTO saveWishlistDTO = new SaveWishlistDTO(faker.name().title());
         sendCreationRequest(authenticateToken, saveWishlistDTO, "http://localhost:8080/api/v1/wishlist/profile/" + profileId, WishlistDTO.class);
+    }
+
+    public void createComments(UUID profileId, String authenticateToken) {
+        List<Product> productList = productRepository.findAll();
+
+        productList.forEach(product -> {
+            int numberOfComments = faker.number().numberBetween(1, 4);
+
+            for (int i = 0; i < numberOfComments; i++) {
+                Integer commentRating = faker.number().numberBetween(1, 6);
+                String commentText = faker.lorem().paragraph();
+                UUID productId = product.getId();
+
+                SaveCommentDTO saveCommentDTO = new SaveCommentDTO(commentRating, commentText);
+
+                sendCreationRequest(authenticateToken, saveCommentDTO, "http://localhost:8080/api/v1/comment/product/" + productId + "/profile/" + profileId, CommentDTO.class);
+            }
+        });
     }
 
     public List<String> loginUsers() {
