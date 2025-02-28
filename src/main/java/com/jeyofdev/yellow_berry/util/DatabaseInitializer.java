@@ -15,6 +15,8 @@ import com.jeyofdev.yellow_berry.domain.brand.Brand;
 import com.jeyofdev.yellow_berry.domain.brand.BrandController;
 import com.jeyofdev.yellow_berry.domain.brand.BrandRepository;
 import com.jeyofdev.yellow_berry.domain.brand.dto.SaveBrandDTO;
+import com.jeyofdev.yellow_berry.domain.cart.dto.CartDTO;
+import com.jeyofdev.yellow_berry.domain.cart.dto.SaveCartDTO;
 import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.category.CategoryController;
 import com.jeyofdev.yellow_berry.domain.category.CategoryRepository;
@@ -33,6 +35,7 @@ import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformationRep
 import com.jeyofdev.yellow_berry.domain.productInformation.dto.SaveProductInformationDTO;
 import com.jeyofdev.yellow_berry.domain.profile.ProfileMapper;
 import com.jeyofdev.yellow_berry.domain.profile.ProfileService;
+import com.jeyofdev.yellow_berry.domain.profile.dto.ProfileDTO;
 import com.jeyofdev.yellow_berry.domain.profile.dto.SaveProfileDTO;
 import com.jeyofdev.yellow_berry.domain.tag.TagController;
 import com.jeyofdev.yellow_berry.domain.tag.TagRepository;
@@ -41,20 +44,15 @@ import com.jeyofdev.yellow_berry.security.service.JwtService;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.IntStream;
 
 @Component
@@ -258,20 +256,7 @@ public class DatabaseInitializer implements CommandLineRunner {
     }
 
     public void createProfiles() {
-        AuthResponse user = authServiceImpl.login(
-                new LoginRequest("user@test.fr", "uSer12345*4"),
-                null
-        );
-
-        AuthResponse admin = authServiceImpl.login(
-                new LoginRequest("admin@test.fr", "adMin12345*4"),
-                null
-        );
-
-        List<String> authenticatedUsers = new ArrayList<>();
-        authenticatedUsers.add(user.getToken());
-        authenticatedUsers.add(admin.getToken());
-
+        List<String> authenticatedUsers = loginUsers();
         authenticatedUsers.forEach(this::createProfileForUser);
     }
 
@@ -295,7 +280,33 @@ public class DatabaseInitializer implements CommandLineRunner {
                 faker.address().city()
         );
 
-        sendCreationRequest(token, saveProfileDTO, "http://localhost:8080/api/v1/profile/user/" + userId);
+        UUID profileId = sendCreationRequest(token, saveProfileDTO, "http://localhost:8080/api/v1/profile/user/" + userId, ProfileDTO.class);
+
+        createCart(profileId, token);
+    }
+
+    public void createCart(UUID profileId, String authenticateToken) {
+            SaveCartDTO saveCartDTO = new SaveCartDTO();
+            sendCreationRequest(authenticateToken, saveCartDTO, "http://localhost:8080/api/v1/cart/profile/" + profileId, CartDTO.class);
+
+    }
+
+    public List<String> loginUsers() {
+        AuthResponse user = authServiceImpl.login(
+                new LoginRequest("user@test.fr", "uSer12345*4"),
+                null
+        );
+
+        AuthResponse admin = authServiceImpl.login(
+                new LoginRequest("admin@test.fr", "adMin12345*4"),
+                null
+        );
+
+        List<String> authenticatedUsers = new ArrayList<>();
+        authenticatedUsers.add(user.getToken());
+        authenticatedUsers.add(admin.getToken());
+
+        return authenticatedUsers;
     }
 
     public UUID extractUserIdFromToken(String token) {
@@ -303,22 +314,53 @@ public class DatabaseInitializer implements CommandLineRunner {
         return UUID.fromString(claims.get("id").toString());
     }
 
-    private void sendCreationRequest(String token, SaveProfileDTO saveProfileDTO, String url) {
+    private <T, R> UUID sendCreationRequest(String token, T requestBody, String url, Class<R> responseType) {
         RestTemplate restTemplate = new RestTemplate();
 
-        // headers
+        // configure headers with the token
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         headers.set("Authorization", "Bearer " + token);
 
-        // request
-        HttpEntity<SaveProfileDTO> request = new HttpEntity<>(saveProfileDTO, headers);
-        restTemplate.exchange(
+        // request and response
+        HttpEntity<T> request = new HttpEntity<>(requestBody, headers);
+        ResponseEntity<DomainSuccessResponse<R>> response = restTemplate.exchange(
                 url,
                 HttpMethod.POST,
                 request,
-                DomainSuccessResponse.class
+                new ParameterizedTypeReference<>() {
+                }
         );
+
+        // if request is success
+        if (response.getStatusCode().is2xxSuccessful()) {
+            R result = response.getBody().getResult();
+
+            if (result == null) {
+                throw new RuntimeException("The response does not contain any results.");
+            }
+
+            // extract id of response
+            if (result instanceof Map<?, ?>) {
+                @SuppressWarnings("unchecked")
+                Map<String, Object> resultMap = (Map<String, Object>) result;
+
+                if (resultMap.containsKey("id")) {
+                    return UUID.fromString(resultMap.get("id").toString());
+                }
+            }
+
+            if (result instanceof ProfileDTO profileDTO) {
+                return profileDTO.id();
+            }
+
+            throw new RuntimeException("The response does not contain a valid ID..");
+        }
+
+        throw new RuntimeException("Failed to create entity");
     }
+
+
+
 
 }
