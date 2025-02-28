@@ -13,6 +13,7 @@ import com.jeyofdev.yellow_berry.exception.UsernameAlreadyTakenException;
 import com.jeyofdev.yellow_berry.security.service.JwtService;
 import com.jeyofdev.yellow_berry.security.service.TokenService;
 import com.jeyofdev.yellow_berry.util.Validator;
+import jakarta.annotation.Nullable;
 import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
@@ -71,9 +72,13 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public AuthResponse login(LoginRequest request, BindingResult bindingResult) throws ConstraintViolationException, BadCredentialsException {
-        // validation and authentication
-        Validator.checkValidationErrorsExist(bindingResult);
+    public AuthResponse login(LoginRequest request, @Nullable BindingResult bindingResult) throws ConstraintViolationException, BadCredentialsException {
+        if (bindingResult != null && bindingResult.hasErrors()) {
+            // validation
+            Validator.checkValidationErrorsExist(bindingResult);
+        }
+
+        // authentication
         authenticateUser(request.getEmail(), request.getPassword());
 
         // get user by email
