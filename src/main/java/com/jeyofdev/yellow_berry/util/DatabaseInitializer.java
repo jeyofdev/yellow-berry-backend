@@ -2,12 +2,15 @@ package com.jeyofdev.yellow_berry.util;
 
 import com.github.javafaker.Faker;
 import com.jeyofdev.yellow_berry.auth.AuthServiceImpl;
+import com.jeyofdev.yellow_berry.auth.model.AuthResponse;
+import com.jeyofdev.yellow_berry.auth.model.LoginRequest;
 import com.jeyofdev.yellow_berry.auth.model.RegisterRequest;
 import com.jeyofdev.yellow_berry.auth_user.AuthUserRepository;
 import com.jeyofdev.yellow_berry.core.enums.ColorEnum;
 import com.jeyofdev.yellow_berry.core.enums.RoleEnum;
 import com.jeyofdev.yellow_berry.core.enums.StockEnum;
 import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
+import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
 import com.jeyofdev.yellow_berry.domain.brand.Brand;
 import com.jeyofdev.yellow_berry.domain.brand.BrandController;
 import com.jeyofdev.yellow_berry.domain.brand.BrandRepository;
@@ -28,16 +31,27 @@ import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformation;
 import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformationMapper;
 import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformationRepository;
 import com.jeyofdev.yellow_berry.domain.productInformation.dto.SaveProductInformationDTO;
+import com.jeyofdev.yellow_berry.domain.profile.ProfileMapper;
+import com.jeyofdev.yellow_berry.domain.profile.ProfileService;
+import com.jeyofdev.yellow_berry.domain.profile.dto.SaveProfileDTO;
 import com.jeyofdev.yellow_berry.domain.tag.TagController;
 import com.jeyofdev.yellow_berry.domain.tag.TagRepository;
 import com.jeyofdev.yellow_berry.domain.tag.dto.SaveTagDTO;
+import com.jeyofdev.yellow_berry.security.service.JwtService;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BeanPropertyBindingResult;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
@@ -67,8 +81,13 @@ public class DatabaseInitializer implements CommandLineRunner {
     private final AuthUserRepository authUserRepository;
     private final AuthServiceImpl authServiceImpl;
 
+    private final ProfileMapper profileMapper;
+    private final ProfileService profileService;
+
     private final Faker faker = new Faker();
     private final Random random = new Random();
+
+    private final JwtService jwtService;
 
     /*public static void initializeDatabase(String jdbcUrl, String user, String password, String dbName) {
         String createDbQuery = MessageFormat.format("CREATE DATABASE {0}", dbName);
@@ -102,6 +121,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         this.createFakeProductDetails();
         this.createFakeProductInformations();
         this.createUsers();
+        this.createProfiles();
     }
 
     private void createFakeBrands() {
@@ -236,4 +256,69 @@ public class DatabaseInitializer implements CommandLineRunner {
             authServiceImpl.register(admin, new BeanPropertyBindingResult(admin, "admin"));
         }
     }
+
+    public void createProfiles() {
+        AuthResponse user = authServiceImpl.login(
+                new LoginRequest("user@test.fr", "uSer12345*4"),
+                null
+        );
+
+        AuthResponse admin = authServiceImpl.login(
+                new LoginRequest("admin@test.fr", "adMin12345*4"),
+                null
+        );
+
+        List<String> authenticatedUsers = new ArrayList<>();
+        authenticatedUsers.add(user.getToken());
+        authenticatedUsers.add(admin.getToken());
+
+        authenticatedUsers.forEach(this::createProfileForUser);
+    }
+
+    public void createProfileForUser(String token) {
+        UUID userId = extractUserIdFromToken(token);
+        String phoneNumber = String.format("(+33) 1 %02d %02d %02d %02d",
+                faker.number().numberBetween(10, 99),
+                faker.number().numberBetween(10, 99),
+                faker.number().numberBetween(10, 99),
+                faker.number().numberBetween(10, 99)
+        );
+
+        SaveProfileDTO saveProfileDTO = new SaveProfileDTO(
+                faker.name().firstName(),
+                faker.name().lastName(),
+                phoneNumber,
+                faker.address().streetAddress(),
+                faker.address().state(),
+                faker.address().city(),
+                "75000",
+                faker.address().city()
+        );
+
+        sendCreationRequest(token, saveProfileDTO, "http://localhost:8080/api/v1/profile/user/" + userId);
+    }
+
+    public UUID extractUserIdFromToken(String token) {
+        Claims claims = jwtService.extractAllClaims(token);
+        return UUID.fromString(claims.get("id").toString());
+    }
+
+    private void sendCreationRequest(String token, SaveProfileDTO saveProfileDTO, String url) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        // headers
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        headers.set("Authorization", "Bearer " + token);
+
+        // request
+        HttpEntity<SaveProfileDTO> request = new HttpEntity<>(saveProfileDTO, headers);
+        restTemplate.exchange(
+                url,
+                HttpMethod.POST,
+                request,
+                DomainSuccessResponse.class
+        );
+    }
+
 }
