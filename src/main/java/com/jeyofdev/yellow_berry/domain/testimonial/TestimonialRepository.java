@@ -13,4 +13,6 @@ public interface TestimonialRepository extends JpaRepository<Testimonial, UUID> 
     Optional<Testimonial> findById(@NonNull UUID id);
 
     void deleteById(@NonNull UUID id);
+
+    boolean existsByFirstnameAndLastname(String firstname, String lastname);
 }
