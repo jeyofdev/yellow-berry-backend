@@ -49,12 +49,12 @@ public class Product {
 
     @Column(name = "price", columnDefinition = "DECIMAL(10, 2)")
     @NotNull(message = ErrorMessage.REQUIRED_PRICE)
-    @Min(value = 0, message = ErrorMessage.MIN_PRICE)
+    @Min(value = 1, message = ErrorMessage.MIN_PRICE)
     private Double price;
 
     @Column(name = "price_discount", columnDefinition = "DECIMAL(10, 2)")
     @NotNull(message = ErrorMessage.REQUIRED_PRICE_DISCOUNT)
-    @Min(value = 0, message = ErrorMessage.MIN_PRICE_DISCOUNT)
+    @Min(value = 1, message = ErrorMessage.MIN_PRICE_DISCOUNT)
     private Double priceDiscount;
 
     @Column(name = "discount", columnDefinition = "INT")
@@ -74,7 +74,7 @@ public class Product {
     @ValidEnum(enumClass = WeightEnum.class, message = ErrorMessage.VALID_WEIGHT)
     private WeightEnum weight;
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
             name = "product_tag",
             joinColumns = @JoinColumn(name = "product_id"),
@@ -83,7 +83,7 @@ public class Product {
     @JsonIgnore
     private List<Tag> tagList = new ArrayList<>();
 
-    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(
             name = "product_category",
             joinColumns = @JoinColumn(name = "product_id"),
@@ -124,7 +124,7 @@ public class Product {
     @JsonIgnore
     private List<Cart> cartList = new ArrayList<>();
 
-    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToOne(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "brand_id", referencedColumnName = "id")
     @JsonIgnore
     private Brand brand;

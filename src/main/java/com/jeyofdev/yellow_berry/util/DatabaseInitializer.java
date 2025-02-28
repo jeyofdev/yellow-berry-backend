@@ -1,13 +1,68 @@
 package com.jeyofdev.yellow_berry.util;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.text.MessageFormat;
+import com.github.javafaker.Faker;
+import com.jeyofdev.yellow_berry.core.enums.ColorEnum;
+import com.jeyofdev.yellow_berry.core.enums.StockEnum;
+import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
+import com.jeyofdev.yellow_berry.domain.brand.Brand;
+import com.jeyofdev.yellow_berry.domain.brand.BrandController;
+import com.jeyofdev.yellow_berry.domain.brand.BrandRepository;
+import com.jeyofdev.yellow_berry.domain.brand.dto.SaveBrandDTO;
+import com.jeyofdev.yellow_berry.domain.category.Category;
+import com.jeyofdev.yellow_berry.domain.category.CategoryController;
+import com.jeyofdev.yellow_berry.domain.category.CategoryRepository;
+import com.jeyofdev.yellow_berry.domain.category.dto.SaveCategoryDTO;
+import com.jeyofdev.yellow_berry.domain.product.Product;
+import com.jeyofdev.yellow_berry.domain.product.ProductController;
+import com.jeyofdev.yellow_berry.domain.product.ProductRepository;
+import com.jeyofdev.yellow_berry.domain.product.dto.SaveProductDTO;
+import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetails;
+import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetailsMapper;
+import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetailsRepository;
+import com.jeyofdev.yellow_berry.domain.productDetails.dto.SaveProductDetailsDTO;
+import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformation;
+import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformationMapper;
+import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformationRepository;
+import com.jeyofdev.yellow_berry.domain.productInformation.dto.SaveProductInformationDTO;
+import com.jeyofdev.yellow_berry.domain.tag.TagController;
+import com.jeyofdev.yellow_berry.domain.tag.TagRepository;
+import com.jeyofdev.yellow_berry.domain.tag.dto.SaveTagDTO;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
-public class DatabaseInitializer {
-    public static void initializeDatabase(String jdbcUrl, String user, String password, String dbName) {
+import java.io.IOException;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
+import java.util.stream.IntStream;
+
+@Component
+@RequiredArgsConstructor
+public class DatabaseInitializer implements CommandLineRunner {
+    private final BrandRepository brandRepository;
+    private final BrandController brandController;
+
+    private final CategoryRepository categoryRepository;
+    private final CategoryController categoryController;
+
+    private final TagRepository tagRepository;
+    private final TagController tagController;
+
+    private final ProductRepository productRepository;
+    private final ProductController productController;
+
+    private final ProductDetailsRepository productDetailsRepository;
+    private final ProductDetailsMapper productDetailsMapper;
+
+    private final ProductInformationRepository productInformationRepository;
+    private final ProductInformationMapper productInformationMapper;
+
+    private final Faker faker = new Faker();
+    private final Random random = new Random();
+
+    /*public static void initializeDatabase(String jdbcUrl, String user, String password, String dbName) {
         String createDbQuery = MessageFormat.format("CREATE DATABASE {0}", dbName);
         try (Connection connection = DriverManager.getConnection(jdbcUrl, user, password);
              Statement statement = connection.createStatement()) {
@@ -23,5 +78,143 @@ public class DatabaseInitializer {
                 throw new RuntimeException(e);
             }
         }
+    }*/
+
+    @Override
+    public void run(String... args) throws Exception {
+        this.createDatas();
+    }
+
+    private void createDatas() throws IOException {
+        System.out.println("Database initialization started...");
+        this.createFakeBrands();
+        this.createFakeCategories();
+        this.createFakeTags();
+        this.createFakeProducts();
+        this.createFakeProductDetails();
+        this.createFakeProductInformations();
+    }
+
+    private void createFakeBrands() {
+        if (brandRepository.count() == 0) {
+            IntStream.range(0, 10).forEach(i -> {
+                String brandName;
+                do {
+                    brandName = faker.company().name();
+                } while (brandRepository.existsByName(brandName));
+
+                SaveBrandDTO saveBrandDTO = new SaveBrandDTO(brandName);
+                brandController.saveBrand(saveBrandDTO);
+            });
+        }
+    }
+
+    private void createFakeCategories() {
+        if (categoryRepository.count() == 0) {
+            IntStream.range(0, 10).forEach(i -> {
+                String categoryName;
+                do {
+                    categoryName = faker.commerce().department();
+                } while (categoryRepository.existsByName(categoryName));
+
+                SaveCategoryDTO saveCategoryDTO = new SaveCategoryDTO(categoryName);
+                categoryController.saveCategory(saveCategoryDTO);
+            });
+        }
+    }
+
+    private void createFakeTags() {
+        if (tagRepository.count() == 0) {
+            IntStream.range(0, 10).forEach(i -> {
+                String tagName;
+                do {
+                    tagName = faker.food().fruit();
+                } while (tagRepository.existsByName(tagName));
+
+                SaveTagDTO saveTagDTO = new SaveTagDTO(tagName);
+                tagController.saveTag(saveTagDTO);
+            });
+        }
+    }
+
+    @Transactional
+    private void createFakeProducts() {
+        List<Brand> brands = brandRepository.findAll();
+        List<Category> categories = categoryRepository.findAll();
+
+        IntStream.range(0, 10).forEach(i -> {
+            String productName;
+            do {
+                productName = faker.commerce().productName();
+            } while (productRepository.existsByName(productName));
+
+            int rating = faker.options().option(1, 2, 3, 4, 5);
+            double price = faker.number().randomDouble(2, 10, 500);
+            double discount = faker.number().randomDouble(2, 1, 50);
+            double priceDiscount = price - (price * discount / 100);
+            StockEnum stock = StockEnum.IN_STOCK;
+            WeightEnum weight = WeightEnum.GRAM_250;
+            UUID brandId = brands.get(random.nextInt(brands.size())).getId();
+            UUID categoryId = categories.get(random.nextInt(categories.size())).getId();
+
+            SaveProductDTO saveProductDTO = new SaveProductDTO(
+                    productName,
+                    rating,
+                    price,
+                    priceDiscount,
+                    discount,
+                    stock,
+                    weight,
+                    List.of(), // Tags
+                    List.of(categoryId),
+                    List.of(), // Comments
+                    List.of(), // Wishlist
+                    List.of(), // Cart
+                    brandId
+            );
+
+            productController.saveProduct(saveProductDTO);
+        });
+    }
+
+    public void createFakeProductDetails() {
+        List<Product> products = productRepository.findAll();
+
+        products.forEach(product -> {
+            if (product.getProductDetails() == null) {
+                String description = faker.lorem().paragraph();
+                String seller = faker.company().name();
+                String service = faker.company().industry();
+
+                SaveProductDetailsDTO saveProductDetailsDTO = new SaveProductDetailsDTO(description, seller, service);
+                ProductDetails productDetails = productDetailsMapper.mapToEntity(saveProductDetailsDTO);
+                productDetails.setProduct(product);
+                productDetailsRepository.save(productDetails);
+
+                product.setProductDetails(productDetails);
+                productRepository.save(product);
+            }
+        });
+    }
+
+    public void createFakeProductInformations() {
+        List<Product> products = productRepository.findAll();
+
+        products.forEach(product -> {
+            if (product.getProductInformation() == null) {
+                WeightEnum weight = faker.options().option(WeightEnum.class);
+                String dimension = "17 × 15 × 3 cm";
+                ColorEnum color = faker.options().option(ColorEnum.class);
+                Integer quantity = faker.number().numberBetween(1, 100);
+
+                SaveProductInformationDTO saveProductInformationDTO = new SaveProductInformationDTO(weight, dimension, color, quantity);
+                ProductInformation productInformation = productInformationMapper.mapToEntity(saveProductInformationDTO);
+                productInformation.setProduct(product);
+                productInformationRepository.save(productInformation);
+
+                product.setProductInformation(productInformation);
+                productRepository.save(product);
+            }
+        });
     }
 }
