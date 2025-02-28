@@ -36,7 +36,7 @@ public class ProductDetails {
     @Size(min = 3, max = 200, message = ErrorMessage.VALID_SERVICE)
     private String service;
 
-    @OneToOne(mappedBy = "productDetails", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "productDetails", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JsonIgnore
     @NotNull(message = ErrorMessage.PRODUCT_NOT_NULL_PRODUCT_DETAILS)
     private Product product;

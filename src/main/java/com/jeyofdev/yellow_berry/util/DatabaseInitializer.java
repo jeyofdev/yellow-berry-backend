@@ -1,17 +1,29 @@
 package com.jeyofdev.yellow_berry.util;
 
 import com.github.javafaker.Faker;
+import com.jeyofdev.yellow_berry.core.enums.ColorEnum;
 import com.jeyofdev.yellow_berry.core.enums.StockEnum;
 import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
-import com.jeyofdev.yellow_berry.domain.brand.*;
+import com.jeyofdev.yellow_berry.domain.brand.Brand;
+import com.jeyofdev.yellow_berry.domain.brand.BrandController;
+import com.jeyofdev.yellow_berry.domain.brand.BrandRepository;
 import com.jeyofdev.yellow_berry.domain.brand.dto.SaveBrandDTO;
 import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.category.CategoryController;
 import com.jeyofdev.yellow_berry.domain.category.CategoryRepository;
 import com.jeyofdev.yellow_berry.domain.category.dto.SaveCategoryDTO;
+import com.jeyofdev.yellow_berry.domain.product.Product;
 import com.jeyofdev.yellow_berry.domain.product.ProductController;
 import com.jeyofdev.yellow_berry.domain.product.ProductRepository;
 import com.jeyofdev.yellow_berry.domain.product.dto.SaveProductDTO;
+import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetails;
+import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetailsMapper;
+import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetailsRepository;
+import com.jeyofdev.yellow_berry.domain.productDetails.dto.SaveProductDetailsDTO;
+import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformation;
+import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformationMapper;
+import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformationRepository;
+import com.jeyofdev.yellow_berry.domain.productInformation.dto.SaveProductInformationDTO;
 import com.jeyofdev.yellow_berry.domain.tag.TagController;
 import com.jeyofdev.yellow_berry.domain.tag.TagRepository;
 import com.jeyofdev.yellow_berry.domain.tag.dto.SaveTagDTO;
@@ -40,6 +52,12 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     private final ProductRepository productRepository;
     private final ProductController productController;
+
+    private final ProductDetailsRepository productDetailsRepository;
+    private final ProductDetailsMapper productDetailsMapper;
+
+    private final ProductInformationRepository productInformationRepository;
+    private final ProductInformationMapper productInformationMapper;
 
     private final Faker faker = new Faker();
     private final Random random = new Random();
@@ -73,6 +91,8 @@ public class DatabaseInitializer implements CommandLineRunner {
         this.createFakeCategories();
         this.createFakeTags();
         this.createFakeProducts();
+        this.createFakeProductDetails();
+        this.createFakeProductInformations();
     }
 
     private void createFakeBrands() {
@@ -130,7 +150,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 
             int rating = faker.options().option(1, 2, 3, 4, 5);
             double price = faker.number().randomDouble(2, 10, 500);
-            double discount = faker.number().randomDouble(2, 0, 50);
+            double discount = faker.number().randomDouble(2, 1, 50);
             double priceDiscount = price - (price * discount / 100);
             StockEnum stock = StockEnum.IN_STOCK;
             WeightEnum weight = WeightEnum.GRAM_250;
@@ -154,6 +174,47 @@ public class DatabaseInitializer implements CommandLineRunner {
             );
 
             productController.saveProduct(saveProductDTO);
+        });
+    }
+
+    public void createFakeProductDetails() {
+        List<Product> products = productRepository.findAll();
+
+        products.forEach(product -> {
+            if (product.getProductDetails() == null) {
+                String description = faker.lorem().paragraph();
+                String seller = faker.company().name();
+                String service = faker.company().industry();
+
+                SaveProductDetailsDTO saveProductDetailsDTO = new SaveProductDetailsDTO(description, seller, service);
+                ProductDetails productDetails = productDetailsMapper.mapToEntity(saveProductDetailsDTO);
+                productDetails.setProduct(product);
+                productDetailsRepository.save(productDetails);
+
+                product.setProductDetails(productDetails);
+                productRepository.save(product);
+            }
+        });
+    }
+
+    public void createFakeProductInformations() {
+        List<Product> products = productRepository.findAll();
+
+        products.forEach(product -> {
+            if (product.getProductInformation() == null) {
+                WeightEnum weight = faker.options().option(WeightEnum.class);
+                String dimension = "17 × 15 × 3 cm";
+                ColorEnum color = faker.options().option(ColorEnum.class);
+                Integer quantity = faker.number().numberBetween(1, 100);
+
+                SaveProductInformationDTO saveProductInformationDTO = new SaveProductInformationDTO(weight, dimension, color, quantity);
+                ProductInformation productInformation = productInformationMapper.mapToEntity(saveProductInformationDTO);
+                productInformation.setProduct(product);
+                productInformationRepository.save(productInformation);
+
+                product.setProductInformation(productInformation);
+                productRepository.save(product);
+            }
         });
     }
 }

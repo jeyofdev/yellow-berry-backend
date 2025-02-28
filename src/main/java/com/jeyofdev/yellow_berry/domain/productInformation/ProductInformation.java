@@ -50,7 +50,7 @@ public class ProductInformation {
     @Max(value = 100, message = ErrorMessage.MAX_QUANTITY)
     private Integer quantity;
 
-    @OneToOne(mappedBy = "productInformation", cascade = CascadeType.ALL)
+    @OneToOne(mappedBy = "productInformation", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JsonIgnore
     @NotNull(message = ErrorMessage.PRODUCT_NOT_NULL_PRODUCT_INFORMATION)
     private Product product;
