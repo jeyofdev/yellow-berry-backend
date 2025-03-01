@@ -8,6 +8,9 @@ import com.jeyofdev.yellow_berry.auth.model.RegisterRequest;
 import com.jeyofdev.yellow_berry.auth_user.AuthUserRepository;
 import com.jeyofdev.yellow_berry.core.enums.*;
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
+import com.jeyofdev.yellow_berry.domain.about.AboutController;
+import com.jeyofdev.yellow_berry.domain.about.AboutRepository;
+import com.jeyofdev.yellow_berry.domain.about.dto.SaveAboutDTO;
 import com.jeyofdev.yellow_berry.domain.brand.Brand;
 import com.jeyofdev.yellow_berry.domain.brand.BrandController;
 import com.jeyofdev.yellow_berry.domain.brand.BrandRepository;
@@ -32,8 +35,6 @@ import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformation;
 import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformationMapper;
 import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformationRepository;
 import com.jeyofdev.yellow_berry.domain.productInformation.dto.SaveProductInformationDTO;
-import com.jeyofdev.yellow_berry.domain.profile.ProfileMapper;
-import com.jeyofdev.yellow_berry.domain.profile.ProfileService;
 import com.jeyofdev.yellow_berry.domain.profile.dto.ProfileDTO;
 import com.jeyofdev.yellow_berry.domain.profile.dto.SaveProfileDTO;
 import com.jeyofdev.yellow_berry.domain.service.ServiceController;
@@ -77,6 +78,9 @@ public class DatabaseInitializer implements CommandLineRunner {
     private final ServiceRepository serviceRepository;
     private final ServiceController serviceController;
 
+    private final AboutRepository aboutRepository;
+    private final AboutController aboutController;
+
     private final TestimonialRepository testimonialRepository;
     private final TestimonialController testimonialController;
 
@@ -91,9 +95,6 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     private final AuthUserRepository authUserRepository;
     private final AuthServiceImpl authServiceImpl;
-
-    private final ProfileMapper profileMapper;
-    private final ProfileService profileService;
 
     private final Faker faker = new Faker();
     private final Random random = new Random();
@@ -135,6 +136,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         this.createProfiles();
         this.createFakeServices();
         this.createFakeTestimonials();
+        this.createFakeAbout();
     }
 
     private void createFakeBrands() {
@@ -358,6 +360,13 @@ public class DatabaseInitializer implements CommandLineRunner {
                 SaveTestimonialDTO saveTestimonialDTO = new SaveTestimonialDTO(testimonialFirstname, testimonialLastname, JobEnum.CEO, faker.lorem().sentence(40));
                 testimonialController.saveTestimonial(saveTestimonialDTO);
             });
+        }
+    }
+
+    private void createFakeAbout() {
+        if (aboutRepository.count() == 0) {
+            SaveAboutDTO saveAboutDTO = new SaveAboutDTO("About the BlueBerry", "Farm-fresh Goodness, just a click Away.", faker.lorem().sentence(40));
+            aboutController.saveAbout(saveAboutDTO);
         }
     }
 
