@@ -138,61 +138,134 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     private void createDatas() throws IOException {
         System.out.println("Database initialization started...");
+        this.createFakeServices();
+        this.createFakeTestimonials();
+        this.createFakeTeamMember();
+        this.createFakeAbout();
+        this.createFakeFaq();
         this.createFakeBrands();
         this.createFakeCategories();
         this.createFakeTags();
-        this.createFakeProducts();
+      /*  this.createFakeProducts();
         this.createFakeProductDetails();
         this.createFakeProductInformations();
         this.createUsers();
         this.createProfiles();
-        this.createFakeServices();
-        this.createFakeTestimonials();
-        this.createFakeAbout();
-        this.createFakeFaq();
-        this.createFakeTeamMember();
+        */
+    }
+
+    private void createFakeServices() {
+        FakeData.generate(
+                (int) serviceRepository.count(),
+                () -> List.of(faker.name().title()),
+                data -> serviceRepository.existsByName(data.getFirst()),
+                3,
+                data -> {
+                    SaveServiceDTO saveServiceDTO = new SaveServiceDTO(data.getFirst(), faker.lorem().sentence(15));
+                    serviceController.saveService(saveServiceDTO);
+                }
+        );
+    }
+
+    private void createFakeTestimonials() {
+        FakeData.generate(
+                (int) testimonialRepository.count(),
+                () -> List.of(faker.name().firstName(), faker.name().lastName()),
+                data -> testimonialRepository.existsByFirstnameAndLastname(data.getFirst(), data.getLast()),
+                5,
+                data -> {
+                    SaveTestimonialDTO saveTestimonialDTO = new SaveTestimonialDTO(data.getFirst(), data.getLast(), JobEnum.CEO, faker.lorem().sentence(15));
+                    testimonialController.saveTestimonial(saveTestimonialDTO);
+                }
+        );
+    }
+
+    private void createFakeTeamMember() {
+        if (teamMemberRepository.count() == 0) {
+            IntStream.range(0, 5).forEach(i -> {
+                String teamMemberFirstname;
+                String teamMemberLastname;
+                String teamMemberTwitter;
+                String teamMemberInstagram;
+                String teamMemberLinkedin;
+                do {
+                    teamMemberFirstname = faker.name().firstName();
+                    teamMemberLastname = faker.name().lastName();
+                    teamMemberTwitter = generateSocialUsername(teamMemberFirstname);
+                    teamMemberInstagram = generateSocialUsername(teamMemberFirstname);
+                    teamMemberLinkedin = generateSocialUsername(teamMemberFirstname);
+
+                } while (
+                        teamMemberRepository.existsByFirstnameAndLastname(teamMemberFirstname, teamMemberLastname) ||
+                                teamMemberRepository.existsByTwitter(teamMemberTwitter) ||
+                                teamMemberRepository.existsByInstagram(teamMemberInstagram) ||
+                                teamMemberRepository.existsByLinkedin(teamMemberLinkedin)
+                );
+
+                SaveTeamMemberDTO saveTeamMemberDTO = new SaveTeamMemberDTO(teamMemberFirstname, teamMemberLastname, JobEnum.CEO, teamMemberTwitter, teamMemberInstagram, teamMemberLinkedin);
+                teamMemberController.saveTeamMember(saveTeamMemberDTO);
+            });
+        }
+    }
+
+    private void createFakeAbout() {
+        if (aboutRepository.count() == 0) {
+            SaveAboutDTO saveAboutDTO = new SaveAboutDTO("About the BlueBerry", "Farm-fresh Goodness, just a click Away.", faker.lorem().sentence(40));
+            aboutController.saveAbout(saveAboutDTO);
+        }
+    }
+
+    private void createFakeFaq() {
+        FakeData.generate(
+                (int) faqRepository.count(),
+                () -> List.of(faker.lorem().sentence()),
+                data -> faqRepository.existsByQuestion(data.getFirst()),
+                5,
+                data -> {
+                    SaveFaqDTO saveFaqDTO = new SaveFaqDTO(data.getFirst(), faker.lorem().paragraph(random.nextInt(31) + 30));
+                    faqController.saveFaq(saveFaqDTO);
+                }
+        );
     }
 
     private void createFakeBrands() {
-        if (brandRepository.count() == 0) {
-            IntStream.range(0, 10).forEach(i -> {
-                String brandName;
-                do {
-                    brandName = faker.company().name();
-                } while (brandRepository.existsByName(brandName));
-
-                SaveBrandDTO saveBrandDTO = new SaveBrandDTO(brandName);
-                brandController.saveBrand(saveBrandDTO);
-            });
-        }
+        FakeData.generate(
+                (int) brandRepository.count(),
+                () -> List.of(faker.company().name()),
+                data -> brandRepository.existsByName(data.getFirst()),
+                10,
+                data -> {
+                    SaveBrandDTO saveBrandDTO = new SaveBrandDTO(data.getFirst());
+                    brandController.saveBrand(saveBrandDTO);
+                }
+        );
     }
 
     private void createFakeCategories() {
-        if (categoryRepository.count() == 0) {
-            IntStream.range(0, 10).forEach(i -> {
-                String categoryName;
-                do {
-                    categoryName = faker.commerce().department();
-                } while (categoryRepository.existsByName(categoryName));
-
-                SaveCategoryDTO saveCategoryDTO = new SaveCategoryDTO(categoryName);
-                categoryController.saveCategory(saveCategoryDTO);
-            });
-        }
+        FakeData.generate(
+                (int) categoryRepository.count(),
+                () -> List.of(faker.commerce().department()),
+                data -> categoryRepository.existsByName(data.getFirst()),
+                10,
+                data -> {
+                    SaveCategoryDTO saveCategoryDTO = new SaveCategoryDTO(data.getFirst());
+                    categoryController.saveCategory(saveCategoryDTO);
+                }
+        );
     }
 
     private void createFakeTags() {
-        if (tagRepository.count() == 0) {
-            IntStream.range(0, 10).forEach(i -> {
-                String tagName;
-                do {
-                    tagName = faker.food().fruit();
-                } while (tagRepository.existsByName(tagName));
+        FakeData.generate(
+                (int) tagRepository.count(),
+                () -> List.of(faker.food().fruit()),
+                data -> tagRepository.existsByName(data.getFirst()),
+                10,
+                data -> {
+                    SaveTagDTO saveTagDTO = new SaveTagDTO(data.getFirst());
+                    tagController.saveTag(saveTagDTO);
+                }
 
-                SaveTagDTO saveTagDTO = new SaveTagDTO(tagName);
-                tagController.saveTag(saveTagDTO);
-            });
-        }
+        );
     }
 
     @Transactional
@@ -345,85 +418,6 @@ public class DatabaseInitializer implements CommandLineRunner {
                 sendCreationRequest(authenticateToken, saveCommentDTO, "http://localhost:8080/api/v1/comment/product/" + productId + "/profile/" + profileId, CommentDTO.class);
             }
         });
-    }
-
-    private void createFakeServices() {
-        if (serviceRepository.count() == 0) {
-            IntStream.range(0, 10).forEach(i -> {
-                String serviceName;
-                do {
-                    serviceName = faker.name().title();
-                } while (serviceRepository.existsByName(serviceName));
-
-                SaveServiceDTO saveServiceDTO = new SaveServiceDTO(serviceName, faker.lorem().sentence(15));
-                serviceController.saveService(saveServiceDTO);
-            });
-        }
-    }
-
-    private void createFakeTestimonials() {
-        if (testimonialRepository.count() == 0) {
-            IntStream.range(0, 10).forEach(i -> {
-                String testimonialFirstname;
-                String testimonialLastname;
-                do {
-                    testimonialFirstname = faker.name().firstName();
-                    testimonialLastname = faker.name().lastName();
-                } while (testimonialRepository.existsByFirstnameAndLastname(testimonialFirstname, testimonialLastname));
-
-                SaveTestimonialDTO saveTestimonialDTO = new SaveTestimonialDTO(testimonialFirstname, testimonialLastname, JobEnum.CEO, faker.lorem().sentence(40));
-                testimonialController.saveTestimonial(saveTestimonialDTO);
-            });
-        }
-    }
-
-    private void createFakeFaq() {
-        if (faqRepository.count() == 0) {
-            IntStream.range(0, 5).forEach(i -> {
-                String faqQuestion;
-                do {
-                    faqQuestion = faker.lorem().sentence();
-                } while (faqRepository.existsByQuestion(faqQuestion));
-
-                SaveFaqDTO saveFaqDTO = new SaveFaqDTO(faqQuestion, faker.lorem().paragraph(random.nextInt(31) + 30));
-                faqController.saveFaq(saveFaqDTO);
-            });
-        }
-    }
-
-    private void createFakeTeamMember() {
-        if (teamMemberRepository.count() == 0) {
-            IntStream.range(0, 5).forEach(i -> {
-                String teamMemberFirstname;
-                String teamMemberLastname;
-                String teamMemberTwitter;
-                String teamMemberInstagram;
-                String teamMemberLinkedin;
-                do {
-                    teamMemberFirstname = faker.name().firstName();
-                    teamMemberLastname = faker.name().lastName();
-                    teamMemberTwitter = generateSocialUsername(teamMemberFirstname);
-                    teamMemberInstagram = generateSocialUsername(teamMemberFirstname);
-                    teamMemberLinkedin = generateSocialUsername(teamMemberFirstname);
-
-                } while (
-                        teamMemberRepository.existsByFirstnameAndLastname(teamMemberFirstname, teamMemberLastname) ||
-                                teamMemberRepository.existsByTwitter(teamMemberTwitter) ||
-                                teamMemberRepository.existsByInstagram(teamMemberInstagram) ||
-                                teamMemberRepository.existsByLinkedin(teamMemberLinkedin)
-                );
-
-                SaveTeamMemberDTO saveTeamMemberDTO = new SaveTeamMemberDTO(teamMemberFirstname, teamMemberLastname, JobEnum.CEO, teamMemberTwitter, teamMemberInstagram, teamMemberLinkedin);
-                teamMemberController.saveTeamMember(saveTeamMemberDTO);
-            });
-        }
-    }
-
-    private void createFakeAbout() {
-        if (aboutRepository.count() == 0) {
-            SaveAboutDTO saveAboutDTO = new SaveAboutDTO("About the BlueBerry", "Farm-fresh Goodness, just a click Away.", faker.lorem().sentence(40));
-            aboutController.saveAbout(saveAboutDTO);
-        }
     }
 
     public List<String> loginUsers() {
