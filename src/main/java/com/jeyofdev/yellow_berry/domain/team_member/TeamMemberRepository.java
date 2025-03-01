@@ -19,4 +19,6 @@ public interface TeamMemberRepository extends JpaRepository<TeamMember, UUID> {
     boolean existsByInstagram(String instagram);
 
     boolean existsByLinkedin(String linkedin);
+
+    boolean existsByFirstnameAndLastname(String firstname, String lastname);
 }

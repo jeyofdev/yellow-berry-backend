@@ -46,6 +46,9 @@ import com.jeyofdev.yellow_berry.domain.service.dto.SaveServiceDTO;
 import com.jeyofdev.yellow_berry.domain.tag.TagController;
 import com.jeyofdev.yellow_berry.domain.tag.TagRepository;
 import com.jeyofdev.yellow_berry.domain.tag.dto.SaveTagDTO;
+import com.jeyofdev.yellow_berry.domain.team_member.TeamMemberController;
+import com.jeyofdev.yellow_berry.domain.team_member.TeamMemberRepository;
+import com.jeyofdev.yellow_berry.domain.team_member.dto.SaveTeamMemberDTO;
 import com.jeyofdev.yellow_berry.domain.testimonial.TestimonialController;
 import com.jeyofdev.yellow_berry.domain.testimonial.TestimonialRepository;
 import com.jeyofdev.yellow_berry.domain.testimonial.dto.SaveTestimonialDTO;
@@ -89,6 +92,9 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     private final FaqRepository faqRepository;
     private final FaqController faqController;
+
+    private final TeamMemberRepository teamMemberRepository;
+    private final TeamMemberController teamMemberController;
 
     private final ProductRepository productRepository;
     private final ProductController productController;
@@ -144,6 +150,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         this.createFakeTestimonials();
         this.createFakeAbout();
         this.createFakeFaq();
+        this.createFakeTeamMember();
     }
 
     private void createFakeBrands() {
@@ -373,13 +380,41 @@ public class DatabaseInitializer implements CommandLineRunner {
     private void createFakeFaq() {
         if (faqRepository.count() == 0) {
             IntStream.range(0, 5).forEach(i -> {
-                String testimonialQuestion;
+                String faqQuestion;
                 do {
-                    testimonialQuestion = faker.lorem().sentence();
-                } while (faqRepository.existsByQuestion(testimonialQuestion));
+                    faqQuestion = faker.lorem().sentence();
+                } while (faqRepository.existsByQuestion(faqQuestion));
 
-                SaveFaqDTO saveFaqDTO = new SaveFaqDTO(testimonialQuestion, faker.lorem().paragraph(random.nextInt(31) + 30));
+                SaveFaqDTO saveFaqDTO = new SaveFaqDTO(faqQuestion, faker.lorem().paragraph(random.nextInt(31) + 30));
                 faqController.saveFaq(saveFaqDTO);
+            });
+        }
+    }
+
+    private void createFakeTeamMember() {
+        if (teamMemberRepository.count() == 0) {
+            IntStream.range(0, 5).forEach(i -> {
+                String teamMemberFirstname;
+                String teamMemberLastname;
+                String teamMemberTwitter;
+                String teamMemberInstagram;
+                String teamMemberLinkedin;
+                do {
+                    teamMemberFirstname = faker.name().firstName();
+                    teamMemberLastname = faker.name().lastName();
+                    teamMemberTwitter = generateSocialUsername(teamMemberFirstname);
+                    teamMemberInstagram = generateSocialUsername(teamMemberFirstname);
+                    teamMemberLinkedin = generateSocialUsername(teamMemberFirstname);
+
+                } while (
+                        teamMemberRepository.existsByFirstnameAndLastname(teamMemberFirstname, teamMemberLastname) ||
+                                teamMemberRepository.existsByTwitter(teamMemberTwitter) ||
+                                teamMemberRepository.existsByInstagram(teamMemberInstagram) ||
+                                teamMemberRepository.existsByLinkedin(teamMemberLinkedin)
+                );
+
+                SaveTeamMemberDTO saveTeamMemberDTO = new SaveTeamMemberDTO(teamMemberFirstname, teamMemberLastname, JobEnum.CEO, teamMemberTwitter, teamMemberInstagram, teamMemberLinkedin);
+                teamMemberController.saveTeamMember(saveTeamMemberDTO);
             });
         }
     }
@@ -458,5 +493,10 @@ public class DatabaseInitializer implements CommandLineRunner {
         }
 
         throw new RuntimeException("Failed to create entity");
+    }
+
+    private String generateSocialUsername(String firstname) {
+        int randomNumber = faker.number().numberBetween(10, 9999);
+        return firstname.replaceAll("[^a-zA-Z0-9]", "") + randomNumber;
     }
 }
