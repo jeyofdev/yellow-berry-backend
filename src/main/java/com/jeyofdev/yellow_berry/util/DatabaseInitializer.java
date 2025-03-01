@@ -23,6 +23,9 @@ import com.jeyofdev.yellow_berry.domain.category.CategoryRepository;
 import com.jeyofdev.yellow_berry.domain.category.dto.SaveCategoryDTO;
 import com.jeyofdev.yellow_berry.domain.comment.dto.CommentDTO;
 import com.jeyofdev.yellow_berry.domain.comment.dto.SaveCommentDTO;
+import com.jeyofdev.yellow_berry.domain.faq.FaqController;
+import com.jeyofdev.yellow_berry.domain.faq.FaqRepository;
+import com.jeyofdev.yellow_berry.domain.faq.dto.SaveFaqDTO;
 import com.jeyofdev.yellow_berry.domain.product.Product;
 import com.jeyofdev.yellow_berry.domain.product.ProductController;
 import com.jeyofdev.yellow_berry.domain.product.ProductRepository;
@@ -84,6 +87,9 @@ public class DatabaseInitializer implements CommandLineRunner {
     private final TestimonialRepository testimonialRepository;
     private final TestimonialController testimonialController;
 
+    private final FaqRepository faqRepository;
+    private final FaqController faqController;
+
     private final ProductRepository productRepository;
     private final ProductController productController;
 
@@ -137,6 +143,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         this.createFakeServices();
         this.createFakeTestimonials();
         this.createFakeAbout();
+        this.createFakeFaq();
     }
 
     private void createFakeBrands() {
@@ -359,6 +366,20 @@ public class DatabaseInitializer implements CommandLineRunner {
 
                 SaveTestimonialDTO saveTestimonialDTO = new SaveTestimonialDTO(testimonialFirstname, testimonialLastname, JobEnum.CEO, faker.lorem().sentence(40));
                 testimonialController.saveTestimonial(saveTestimonialDTO);
+            });
+        }
+    }
+
+    private void createFakeFaq() {
+        if (faqRepository.count() == 0) {
+            IntStream.range(0, 5).forEach(i -> {
+                String testimonialQuestion;
+                do {
+                    testimonialQuestion = faker.lorem().sentence();
+                } while (faqRepository.existsByQuestion(testimonialQuestion));
+
+                SaveFaqDTO saveFaqDTO = new SaveFaqDTO(testimonialQuestion, faker.lorem().paragraph(random.nextInt(31) + 30));
+                faqController.saveFaq(saveFaqDTO);
             });
         }
     }
