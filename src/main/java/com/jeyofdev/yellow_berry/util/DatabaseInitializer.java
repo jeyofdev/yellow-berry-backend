@@ -12,10 +12,14 @@ import com.jeyofdev.yellow_berry.domain.brand.Brand;
 import com.jeyofdev.yellow_berry.domain.brand.BrandController;
 import com.jeyofdev.yellow_berry.domain.brand.BrandRepository;
 import com.jeyofdev.yellow_berry.domain.brand.dto.SaveBrandDTO;
+import com.jeyofdev.yellow_berry.domain.cart.dto.CartDTO;
+import com.jeyofdev.yellow_berry.domain.cart.dto.SaveCartDTO;
 import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.category.CategoryController;
 import com.jeyofdev.yellow_berry.domain.category.CategoryRepository;
 import com.jeyofdev.yellow_berry.domain.category.dto.SaveCategoryDTO;
+import com.jeyofdev.yellow_berry.domain.comment.dto.CommentDTO;
+import com.jeyofdev.yellow_berry.domain.comment.dto.SaveCommentDTO;
 import com.jeyofdev.yellow_berry.domain.faq.FaqController;
 import com.jeyofdev.yellow_berry.domain.faq.FaqRepository;
 import com.jeyofdev.yellow_berry.domain.faq.dto.SaveFaqDTO;
@@ -45,6 +49,8 @@ import com.jeyofdev.yellow_berry.domain.team_member.dto.SaveTeamMemberDTO;
 import com.jeyofdev.yellow_berry.domain.testimonial.TestimonialController;
 import com.jeyofdev.yellow_berry.domain.testimonial.TestimonialRepository;
 import com.jeyofdev.yellow_berry.domain.testimonial.dto.SaveTestimonialDTO;
+import com.jeyofdev.yellow_berry.domain.wishlist.dto.SaveWishlistDTO;
+import com.jeyofdev.yellow_berry.domain.wishlist.dto.WishlistDTO;
 import com.jeyofdev.yellow_berry.security.service.JwtService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
@@ -102,31 +108,12 @@ public class DatabaseInitializer implements CommandLineRunner {
     private final FakeData fakeData;
     private final JwtService jwtService;
 
-    /*public static void initializeDatabase(String jdbcUrl, String user, String password, String dbName) {
-        String createDbQuery = MessageFormat.format("CREATE DATABASE {0}", dbName);
-        try (Connection connection = DriverManager.getConnection(jdbcUrl, user, password);
-             Statement statement = connection.createStatement()) {
-
-            // If the database does not exist, create it
-            statement.executeUpdate(createDbQuery);
-            System.out.println("Database created successfully!");
-        } catch (SQLException e) {
-            if (e.getSQLState().equals("42P04")) { // Code error for "Database already exists"
-                System.out.println("The database already exists.");
-            } else {
-                System.err.println(MessageFormat.format("Error creating database : {0}", e.getMessage()));
-                throw new RuntimeException(e);
-            }
-        }
-    }*/
-
     @Override
     public void run(String... args) throws Exception {
         this.createDatas();
     }
 
     private void createDatas() throws IOException {
-        System.out.println("Database initialization started...");
         this.createFakeServices();
         this.createFakeTestimonials();
         this.createFakeTeamMember();
@@ -174,9 +161,13 @@ public class DatabaseInitializer implements CommandLineRunner {
                 String teamMemberTwitter;
                 String teamMemberInstagram;
                 String teamMemberLinkedin;
+
                 do {
-                    teamMemberFirstname = faker.name().firstName();
-                    teamMemberLastname = faker.name().lastName();
+                    do {
+                        teamMemberFirstname = faker.name().firstName();
+                        teamMemberLastname = faker.name().lastName();
+                    } while (teamMemberFirstname.length() < 3 || teamMemberLastname.length() < 3);
+
                     teamMemberTwitter = generateSocialUsername(teamMemberFirstname);
                     teamMemberInstagram = generateSocialUsername(teamMemberFirstname);
                     teamMemberLinkedin = generateSocialUsername(teamMemberFirstname);
@@ -341,10 +332,10 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     private void createFakeProfiles() {
         List<String> authenticatedUsers = loginUsers();
-        authenticatedUsers.forEach(this::createProfileForUser);
+        authenticatedUsers.forEach(this::createFakeProfileForUser);
     }
 
-    private void createProfileForUser(String token) {
+    private void createFakeProfileForUser(String token) {
         UUID userId = jwtService.extractUserIdFromToken(token);
         String phoneNumber = String.format("(+33) 1 %02d %02d %02d %02d",
                 faker.number().numberBetween(10, 99),
@@ -366,25 +357,25 @@ public class DatabaseInitializer implements CommandLineRunner {
 
         UUID profileId = fakeData.runSaveRequestWithAuthentication(token, saveProfileDTO, Url.getFullBaseUrl() + "/profile/user/" + userId, ProfileDTO.class);
 
-        /*createFakeCarts(profileId, token);
+        createFakeCarts(profileId, token);
         createFakeWishlist(profileId, token);
-        createFakeComments(profileId, token);*/
+        createFakeComments(profileId, token);
     }
 
-    /*public void createFakeCarts(UUID profileId, String authenticateToken) {
+    public void createFakeCarts(UUID profileId, String authenticateToken) {
         SaveCartDTO saveCartDTO = new SaveCartDTO();
-        fakeData.sendCreationRequest(authenticateToken, saveCartDTO, Url.getFullBaseUrl() + "cart/profile/" + profileId, CartDTO.class);
+        fakeData.runSaveRequestWithAuthentication(authenticateToken, saveCartDTO, Url.getFullBaseUrl() + "/cart/profile/" + profileId, CartDTO.class);
     }
 
     public void createFakeWishlist(UUID profileId, String authenticateToken) {
         SaveWishlistDTO saveWishlistDTO = new SaveWishlistDTO(faker.name().title());
-        fakeData.sendCreationRequest(authenticateToken, saveWishlistDTO, Url.getFullBaseUrl() + "wishlist/profile/" + profileId, WishlistDTO.class);
-    }*/
+        fakeData.runSaveRequestWithAuthentication(authenticateToken, saveWishlistDTO, Url.getFullBaseUrl() + "/wishlist/profile/" + profileId, WishlistDTO.class);
+    }
 
-    /*public void createFakeComments(UUID profileId, String authenticateToken) {
+    public void createFakeComments(UUID profileId, String authenticateToken) {
         List<Product> productList = productRepository.findAll();
 
-        productList.forEach(product -> {
+        for (Product product : productList) {
             int numberOfComments = faker.number().numberBetween(1, 4);
 
             for (int i = 0; i < numberOfComments; i++) {
@@ -394,10 +385,10 @@ public class DatabaseInitializer implements CommandLineRunner {
 
                 SaveCommentDTO saveCommentDTO = new SaveCommentDTO(commentRating, commentText);
 
-                fakeData.sendCreationRequest(authenticateToken, saveCommentDTO, Url.getFullBaseUrl() + "comment/product/" + productId + "/profile/" + profileId, CommentDTO.class);
+                fakeData.runSaveRequestWithAuthentication(authenticateToken, saveCommentDTO, Url.getFullBaseUrl() + "/comment/product/" + productId + "/profile/" + profileId, CommentDTO.class);
             }
-        });
-    }*/
+        }
+    }
 
     private List<String> loginUsers() {
         String userToken = fakeData.getAuthenticationToken("user@test.fr", "uSer12345*4");

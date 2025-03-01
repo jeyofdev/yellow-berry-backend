@@ -4,6 +4,7 @@ import com.jeyofdev.yellow_berry.auth.AuthServiceImpl;
 import com.jeyofdev.yellow_berry.auth.model.AuthResponse;
 import com.jeyofdev.yellow_berry.auth.model.LoginRequest;
 import com.jeyofdev.yellow_berry.auth.model.RegisterRequest;
+import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.core.enums.RoleEnum;
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
 import com.jeyofdev.yellow_berry.domain.profile.dto.ProfileDTO;
@@ -84,7 +85,7 @@ public class FakeData {
             R result = response.getBody().getResult();
 
             if (result == null) {
-                throw new RuntimeException("The response does not contain any results.");
+                throw new RuntimeException(ErrorMessage.FAKE_RESPONSE_NO_RESULT);
             }
 
             if (result instanceof Map<?, ?>) {
@@ -100,9 +101,9 @@ public class FakeData {
                 return profileDTO.id();
             }
 
-            throw new RuntimeException("The response does not contain a valid ID..");
+            throw new RuntimeException(ErrorMessage.FAKE_RESPONSE_NO_VALID_ID);
         }
 
-        throw new RuntimeException("Failed to create entity");
+        throw new RuntimeException(ErrorMessage.FAKE_RESPONSE_FAILED_CREATED_ENTITY);
     }
 }
