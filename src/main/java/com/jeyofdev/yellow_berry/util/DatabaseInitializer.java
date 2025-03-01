@@ -2,12 +2,9 @@ package com.jeyofdev.yellow_berry.util;
 
 import com.github.javafaker.Faker;
 import com.jeyofdev.yellow_berry.auth.AuthServiceImpl;
-import com.jeyofdev.yellow_berry.auth.model.AuthResponse;
-import com.jeyofdev.yellow_berry.auth.model.LoginRequest;
-import com.jeyofdev.yellow_berry.auth.model.RegisterRequest;
 import com.jeyofdev.yellow_berry.auth_user.AuthUserRepository;
+import com.jeyofdev.yellow_berry.core.constant.Url;
 import com.jeyofdev.yellow_berry.core.enums.*;
-import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
 import com.jeyofdev.yellow_berry.domain.about.AboutController;
 import com.jeyofdev.yellow_berry.domain.about.AboutRepository;
 import com.jeyofdev.yellow_berry.domain.about.dto.SaveAboutDTO;
@@ -55,18 +52,15 @@ import com.jeyofdev.yellow_berry.domain.testimonial.dto.SaveTestimonialDTO;
 import com.jeyofdev.yellow_berry.domain.wishlist.dto.SaveWishlistDTO;
 import com.jeyofdev.yellow_berry.domain.wishlist.dto.WishlistDTO;
 import com.jeyofdev.yellow_berry.security.service.JwtService;
-import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.*;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.BeanPropertyBindingResult;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+import java.util.UUID;
 import java.util.stream.IntStream;
 
 @Component
@@ -111,25 +105,8 @@ public class DatabaseInitializer implements CommandLineRunner {
     private final Faker faker = new Faker();
     private final Random random = new Random();
 
+    private final FakeData fakeData;
     private final JwtService jwtService;
-
-    /*public static void initializeDatabase(String jdbcUrl, String user, String password, String dbName) {
-        String createDbQuery = MessageFormat.format("CREATE DATABASE {0}", dbName);
-        try (Connection connection = DriverManager.getConnection(jdbcUrl, user, password);
-             Statement statement = connection.createStatement()) {
-
-            // If the database does not exist, create it
-            statement.executeUpdate(createDbQuery);
-            System.out.println("Database created successfully!");
-        } catch (SQLException e) {
-            if (e.getSQLState().equals("42P04")) { // Code error for "Database already exists"
-                System.out.println("The database already exists.");
-            } else {
-                System.err.println(MessageFormat.format("Error creating database : {0}", e.getMessage()));
-                throw new RuntimeException(e);
-            }
-        }
-    }*/
 
     @Override
     public void run(String... args) throws Exception {
@@ -137,258 +114,43 @@ public class DatabaseInitializer implements CommandLineRunner {
     }
 
     private void createDatas() throws IOException {
-        System.out.println("Database initialization started...");
+        this.createFakeServices();
+        this.createFakeTestimonials();
+        this.createFakeTeamMember();
+        this.createFakeAbout();
+        this.createFakeFaq();
         this.createFakeBrands();
         this.createFakeCategories();
         this.createFakeTags();
-        this.createFakeProducts();
-        this.createFakeProductDetails();
-        this.createFakeProductInformations();
+        this.createFakeProductsWithDetailsAndInformations();
         this.createUsers();
-        this.createProfiles();
-        this.createFakeServices();
-        this.createFakeTestimonials();
-        this.createFakeAbout();
-        this.createFakeFaq();
-        this.createFakeTeamMember();
-    }
-
-    private void createFakeBrands() {
-        if (brandRepository.count() == 0) {
-            IntStream.range(0, 10).forEach(i -> {
-                String brandName;
-                do {
-                    brandName = faker.company().name();
-                } while (brandRepository.existsByName(brandName));
-
-                SaveBrandDTO saveBrandDTO = new SaveBrandDTO(brandName);
-                brandController.saveBrand(saveBrandDTO);
-            });
-        }
-    }
-
-    private void createFakeCategories() {
-        if (categoryRepository.count() == 0) {
-            IntStream.range(0, 10).forEach(i -> {
-                String categoryName;
-                do {
-                    categoryName = faker.commerce().department();
-                } while (categoryRepository.existsByName(categoryName));
-
-                SaveCategoryDTO saveCategoryDTO = new SaveCategoryDTO(categoryName);
-                categoryController.saveCategory(saveCategoryDTO);
-            });
-        }
-    }
-
-    private void createFakeTags() {
-        if (tagRepository.count() == 0) {
-            IntStream.range(0, 10).forEach(i -> {
-                String tagName;
-                do {
-                    tagName = faker.food().fruit();
-                } while (tagRepository.existsByName(tagName));
-
-                SaveTagDTO saveTagDTO = new SaveTagDTO(tagName);
-                tagController.saveTag(saveTagDTO);
-            });
-        }
-    }
-
-    @Transactional
-    private void createFakeProducts() {
-        List<Brand> brands = brandRepository.findAll();
-        List<Category> categories = categoryRepository.findAll();
-
-        IntStream.range(0, 10).forEach(i -> {
-            String productName;
-            do {
-                productName = faker.commerce().productName();
-            } while (productRepository.existsByName(productName));
-
-            int rating = faker.options().option(1, 2, 3, 4, 5);
-            double price = faker.number().randomDouble(2, 10, 500);
-            double discount = faker.number().randomDouble(2, 1, 50);
-            double priceDiscount = price - (price * discount / 100);
-            StockEnum stock = StockEnum.IN_STOCK;
-            WeightEnum weight = WeightEnum.GRAM_250;
-            UUID brandId = brands.get(random.nextInt(brands.size())).getId();
-            UUID categoryId = categories.get(random.nextInt(categories.size())).getId();
-
-            SaveProductDTO saveProductDTO = new SaveProductDTO(
-                    productName,
-                    rating,
-                    price,
-                    priceDiscount,
-                    discount,
-                    stock,
-                    weight,
-                    List.of(), // Tags
-                    List.of(categoryId),
-                    List.of(), // Comments
-                    List.of(), // Wishlist
-                    List.of(), // Cart
-                    brandId
-            );
-
-            productController.saveProduct(saveProductDTO);
-        });
-    }
-
-    public void createFakeProductDetails() {
-        List<Product> products = productRepository.findAll();
-
-        products.forEach(product -> {
-            if (product.getProductDetails() == null) {
-                String description = faker.lorem().paragraph();
-                String seller = faker.company().name();
-                String service = faker.company().industry();
-
-                SaveProductDetailsDTO saveProductDetailsDTO = new SaveProductDetailsDTO(description, seller, service);
-                ProductDetails productDetails = productDetailsMapper.mapToEntity(saveProductDetailsDTO);
-                productDetails.setProduct(product);
-                productDetailsRepository.save(productDetails);
-
-                product.setProductDetails(productDetails);
-                productRepository.save(product);
-            }
-        });
-    }
-
-    public void createFakeProductInformations() {
-        List<Product> products = productRepository.findAll();
-
-        products.forEach(product -> {
-            if (product.getProductInformation() == null) {
-                WeightEnum weight = faker.options().option(WeightEnum.class);
-                String dimension = "17 × 15 × 3 cm";
-                ColorEnum color = faker.options().option(ColorEnum.class);
-                Integer quantity = faker.number().numberBetween(1, 100);
-
-                SaveProductInformationDTO saveProductInformationDTO = new SaveProductInformationDTO(weight, dimension, color, quantity);
-                ProductInformation productInformation = productInformationMapper.mapToEntity(saveProductInformationDTO);
-                productInformation.setProduct(product);
-                productInformationRepository.save(productInformation);
-
-                product.setProductInformation(productInformation);
-                productRepository.save(product);
-            }
-        });
-    }
-
-    public void createUsers() {
-        if (authUserRepository.count() == 0) {
-            RegisterRequest user = new RegisterRequest("user@test.fr", "uSer12345*4", RoleEnum.USER.toString());
-            RegisterRequest admin = new RegisterRequest("admin@test.fr", "adMin12345*4", RoleEnum.USER.toString());
-
-            authServiceImpl.register(user, new BeanPropertyBindingResult(user, "user"));
-            authServiceImpl.register(admin, new BeanPropertyBindingResult(admin, "admin"));
-        }
-    }
-
-    public void createProfiles() {
-        List<String> authenticatedUsers = loginUsers();
-        authenticatedUsers.forEach(this::createProfileForUser);
-    }
-
-    public void createProfileForUser(String token) {
-        UUID userId = extractUserIdFromToken(token);
-        String phoneNumber = String.format("(+33) 1 %02d %02d %02d %02d",
-                faker.number().numberBetween(10, 99),
-                faker.number().numberBetween(10, 99),
-                faker.number().numberBetween(10, 99),
-                faker.number().numberBetween(10, 99)
-        );
-
-        SaveProfileDTO saveProfileDTO = new SaveProfileDTO(
-                faker.name().firstName(),
-                faker.name().lastName(),
-                phoneNumber,
-                faker.address().streetAddress(),
-                faker.address().state(),
-                faker.address().city(),
-                "75000",
-                faker.address().city()
-        );
-
-        UUID profileId = sendCreationRequest(token, saveProfileDTO, "http://localhost:8080/api/v1/profile/user/" + userId, ProfileDTO.class);
-
-        createFakeCarts(profileId, token);
-        createFakeWishlist(profileId, token);
-        createFakeComments(profileId, token);
-
-    }
-
-    public void createFakeCarts(UUID profileId, String authenticateToken) {
-        SaveCartDTO saveCartDTO = new SaveCartDTO();
-        sendCreationRequest(authenticateToken, saveCartDTO, "http://localhost:8080/api/v1/cart/profile/" + profileId, CartDTO.class);
-    }
-
-    public void createFakeWishlist(UUID profileId, String authenticateToken) {
-        SaveWishlistDTO saveWishlistDTO = new SaveWishlistDTO(faker.name().title());
-        sendCreationRequest(authenticateToken, saveWishlistDTO, "http://localhost:8080/api/v1/wishlist/profile/" + profileId, WishlistDTO.class);
-    }
-
-    public void createFakeComments(UUID profileId, String authenticateToken) {
-        List<Product> productList = productRepository.findAll();
-
-        productList.forEach(product -> {
-            int numberOfComments = faker.number().numberBetween(1, 4);
-
-            for (int i = 0; i < numberOfComments; i++) {
-                Integer commentRating = faker.number().numberBetween(1, 6);
-                String commentText = faker.lorem().paragraph();
-                UUID productId = product.getId();
-
-                SaveCommentDTO saveCommentDTO = new SaveCommentDTO(commentRating, commentText);
-
-                sendCreationRequest(authenticateToken, saveCommentDTO, "http://localhost:8080/api/v1/comment/product/" + productId + "/profile/" + profileId, CommentDTO.class);
-            }
-        });
+        this.createFakeProfiles();
     }
 
     private void createFakeServices() {
-        if (serviceRepository.count() == 0) {
-            IntStream.range(0, 10).forEach(i -> {
-                String serviceName;
-                do {
-                    serviceName = faker.name().title();
-                } while (serviceRepository.existsByName(serviceName));
-
-                SaveServiceDTO saveServiceDTO = new SaveServiceDTO(serviceName, faker.lorem().sentence(15));
-                serviceController.saveService(saveServiceDTO);
-            });
-        }
+        fakeData.generate(
+                (int) serviceRepository.count(),
+                () -> List.of(faker.name().title()),
+                data -> serviceRepository.existsByName(data.getFirst()),
+                3,
+                data -> {
+                    SaveServiceDTO saveServiceDTO = new SaveServiceDTO(data.getFirst(), faker.lorem().sentence(15));
+                    serviceController.saveService(saveServiceDTO);
+                }
+        );
     }
 
     private void createFakeTestimonials() {
-        if (testimonialRepository.count() == 0) {
-            IntStream.range(0, 10).forEach(i -> {
-                String testimonialFirstname;
-                String testimonialLastname;
-                do {
-                    testimonialFirstname = faker.name().firstName();
-                    testimonialLastname = faker.name().lastName();
-                } while (testimonialRepository.existsByFirstnameAndLastname(testimonialFirstname, testimonialLastname));
-
-                SaveTestimonialDTO saveTestimonialDTO = new SaveTestimonialDTO(testimonialFirstname, testimonialLastname, JobEnum.CEO, faker.lorem().sentence(40));
-                testimonialController.saveTestimonial(saveTestimonialDTO);
-            });
-        }
-    }
-
-    private void createFakeFaq() {
-        if (faqRepository.count() == 0) {
-            IntStream.range(0, 5).forEach(i -> {
-                String faqQuestion;
-                do {
-                    faqQuestion = faker.lorem().sentence();
-                } while (faqRepository.existsByQuestion(faqQuestion));
-
-                SaveFaqDTO saveFaqDTO = new SaveFaqDTO(faqQuestion, faker.lorem().paragraph(random.nextInt(31) + 30));
-                faqController.saveFaq(saveFaqDTO);
-            });
-        }
+        fakeData.generate(
+                (int) testimonialRepository.count(),
+                () -> List.of(faker.name().firstName(), faker.name().lastName()),
+                data -> testimonialRepository.existsByFirstnameAndLastname(data.getFirst(), data.getLast()),
+                5,
+                data -> {
+                    SaveTestimonialDTO saveTestimonialDTO = new SaveTestimonialDTO(data.getFirst(), data.getLast(), JobEnum.CEO, faker.lorem().sentence(15));
+                    testimonialController.saveTestimonial(saveTestimonialDTO);
+                }
+        );
     }
 
     private void createFakeTeamMember() {
@@ -399,9 +161,13 @@ public class DatabaseInitializer implements CommandLineRunner {
                 String teamMemberTwitter;
                 String teamMemberInstagram;
                 String teamMemberLinkedin;
+
                 do {
-                    teamMemberFirstname = faker.name().firstName();
-                    teamMemberLastname = faker.name().lastName();
+                    do {
+                        teamMemberFirstname = faker.name().firstName();
+                        teamMemberLastname = faker.name().lastName();
+                    } while (teamMemberFirstname.length() < 3 || teamMemberLastname.length() < 3);
+
                     teamMemberTwitter = generateSocialUsername(teamMemberFirstname);
                     teamMemberInstagram = generateSocialUsername(teamMemberFirstname);
                     teamMemberLinkedin = generateSocialUsername(teamMemberFirstname);
@@ -426,73 +192,209 @@ public class DatabaseInitializer implements CommandLineRunner {
         }
     }
 
-    public List<String> loginUsers() {
-        AuthResponse user = authServiceImpl.login(
-                new LoginRequest("user@test.fr", "uSer12345*4"),
-                null
+    private void createFakeFaq() {
+        fakeData.generate(
+                (int) faqRepository.count(),
+                () -> List.of(faker.lorem().sentence()),
+                data -> faqRepository.existsByQuestion(data.getFirst()),
+                5,
+                data -> {
+                    SaveFaqDTO saveFaqDTO = new SaveFaqDTO(data.getFirst(), faker.lorem().paragraph(random.nextInt(31) + 30));
+                    faqController.saveFaq(saveFaqDTO);
+                }
         );
-
-        AuthResponse admin = authServiceImpl.login(
-                new LoginRequest("admin@test.fr", "adMin12345*4"),
-                null
-        );
-
-        List<String> authenticatedUsers = new ArrayList<>();
-        authenticatedUsers.add(user.getToken());
-        authenticatedUsers.add(admin.getToken());
-
-        return authenticatedUsers;
     }
 
-    public UUID extractUserIdFromToken(String token) {
-        Claims claims = jwtService.extractAllClaims(token);
-        return UUID.fromString(claims.get("id").toString());
+    private void createFakeBrands() {
+        fakeData.generate(
+                (int) brandRepository.count(),
+                () -> List.of(faker.company().name()),
+                data -> brandRepository.existsByName(data.getFirst()),
+                10,
+                data -> {
+                    SaveBrandDTO saveBrandDTO = new SaveBrandDTO(data.getFirst());
+                    brandController.saveBrand(saveBrandDTO);
+                }
+        );
     }
 
-    private <T, R> UUID sendCreationRequest(String token, T requestBody, String url, Class<R> responseType) {
-        RestTemplate restTemplate = new RestTemplate();
+    private void createFakeCategories() {
+        fakeData.generate(
+                (int) categoryRepository.count(),
+                () -> List.of(faker.commerce().department()),
+                data -> categoryRepository.existsByName(data.getFirst()),
+                10,
+                data -> {
+                    SaveCategoryDTO saveCategoryDTO = new SaveCategoryDTO(data.getFirst());
+                    categoryController.saveCategory(saveCategoryDTO);
+                }
+        );
+    }
 
-        // configure headers with the token
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-        headers.set("Authorization", "Bearer " + token);
+    private void createFakeTags() {
+        fakeData.generate(
+                (int) tagRepository.count(),
+                () -> List.of(faker.food().fruit()),
+                data -> tagRepository.existsByName(data.getFirst()),
+                10,
+                data -> {
+                    SaveTagDTO saveTagDTO = new SaveTagDTO(data.getFirst());
+                    tagController.saveTag(saveTagDTO);
+                }
+        );
+    }
 
-        // request and response
-        HttpEntity<T> request = new HttpEntity<>(requestBody, headers);
-        ResponseEntity<DomainSuccessResponse<R>> response = restTemplate.exchange(
-                url,
-                HttpMethod.POST,
-                request,
-                new ParameterizedTypeReference<>() {
+    private void createFakeProductsWithDetailsAndInformations() {
+        List<Brand> brands = brandRepository.findAll();
+        List<Category> categories = categoryRepository.findAll();
+
+        fakeData.generate(
+                (int) productRepository.count(),
+                () -> List.of(faker.commerce().productName()),
+                data -> productRepository.existsByName(data.getFirst()),
+                10,
+                data -> {
+                    int rating = faker.options().option(1, 2, 3, 4, 5);
+                    double price = faker.number().randomDouble(2, 10, 500);
+                    double discount = faker.number().randomDouble(2, 1, 50);
+                    double priceDiscount = price - (price * discount / 100);
+                    StockEnum stock = StockEnum.IN_STOCK;
+                    WeightEnum weight = WeightEnum.GRAM_250;
+                    UUID brandId = brands.get(random.nextInt(brands.size())).getId();
+                    UUID categoryId = categories.get(random.nextInt(categories.size())).getId();
+
+                    SaveProductDTO saveProductDTO = new SaveProductDTO(
+                            data.getFirst(),
+                            rating,
+                            price,
+                            priceDiscount,
+                            discount,
+                            stock,
+                            weight,
+                            List.of(), // Tags
+                            List.of(categoryId),
+                            List.of(), // Comments
+                            List.of(), // Wishlist
+                            List.of(), // Cart
+                            brandId
+                    );
+                    productController.saveProduct(saveProductDTO);
                 }
         );
 
-        // if request is success
-        if (response.getStatusCode().is2xxSuccessful()) {
-            R result = response.getBody().getResult();
+        List<Product> products = productRepository.findAll();
 
-            if (result == null) {
-                throw new RuntimeException("The response does not contain any results.");
-            }
+        this.createFakeProductDetails(products);
+        this.createFakeProductInformations(products);
+    }
 
-            // extract id of response
-            if (result instanceof Map<?, ?>) {
-                @SuppressWarnings("unchecked")
-                Map<String, Object> resultMap = (Map<String, Object>) result;
+    private void createFakeProductDetails(List<Product> products) {
+        for (Product product : products) {
+            String description = faker.lorem().paragraph();
+            String seller = faker.company().name();
+            String service = faker.company().industry();
 
-                if (resultMap.containsKey("id")) {
-                    return UUID.fromString(resultMap.get("id").toString());
-                }
-            }
+            SaveProductDetailsDTO saveProductDetailsDTO = new SaveProductDetailsDTO(description, seller, service);
 
-            if (result instanceof ProfileDTO profileDTO) {
-                return profileDTO.id();
-            }
+            ProductDetails productDetails = productDetailsMapper.mapToEntity(saveProductDetailsDTO);
+            productDetails.setProduct(product);
+            productDetailsRepository.save(productDetails);
 
-            throw new RuntimeException("The response does not contain a valid ID..");
+            product.setProductDetails(productDetails);
+            productRepository.save(product);
         }
+    }
 
-        throw new RuntimeException("Failed to create entity");
+    private void createFakeProductInformations(List<Product> products) {
+        for (Product product : products) {
+            WeightEnum weight = faker.options().option(WeightEnum.class);
+            String dimension = "17 × 15 × 3 cm";
+            ColorEnum color = faker.options().option(ColorEnum.class);
+            Integer quantity = faker.number().numberBetween(1, 100);
+
+            SaveProductInformationDTO saveProductInformationDTO = new SaveProductInformationDTO(weight, dimension, color, quantity);
+
+            ProductInformation productInformation = productInformationMapper.mapToEntity(saveProductInformationDTO);
+            productInformation.setProduct(product);
+            productInformationRepository.save(productInformation);
+
+            product.setProductInformation(productInformation);
+            productRepository.save(product);
+        }
+    }
+
+    private void createUsers() {
+        if (authUserRepository.count() == 0) {
+            fakeData.registerFakeUser("user@test.fr", "uSer12345*4", RoleEnum.USER);
+            fakeData.registerFakeUser("admin@test.fr", "adMin12345*4", RoleEnum.USER);
+        }
+    }
+
+    private void createFakeProfiles() {
+        List<String> authenticatedUsers = loginUsers();
+        authenticatedUsers.forEach(this::createFakeProfileForUser);
+    }
+
+    private void createFakeProfileForUser(String token) {
+        UUID userId = jwtService.extractUserIdFromToken(token);
+        String phoneNumber = String.format("(+33) 1 %02d %02d %02d %02d",
+                faker.number().numberBetween(10, 99),
+                faker.number().numberBetween(10, 99),
+                faker.number().numberBetween(10, 99),
+                faker.number().numberBetween(10, 99)
+        );
+
+        SaveProfileDTO saveProfileDTO = new SaveProfileDTO(
+                faker.name().firstName(),
+                faker.name().lastName(),
+                phoneNumber,
+                faker.address().streetAddress(),
+                faker.address().state(),
+                faker.address().city(),
+                String.valueOf(faker.number().numberBetween(512, 97680)),
+                faker.address().city()
+        );
+
+        UUID profileId = fakeData.runSaveRequestWithAuthentication(token, saveProfileDTO, Url.getFullBaseUrl() + "/profile/user/" + userId, ProfileDTO.class);
+
+        createFakeCarts(profileId, token);
+        createFakeWishlist(profileId, token);
+        createFakeComments(profileId, token);
+    }
+
+    public void createFakeCarts(UUID profileId, String authenticateToken) {
+        SaveCartDTO saveCartDTO = new SaveCartDTO();
+        fakeData.runSaveRequestWithAuthentication(authenticateToken, saveCartDTO, Url.getFullBaseUrl() + "/cart/profile/" + profileId, CartDTO.class);
+    }
+
+    public void createFakeWishlist(UUID profileId, String authenticateToken) {
+        SaveWishlistDTO saveWishlistDTO = new SaveWishlistDTO(faker.name().title());
+        fakeData.runSaveRequestWithAuthentication(authenticateToken, saveWishlistDTO, Url.getFullBaseUrl() + "/wishlist/profile/" + profileId, WishlistDTO.class);
+    }
+
+    public void createFakeComments(UUID profileId, String authenticateToken) {
+        List<Product> productList = productRepository.findAll();
+
+        for (Product product : productList) {
+            int numberOfComments = faker.number().numberBetween(1, 4);
+
+            for (int i = 0; i < numberOfComments; i++) {
+                Integer commentRating = faker.number().numberBetween(1, 6);
+                String commentText = faker.lorem().paragraph();
+                UUID productId = product.getId();
+
+                SaveCommentDTO saveCommentDTO = new SaveCommentDTO(commentRating, commentText);
+
+                fakeData.runSaveRequestWithAuthentication(authenticateToken, saveCommentDTO, Url.getFullBaseUrl() + "/comment/product/" + productId + "/profile/" + profileId, CommentDTO.class);
+            }
+        }
+    }
+
+    private List<String> loginUsers() {
+        String userToken = fakeData.getAuthenticationToken("user@test.fr", "uSer12345*4");
+        String adminToken = fakeData.getAuthenticationToken("admin@test.fr", "adMin12345*4");
+
+        return new ArrayList<>(List.of(userToken, adminToken));
     }
 
     private String generateSocialUsername(String firstname) {

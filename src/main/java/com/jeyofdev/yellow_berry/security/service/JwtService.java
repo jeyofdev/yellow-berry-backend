@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.Date;
 import java.util.Map;
+import java.util.UUID;
 import java.util.function.Function;
 
 @Service
@@ -41,6 +42,12 @@ public class JwtService {
     // get the username from the JWT token
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    // get the id from the JWT token
+    public UUID extractUserIdFromToken(String token) {
+        Claims claims = extractAllClaims(token);
+        return UUID.fromString(claims.get("id").toString());
     }
 
     // get specific information from the JWT token

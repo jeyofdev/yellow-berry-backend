@@ -39,6 +39,12 @@ public class ErrorMessage {
     public static final String JWT_MALFORMED = "JWT is malformed. Please verify its integrity.";
     public static final String JWT_MUST_BE_PROVIDED = "A jwt token must be provided.";
 
+    // Fake datas
+    public static final String FAKE_RESPONSE_NO_RESULT = "The response does not contain any results.";
+    public static final String FAKE_RESPONSE_NO_VALID_ID = "The response does not contain a valid ID.";
+    public static final String FAKE_RESPONSE_FAILED_CREATED_ENTITY = "Failed to create entity";
+
+
     // Domain fields
     public static final String REQUIRED_NAME = "The name field is required.";
     public static final String VALID_NAME = "The name field must contain between {min} and {max} characters.";
