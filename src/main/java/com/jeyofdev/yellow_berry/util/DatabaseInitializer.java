@@ -8,6 +8,9 @@ import com.jeyofdev.yellow_berry.auth.model.RegisterRequest;
 import com.jeyofdev.yellow_berry.auth_user.AuthUserRepository;
 import com.jeyofdev.yellow_berry.core.enums.*;
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
+import com.jeyofdev.yellow_berry.domain.about.AboutController;
+import com.jeyofdev.yellow_berry.domain.about.AboutRepository;
+import com.jeyofdev.yellow_berry.domain.about.dto.SaveAboutDTO;
 import com.jeyofdev.yellow_berry.domain.brand.Brand;
 import com.jeyofdev.yellow_berry.domain.brand.BrandController;
 import com.jeyofdev.yellow_berry.domain.brand.BrandRepository;
@@ -20,6 +23,9 @@ import com.jeyofdev.yellow_berry.domain.category.CategoryRepository;
 import com.jeyofdev.yellow_berry.domain.category.dto.SaveCategoryDTO;
 import com.jeyofdev.yellow_berry.domain.comment.dto.CommentDTO;
 import com.jeyofdev.yellow_berry.domain.comment.dto.SaveCommentDTO;
+import com.jeyofdev.yellow_berry.domain.faq.FaqController;
+import com.jeyofdev.yellow_berry.domain.faq.FaqRepository;
+import com.jeyofdev.yellow_berry.domain.faq.dto.SaveFaqDTO;
 import com.jeyofdev.yellow_berry.domain.product.Product;
 import com.jeyofdev.yellow_berry.domain.product.ProductController;
 import com.jeyofdev.yellow_berry.domain.product.ProductRepository;
@@ -32,8 +38,6 @@ import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformation;
 import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformationMapper;
 import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformationRepository;
 import com.jeyofdev.yellow_berry.domain.productInformation.dto.SaveProductInformationDTO;
-import com.jeyofdev.yellow_berry.domain.profile.ProfileMapper;
-import com.jeyofdev.yellow_berry.domain.profile.ProfileService;
 import com.jeyofdev.yellow_berry.domain.profile.dto.ProfileDTO;
 import com.jeyofdev.yellow_berry.domain.profile.dto.SaveProfileDTO;
 import com.jeyofdev.yellow_berry.domain.service.ServiceController;
@@ -42,6 +46,9 @@ import com.jeyofdev.yellow_berry.domain.service.dto.SaveServiceDTO;
 import com.jeyofdev.yellow_berry.domain.tag.TagController;
 import com.jeyofdev.yellow_berry.domain.tag.TagRepository;
 import com.jeyofdev.yellow_berry.domain.tag.dto.SaveTagDTO;
+import com.jeyofdev.yellow_berry.domain.team_member.TeamMemberController;
+import com.jeyofdev.yellow_berry.domain.team_member.TeamMemberRepository;
+import com.jeyofdev.yellow_berry.domain.team_member.dto.SaveTeamMemberDTO;
 import com.jeyofdev.yellow_berry.domain.testimonial.TestimonialController;
 import com.jeyofdev.yellow_berry.domain.testimonial.TestimonialRepository;
 import com.jeyofdev.yellow_berry.domain.testimonial.dto.SaveTestimonialDTO;
@@ -77,8 +84,17 @@ public class DatabaseInitializer implements CommandLineRunner {
     private final ServiceRepository serviceRepository;
     private final ServiceController serviceController;
 
+    private final AboutRepository aboutRepository;
+    private final AboutController aboutController;
+
     private final TestimonialRepository testimonialRepository;
     private final TestimonialController testimonialController;
+
+    private final FaqRepository faqRepository;
+    private final FaqController faqController;
+
+    private final TeamMemberRepository teamMemberRepository;
+    private final TeamMemberController teamMemberController;
 
     private final ProductRepository productRepository;
     private final ProductController productController;
@@ -91,9 +107,6 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     private final AuthUserRepository authUserRepository;
     private final AuthServiceImpl authServiceImpl;
-
-    private final ProfileMapper profileMapper;
-    private final ProfileService profileService;
 
     private final Faker faker = new Faker();
     private final Random random = new Random();
@@ -135,6 +148,9 @@ public class DatabaseInitializer implements CommandLineRunner {
         this.createProfiles();
         this.createFakeServices();
         this.createFakeTestimonials();
+        this.createFakeAbout();
+        this.createFakeFaq();
+        this.createFakeTeamMember();
     }
 
     private void createFakeBrands() {
@@ -361,6 +377,55 @@ public class DatabaseInitializer implements CommandLineRunner {
         }
     }
 
+    private void createFakeFaq() {
+        if (faqRepository.count() == 0) {
+            IntStream.range(0, 5).forEach(i -> {
+                String faqQuestion;
+                do {
+                    faqQuestion = faker.lorem().sentence();
+                } while (faqRepository.existsByQuestion(faqQuestion));
+
+                SaveFaqDTO saveFaqDTO = new SaveFaqDTO(faqQuestion, faker.lorem().paragraph(random.nextInt(31) + 30));
+                faqController.saveFaq(saveFaqDTO);
+            });
+        }
+    }
+
+    private void createFakeTeamMember() {
+        if (teamMemberRepository.count() == 0) {
+            IntStream.range(0, 5).forEach(i -> {
+                String teamMemberFirstname;
+                String teamMemberLastname;
+                String teamMemberTwitter;
+                String teamMemberInstagram;
+                String teamMemberLinkedin;
+                do {
+                    teamMemberFirstname = faker.name().firstName();
+                    teamMemberLastname = faker.name().lastName();
+                    teamMemberTwitter = generateSocialUsername(teamMemberFirstname);
+                    teamMemberInstagram = generateSocialUsername(teamMemberFirstname);
+                    teamMemberLinkedin = generateSocialUsername(teamMemberFirstname);
+
+                } while (
+                        teamMemberRepository.existsByFirstnameAndLastname(teamMemberFirstname, teamMemberLastname) ||
+                                teamMemberRepository.existsByTwitter(teamMemberTwitter) ||
+                                teamMemberRepository.existsByInstagram(teamMemberInstagram) ||
+                                teamMemberRepository.existsByLinkedin(teamMemberLinkedin)
+                );
+
+                SaveTeamMemberDTO saveTeamMemberDTO = new SaveTeamMemberDTO(teamMemberFirstname, teamMemberLastname, JobEnum.CEO, teamMemberTwitter, teamMemberInstagram, teamMemberLinkedin);
+                teamMemberController.saveTeamMember(saveTeamMemberDTO);
+            });
+        }
+    }
+
+    private void createFakeAbout() {
+        if (aboutRepository.count() == 0) {
+            SaveAboutDTO saveAboutDTO = new SaveAboutDTO("About the BlueBerry", "Farm-fresh Goodness, just a click Away.", faker.lorem().sentence(40));
+            aboutController.saveAbout(saveAboutDTO);
+        }
+    }
+
     public List<String> loginUsers() {
         AuthResponse user = authServiceImpl.login(
                 new LoginRequest("user@test.fr", "uSer12345*4"),
@@ -428,5 +493,10 @@ public class DatabaseInitializer implements CommandLineRunner {
         }
 
         throw new RuntimeException("Failed to create entity");
+    }
+
+    private String generateSocialUsername(String firstname) {
+        int randomNumber = faker.number().numberBetween(10, 9999);
+        return firstname.replaceAll("[^a-zA-Z0-9]", "") + randomNumber;
     }
 }
