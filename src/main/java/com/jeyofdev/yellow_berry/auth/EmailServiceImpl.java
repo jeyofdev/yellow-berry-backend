@@ -1,5 +1,6 @@
 package com.jeyofdev.yellow_berry.auth;
 
+import com.jeyofdev.yellow_berry.core.constant.ClientUrl;
 import com.jeyofdev.yellow_berry.core.constant.Url;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
@@ -23,7 +24,7 @@ public class EmailServiceImpl implements EmailService {
 
     @Override
     public void sendPasswordResetEmail(String email, String resetToken) {
-        String resetUrl = MessageFormat.format("{0}/auth/reset-password?resetToken={1}", Url.getFullBaseUrl(), resetToken);
+        String resetUrl = MessageFormat.format("{0}/auth/reset-password?resetToken={1}", ClientUrl.getBaseUrl(), resetToken);
 
         sendEmail(
                 email,
