@@ -132,7 +132,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                 (int) serviceRepository.count(),
                 () -> List.of(faker.name().title()),
                 data -> serviceRepository.existsByName(data.getFirst()),
-                3,
+                4,
                 data -> {
                     SaveServiceDTO saveServiceDTO = new SaveServiceDTO(data.getFirst(), faker.lorem().sentence(15));
                     serviceController.saveService(saveServiceDTO);
@@ -147,7 +147,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                 data -> testimonialRepository.existsByFirstnameAndLastname(data.getFirst(), data.getLast()),
                 5,
                 data -> {
-                    SaveTestimonialDTO saveTestimonialDTO = new SaveTestimonialDTO(data.getFirst(), data.getLast(), JobEnum.CEO, faker.lorem().sentence(15));
+                    SaveTestimonialDTO saveTestimonialDTO = new SaveTestimonialDTO(data.getFirst(), data.getLast(), JobEnum.getRandomJob(), faker.lorem().sentence(15));
                     testimonialController.saveTestimonial(saveTestimonialDTO);
                 }
         );
@@ -155,7 +155,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     private void createFakeTeamMember() {
         if (teamMemberRepository.count() == 0) {
-            IntStream.range(0, 5).forEach(i -> {
+            IntStream.range(0, 6).forEach(i -> {
                 String teamMemberFirstname;
                 String teamMemberLastname;
                 String teamMemberTwitter;
@@ -179,7 +179,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                                 teamMemberRepository.existsByLinkedin(teamMemberLinkedin)
                 );
 
-                SaveTeamMemberDTO saveTeamMemberDTO = new SaveTeamMemberDTO(teamMemberFirstname, teamMemberLastname, JobEnum.CEO, teamMemberTwitter, teamMemberInstagram, teamMemberLinkedin);
+                SaveTeamMemberDTO saveTeamMemberDTO = new SaveTeamMemberDTO(teamMemberFirstname, teamMemberLastname, JobEnum.getRandomJob(), teamMemberTwitter, teamMemberInstagram, teamMemberLinkedin);
                 teamMemberController.saveTeamMember(saveTeamMemberDTO);
             });
         }
