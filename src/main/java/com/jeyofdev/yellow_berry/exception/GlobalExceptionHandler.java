@@ -53,8 +53,8 @@ public class GlobalExceptionHandler {
     /**
      * to handle the case when the provided username already exists in the database.
      */
-    @ExceptionHandler(UsernameAlreadyTakenException.class)
-    public ResponseEntity<ErrorResponse> handleUsernameAlreadyTakenException(UsernameAlreadyTakenException exception, HttpServletRequest request) {
+    @ExceptionHandler(EmailAlreadyTakenException.class)
+    public ResponseEntity<ErrorResponse> handleEmailAlreadyTakenException(EmailAlreadyTakenException exception, HttpServletRequest request) {
         return handleException(exception, HttpStatus.BAD_REQUEST, request, null);
     }
 

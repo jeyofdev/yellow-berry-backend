@@ -16,7 +16,7 @@ public class ErrorMessage {
     public static final String ROLE_VALUE = "The role must be either admin or user";
 
     // user
-    public static final String USERNAME_ALREADY_TAKEN = "Username already taken";
+    public static final String EMAIL_ALREADY_TAKEN = "Email already taken";
     public static final String USER_NOT_FOUND = "User not found";
     public static final String OLD_BAD_PASSWORD = "Old password is incorrect.";
     public static final String NO_USER_ASSOCIATED_EMAIL = "No account was found associated with this email address. Please check the email you provided or consider creating a new account.";

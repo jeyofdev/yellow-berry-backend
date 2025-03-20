@@ -4,7 +4,7 @@ import com.jeyofdev.yellow_berry.auth.model.*;
 import com.jeyofdev.yellow_berry.exception.BadValidationArgumentException;
 import com.jeyofdev.yellow_berry.exception.ExpireTokenException;
 import com.jeyofdev.yellow_berry.exception.InvalidTokenException;
-import com.jeyofdev.yellow_berry.exception.UsernameAlreadyTakenException;
+import com.jeyofdev.yellow_berry.exception.EmailAlreadyTakenException;
 import jakarta.validation.ConstraintViolationException;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.BindingResult;
 
 public interface AuthService {
-    RegisterResponse register(RegisterRequest request, BindingResult bindingResult) throws IllegalArgumentException, UsernameAlreadyTakenException;
+    RegisterResponse register(RegisterRequest request, BindingResult bindingResult) throws IllegalArgumentException, EmailAlreadyTakenException;
 
     AuthResponse login(LoginRequest request, BindingResult bindingResult) throws ConstraintViolationException, BadCredentialsException;
 

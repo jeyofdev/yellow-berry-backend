@@ -9,7 +9,7 @@ import com.jeyofdev.yellow_berry.core.enums.RoleEnum;
 import com.jeyofdev.yellow_berry.exception.BadValidationArgumentException;
 import com.jeyofdev.yellow_berry.exception.ExpireTokenException;
 import com.jeyofdev.yellow_berry.exception.InvalidTokenException;
-import com.jeyofdev.yellow_berry.exception.UsernameAlreadyTakenException;
+import com.jeyofdev.yellow_berry.exception.EmailAlreadyTakenException;
 import com.jeyofdev.yellow_berry.security.service.JwtService;
 import com.jeyofdev.yellow_berry.security.service.TokenService;
 import com.jeyofdev.yellow_berry.util.Validator;
@@ -41,13 +41,13 @@ public class AuthServiceImpl implements AuthService {
     private final TokenService tokenService;
 
     @Override
-    public RegisterResponse register(RegisterRequest request, BindingResult bindingResult) throws IllegalArgumentException, UsernameAlreadyTakenException {
+    public RegisterResponse register(RegisterRequest request, BindingResult bindingResult) throws IllegalArgumentException, EmailAlreadyTakenException {
         Validator.checkValidationErrorsExist(bindingResult);
         RoleEnum roleEnum = RoleEnum.fromString(request.getRole());
 
         // check if user exist
         if (authUserRepository.findByEmail(request.getEmail()).isPresent()) {
-            throw new UsernameAlreadyTakenException(ErrorMessage.USERNAME_ALREADY_TAKEN);
+            throw new EmailAlreadyTakenException(ErrorMessage.EMAIL_ALREADY_TAKEN);
         }
 
         // create user
