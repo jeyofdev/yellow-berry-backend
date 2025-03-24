@@ -107,7 +107,7 @@ public class ProductService extends AbstractDomainService<Product, ProductReposi
             product.getWishlists().remove(wishlist);
         }
 
-        return save(product);
+        return productRepository.save(product);
     }
 
     public Product addProductToCart(UUID productId, UUID cartId) {

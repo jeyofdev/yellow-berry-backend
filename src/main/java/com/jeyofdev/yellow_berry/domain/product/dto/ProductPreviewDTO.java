@@ -16,4 +16,7 @@ public record ProductPreviewDTO(
         ListResponseFormat<Category> categories,
         Integer commentCount
 ) {
+    public ProductPreviewDTO {
+        System.out.println("🚀 ProductPreviewDTO créé avec priceDetails = " + priceDetails);
+    }
 }

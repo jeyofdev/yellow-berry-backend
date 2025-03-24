@@ -1,7 +1,5 @@
 package com.jeyofdev.yellow_berry.domain.profile;
 
-import com.jeyofdev.yellow_berry.domain.cart.Cart;
-import com.jeyofdev.yellow_berry.domain.comment.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -20,9 +18,6 @@ public interface ProfileRepository extends JpaRepository<Profile, UUID> {
 
     boolean existsByPhone(String phone);
 
-    @Query("SELECT p FROM Profile p JOIN p.commentList c WHERE c = :comment")
-    Profile findByComment(@Param("comment") Comment comment);
-
-    @Query("SELECT p FROM Profile p JOIN p.cart c WHERE c = :cart")
-    Profile findByCart(@Param("cart") Cart cart);
+    @Query("SELECT p FROM Profile p WHERE p.user.id = :userId")
+    Optional<Profile> findByUserId(@Param("userId") UUID userId);
 }

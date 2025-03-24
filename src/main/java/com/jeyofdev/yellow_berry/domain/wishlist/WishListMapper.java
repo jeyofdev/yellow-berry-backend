@@ -1,6 +1,7 @@
 package com.jeyofdev.yellow_berry.domain.wishlist;
 
 import com.jeyofdev.yellow_berry.core.mappers.ListResponseFormatMapper;
+import com.jeyofdev.yellow_berry.domain.product.ProductMapper;
 import com.jeyofdev.yellow_berry.domain.profile.ProfileMapper;
 import com.jeyofdev.yellow_berry.domain.wishlist.dto.SaveWishlistDTO;
 import com.jeyofdev.yellow_berry.domain.wishlist.dto.WishlistDTO;
@@ -8,10 +9,10 @@ import com.jeyofdev.yellow_berry.domain.wishlist.dto.WishlistPreviewDTO;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {ListResponseFormatMapper.class, ProfileMapper.class})
+@Mapper(componentModel = "spring", uses = {ListResponseFormatMapper.class, ProfileMapper.class, ProductMapper.class})
 public interface WishListMapper {
     @Mapping(source = "productList", target = "products.results")
-    @Mapping(target = "profile.wishList", ignore = true)
+    @Mapping(target = "profile.wishlist", ignore = true)
     @Mapping(target = "profile.comments", ignore = true)
     @Mapping(source = "profile", target = "profile")
     @Mapping(source = "profile.user.email", target = "profile.email")
@@ -24,7 +25,7 @@ public interface WishListMapper {
     WishlistDTO mapFromEntity(WishList wishlist);
 
     @Mapping(source = "productList", target = "products.results")
-    @Mapping(target = "profile.wishList", ignore = true)
+    @Mapping(target = "profile.wishlist", ignore = true)
     @Mapping(target = "profile.comments", ignore = true)
     @Mapping(source = "profile", target = "profile")
     @Mapping(source = "profile.user.email", target = "profile.email")

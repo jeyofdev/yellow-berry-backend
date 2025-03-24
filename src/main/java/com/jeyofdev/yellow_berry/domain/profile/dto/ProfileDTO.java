@@ -17,7 +17,7 @@ public record ProfileDTO(
         NameFormat nameDetails,
         String phone,
         AddressFormat addressDetails,
-        WishList wishList,
+        WishList wishlist,
         ListResponseFormat<Comment> comments
 ) {
 }

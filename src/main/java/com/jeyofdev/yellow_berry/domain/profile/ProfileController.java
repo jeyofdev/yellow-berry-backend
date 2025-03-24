@@ -35,6 +35,15 @@ public class ProfileController {
         return DomainSuccessResponse.get(HttpStatus.OK, profileDTO);
     }
 
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<DomainSuccessResponse<ProfileDTO>> findProfileByUserId(@PathVariable("userId") UUID userId) {
+        Profile profile = profileService.findByUserId(userId);
+        ProfileDTO profileDTO = profileMapper.mapFromEntity(profile);
+
+        return DomainSuccessResponse.get(HttpStatus.OK, profileDTO);
+
+    }
+
     @PostMapping("/user/{userId}")
     public ResponseEntity<DomainSuccessResponse<ProfileDTO>> saveProfile(
             @PathVariable("userId") UUID userId,

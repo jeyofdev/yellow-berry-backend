@@ -7,6 +7,7 @@ import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
 import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.exception.AlreadyAssociatedException;
 import com.jeyofdev.yellow_berry.exception.AlreadyTakenException;
+import com.jeyofdev.yellow_berry.exception.NotFoundException;
 import com.jeyofdev.yellow_berry.security.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,11 @@ public class ProfileService extends AbstractDomainService<Profile, ProfileReposi
         super(profileRepository, "Profile");
         this.profileRepository = profileRepository;
         this.authUserService = authUserService;
+    }
+
+    public Profile findByUserId(UUID userId) {
+        return profileRepository.findByUserId(userId)
+                .orElseThrow(() -> new NotFoundException("Profile not found for user with id " + userId));
     }
 
     public Profile save(UUID userId, Profile profile) {
