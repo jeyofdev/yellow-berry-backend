@@ -114,7 +114,7 @@ public class DatabaseInitializer implements CommandLineRunner {
     }
 
     private void createDatas() throws IOException {
-        this.createFakeServices();
+        /*this.createFakeServices();
         this.createFakeTestimonials();
         this.createFakeTeamMember();
         this.createFakeAbout();
@@ -124,7 +124,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         this.createFakeTags();
         this.createFakeProductsWithDetailsAndInformations();
         this.createUsers();
-        this.createFakeProfiles();
+        this.createFakeProfiles();*/
     }
 
     private void createFakeServices() {
@@ -212,7 +212,8 @@ public class DatabaseInitializer implements CommandLineRunner {
                 data -> brandRepository.existsByName(data.getFirst()),
                 10,
                 data -> {
-                    SaveBrandDTO saveBrandDTO = new SaveBrandDTO(data.getFirst());
+                    SaveBrandDTO saveBrandDTO = new SaveBrandDTO(data.getFirst(), ColorEnum.getRandomColor());
+                    System.out.println(saveBrandDTO);
                     brandController.saveBrand(saveBrandDTO);
                 }
         );

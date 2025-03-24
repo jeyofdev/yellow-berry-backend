@@ -63,7 +63,7 @@ public class AuthServiceImpl implements AuthService {
         authUserRepository.save(user);
 
         // send email
-        emailServiceImpl.sendValidationEmail(user.getEmail(), user.getVerificationToken());
+        /*emailServiceImpl.sendValidationEmail(user.getEmail(), user.getVerificationToken());*/
 
         return RegisterResponse.builder()
                 .message(ConfirmMessage.REGISTER)

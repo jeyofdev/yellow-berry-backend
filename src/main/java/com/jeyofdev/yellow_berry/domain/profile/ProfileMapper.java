@@ -9,7 +9,7 @@ import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = ListResponseFormatMapper.class)
 public interface ProfileMapper {
-    @Mapping(target = "wishList", source = "wishlist")
+    @Mapping(target = "wishlist", source = "wishlist")
     @Mapping(source = "commentList", target = "comments", qualifiedByName = "toListResponseFormat")
     @Mapping(source = "user.email", target = "email")
     @Mapping(source = "user.role", target = "role")

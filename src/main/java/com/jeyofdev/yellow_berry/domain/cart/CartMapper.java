@@ -12,7 +12,7 @@ import org.mapstruct.Mapping;
 public interface CartMapper {
 
     @Mapping(source = "productList", target = "products.results")
-    @Mapping(target = "profile.wishList", ignore = true)
+    @Mapping(target = "profile.wishlist", ignore = true)
     @Mapping(target = "profile.comments", ignore = true)
     @Mapping(source = "profile", target = "profile")
     @Mapping(source = "profile.user.email", target = "profile.email")
