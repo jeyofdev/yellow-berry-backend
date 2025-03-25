@@ -1,6 +1,5 @@
 package com.jeyofdev.yellow_berry.domain.product.dto;
 
-import com.jeyofdev.yellow_berry.core.enums.StockEnum;
 import com.jeyofdev.yellow_berry.core.interfaces.domain.model.HasPriceDetails;
 import com.jeyofdev.yellow_berry.core.model.ListResponseFormat;
 import com.jeyofdev.yellow_berry.core.model.PriceFormat;
@@ -20,7 +19,7 @@ public record ProductDTO(
         String reference,
         RatingFormat ratingDetails,
         PriceFormat priceDetails,
-        StockEnum stock,
+        String stock,
         String weight,
         ProductDetails details,
         ProductInformation informations,

@@ -33,6 +33,7 @@ public interface ProductMapper {
     @Mapping(source = "productDetails", target = "details")
     @Mapping(source = "productInformation", target = "informations")
     @Mapping(target = "weight", expression = "java(product.getWeight().toString())")
+    @Mapping(target = "stock", expression = "java(product.getStock().toString())")
     ProductDTO mapFromEntity(Product product);
 
     @Mapping(source = "productDetails.description", target = "description")
