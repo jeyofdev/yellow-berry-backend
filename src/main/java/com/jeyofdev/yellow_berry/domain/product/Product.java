@@ -3,6 +3,7 @@ package com.jeyofdev.yellow_berry.domain.product;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jeyofdev.yellow_berry.annotation.ValidEnum;
 import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
+import com.jeyofdev.yellow_berry.core.constant.Regex;
 import com.jeyofdev.yellow_berry.core.enums.StockEnum;
 import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
 import com.jeyofdev.yellow_berry.domain.brand.Brand;
@@ -14,10 +15,7 @@ import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformation;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
 import lombok.*;
 
 import java.util.ArrayList;
@@ -35,6 +33,11 @@ public class Product {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
+
+    @Column(name = "reference", columnDefinition = "VARCHAR(5)", unique = true)
+    @NotNull(message = ErrorMessage.REQUIRED_REFERENCE)
+    @Pattern(regexp = Regex.ZIPCODE_REFERENCE, message = ErrorMessage.VALID_REFERENCE)
+    private String reference;
 
     @Column(name = "name", columnDefinition = "VARCHAR(100)", unique = true)
     @NotNull(message = ErrorMessage.REQUIRED_NAME)

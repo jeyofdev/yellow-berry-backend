@@ -1,7 +1,6 @@
 package com.jeyofdev.yellow_berry.domain.product.dto;
 
 import com.jeyofdev.yellow_berry.core.enums.StockEnum;
-import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
 import com.jeyofdev.yellow_berry.core.interfaces.domain.model.HasPriceDetails;
 import com.jeyofdev.yellow_berry.core.model.ListResponseFormat;
 import com.jeyofdev.yellow_berry.core.model.PriceFormat;
@@ -17,10 +16,11 @@ import java.util.UUID;
 public record ProductDTO(
         UUID id,
         String name,
+        String reference,
         Integer rating,
         PriceFormat priceDetails,
         StockEnum stock,
-        WeightEnum weight,
+        String weight,
         ProductDetails details,
         ProductInformation informations,
         ListResponseFormat<Tag> tags,

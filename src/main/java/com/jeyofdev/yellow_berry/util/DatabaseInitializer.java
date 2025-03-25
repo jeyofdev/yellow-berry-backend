@@ -266,16 +266,18 @@ public class DatabaseInitializer implements CommandLineRunner {
                 data -> productRepository.existsByName(data.getFirst()),
                 10,
                 data -> {
+                    String reference = faker.regexify("[A-Z]{2}[A-Z0-9][0-9]{2}");
                     int rating = faker.options().option(1, 2, 3, 4, 5);
                     double price = faker.number().randomDouble(2, 10, 500);
                     int discount = faker.number().numberBetween(1, 99);
                     StockEnum stock = StockEnum.IN_STOCK;
-                    WeightEnum weight = WeightEnum.GRAM_250;
+                    WeightEnum weight = WeightEnum.getRandomEnum();
                     UUID brandId = brands.get(random.nextInt(brands.size())).getId();
                     UUID categoryId = categories.get(random.nextInt(categories.size())).getId();
 
                     SaveProductDTO saveProductDTO = new SaveProductDTO(
                             data.getFirst(),
+                            reference,
                             rating,
                             price,
                             discount,

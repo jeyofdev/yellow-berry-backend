@@ -30,12 +30,15 @@ public interface ProductMapper {
     @Mapping(source = "discount", target = "priceDetails.discount")
     @Mapping(source = "productDetails", target = "details")
     @Mapping(source = "productInformation", target = "informations")
+    @Mapping(target = "weight", expression = "java(product.getWeight().toString())")
     ProductDTO mapFromEntity(Product product);
 
+    @Mapping(source = "productDetails.description", target = "description")
     @Mapping(source = "categoryList", target = "categories", qualifiedByName = "toListResponseFormat")
     @Mapping(source = "price", target = "priceDetails.price")
     @Mapping(source = "discount", target = "priceDetails.discount")
     @Mapping(target = "commentCount", expression = "java(product.getCommentList().size())")
+    @Mapping(target = "weight", expression = "java(product.getWeight().toString())")
     ProductPreviewDTO mapFromEntityPreview(Product product);
 
     @Mapping(target = "tagList", source = "tagIds", qualifiedByName = "mapTagIdsToTags")

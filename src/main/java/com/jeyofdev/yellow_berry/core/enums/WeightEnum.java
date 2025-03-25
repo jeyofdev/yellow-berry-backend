@@ -4,13 +4,23 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.jeyofdev.yellow_berry.core.serializer.WeightDeserializer;
 import lombok.Getter;
 
+import java.util.Random;
+
 @Getter
 @JsonDeserialize(using = WeightDeserializer.class)
 public enum WeightEnum {
     GRAM_250(250),
     GRAM_500(500),
     GRAM_1000(1000),
-    GRAM_2000(2000);
+    GRAM_2000(2000),
+    GRAM_3000(3000),
+    GRAM_4000(4000),
+    GRAM_5000(5000),
+    GRAM_6000(6000),
+    GRAM_7000(7000),
+    GRAM_8000(8000),
+    GRAM_9000(9000),
+    GRAM_10000(10000);
 
     private final int grams;
 
@@ -26,10 +36,8 @@ public enum WeightEnum {
         return grams + "g";
     }
 
-    public static void main(String[] args) {
-        for (WeightEnum w : WeightEnum.values()) {
-            System.out.println(w + " = " + w.toString());
-        }
+    public static WeightEnum getRandomEnum() {
+        WeightEnum[] weights = WeightEnum.values();
+        return weights[new Random().nextInt(weights.length)];
     }
-
 }
