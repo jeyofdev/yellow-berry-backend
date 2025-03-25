@@ -4,6 +4,7 @@ import com.jeyofdev.yellow_berry.core.enums.StockEnum;
 import com.jeyofdev.yellow_berry.core.interfaces.domain.model.HasPriceDetails;
 import com.jeyofdev.yellow_berry.core.model.ListResponseFormat;
 import com.jeyofdev.yellow_berry.core.model.PriceFormat;
+import com.jeyofdev.yellow_berry.core.model.RatingFormat;
 import com.jeyofdev.yellow_berry.domain.brand.Brand;
 import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.comment.Comment;
@@ -17,7 +18,7 @@ public record ProductDTO(
         UUID id,
         String name,
         String reference,
-        Integer rating,
+        RatingFormat ratingDetails,
         PriceFormat priceDetails,
         StockEnum stock,
         String weight,

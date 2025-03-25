@@ -267,7 +267,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                 10,
                 data -> {
                     String reference = faker.regexify("[A-Z]{2}[A-Z0-9][0-9]{2}");
-                    int rating = faker.options().option(1, 2, 3, 4, 5);
+                    int rating = 1;
                     double price = faker.number().randomDouble(2, 10, 500);
                     int discount = faker.number().numberBetween(1, 99);
                     StockEnum stock = StockEnum.IN_STOCK;
@@ -388,7 +388,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         List<Product> productList = productRepository.findAll();
 
         for (Product product : productList) {
-            int numberOfComments = faker.number().numberBetween(1, 4);
+            int numberOfComments = faker.number().numberBetween(5, 10);
 
             for (int i = 0; i < numberOfComments; i++) {
                 Integer commentRating = faker.number().numberBetween(1, 6);

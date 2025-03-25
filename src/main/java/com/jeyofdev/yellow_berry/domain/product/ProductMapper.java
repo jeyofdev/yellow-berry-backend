@@ -28,6 +28,8 @@ public interface ProductMapper {
     @Mapping(source = "commentList", target = "comments", qualifiedByName = "toListResponseFormat")
     @Mapping(source = "price", target = "priceDetails.price")
     @Mapping(source = "discount", target = "priceDetails.discount")
+    @Mapping(source = "rating", target = "ratingDetails.rating")
+    @Mapping(target = "ratingDetails.count", expression = "java(product.getCommentList().size())")
     @Mapping(source = "productDetails", target = "details")
     @Mapping(source = "productInformation", target = "informations")
     @Mapping(target = "weight", expression = "java(product.getWeight().toString())")
@@ -37,6 +39,8 @@ public interface ProductMapper {
     @Mapping(source = "categoryList", target = "categories", qualifiedByName = "toListResponseFormat")
     @Mapping(source = "price", target = "priceDetails.price")
     @Mapping(source = "discount", target = "priceDetails.discount")
+    @Mapping(source = "rating", target = "ratingDetails.rating")
+    @Mapping(target = "ratingDetails.count", expression = "java(product.getCommentList().size())")
     @Mapping(target = "commentCount", expression = "java(product.getCommentList().size())")
     @Mapping(target = "weight", expression = "java(product.getWeight().toString())")
     ProductPreviewDTO mapFromEntityPreview(Product product);
