@@ -43,7 +43,14 @@ public class CommentService extends AbstractDomainService<Comment, CommentReposi
         comment.setProduct(product);
         comment.setProfile(profile);
 
-        return commentRepository.save(comment);
+        commentRepository.save(comment);
+
+        Integer rating = productRepository.findAverageRatingByProductId(productId);
+        product.setRating(rating);
+
+        productRepository.save(product);
+
+        return comment;
     }
 
     public Comment updateById(UUID commentId, Comment updatedComment) {

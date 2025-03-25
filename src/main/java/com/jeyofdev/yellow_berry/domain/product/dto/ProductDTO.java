@@ -1,9 +1,9 @@
 package com.jeyofdev.yellow_berry.domain.product.dto;
 
-import com.jeyofdev.yellow_berry.core.enums.StockEnum;
-import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
+import com.jeyofdev.yellow_berry.core.interfaces.domain.model.HasPriceDetails;
 import com.jeyofdev.yellow_berry.core.model.ListResponseFormat;
 import com.jeyofdev.yellow_berry.core.model.PriceFormat;
+import com.jeyofdev.yellow_berry.core.model.RatingFormat;
 import com.jeyofdev.yellow_berry.domain.brand.Brand;
 import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.comment.Comment;
@@ -16,15 +16,17 @@ import java.util.UUID;
 public record ProductDTO(
         UUID id,
         String name,
-        Integer rating,
+        String reference,
+        RatingFormat ratingDetails,
         PriceFormat priceDetails,
-        StockEnum stock,
-        WeightEnum weight,
+        String stock,
+        String weight,
         ProductDetails details,
         ProductInformation informations,
         ListResponseFormat<Tag> tags,
         ListResponseFormat<Category> categories,
         ListResponseFormat<Comment> comments,
         Brand brand
-) {
+) implements HasPriceDetails {
+
 }

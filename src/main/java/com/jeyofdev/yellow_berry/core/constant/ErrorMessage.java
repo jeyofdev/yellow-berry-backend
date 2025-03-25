@@ -49,6 +49,9 @@ public class ErrorMessage {
     public static final String REQUIRED_NAME = "The name field is required.";
     public static final String VALID_NAME = "The name field must contain between {min} and {max} characters.";
 
+    public static final String REQUIRED_REFERENCE = "The reference field is required.";
+    public static final String VALID_REFERENCE = "The reference field must contain between {min} and {max} characters.";
+
     public static final String REQUIRED_FIRSTNAME = "The firstname field is required.";
     public static final String VALID_FIRSTNAME = "The firstname field must contain between {min} and {max} characters.";
 

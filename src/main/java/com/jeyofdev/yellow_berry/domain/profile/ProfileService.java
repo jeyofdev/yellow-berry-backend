@@ -57,10 +57,10 @@ public class ProfileService extends AbstractDomainService<Profile, ProfileReposi
         existingProfile.setLastname(updatedProfile.getLastname() != null ? updatedProfile.getLastname() : existingProfile.getLastname());
         existingProfile.setPhone(updatedProfile.getPhone() != null ? updatedProfile.getPhone() : existingProfile.getPhone());
         existingProfile.setAddress(updatedProfile.getAddress() != null ? updatedProfile.getAddress() : existingProfile.getAddress());
-        existingProfile.setRegion(updatedProfile.getRegion() != null ? updatedProfile.getRegion() : existingProfile.getRegion());
-        existingProfile.setDepartment(updatedProfile.getDepartment() != null ? updatedProfile.getDepartment() : existingProfile.getDepartment());
         existingProfile.setZipCode(updatedProfile.getZipCode() != null ? updatedProfile.getZipCode() : existingProfile.getZipCode());
         existingProfile.setCity(updatedProfile.getCity() != null ? updatedProfile.getCity() : existingProfile.getCity());
+        existingProfile.setDepartment(updatedProfile.getDepartment() != null ? updatedProfile.getDepartment() : existingProfile.getDepartment());
+        existingProfile.setRegion(updatedProfile.getRegion() != null ? updatedProfile.getRegion() : existingProfile.getRegion());
 
         return profileRepository.save(existingProfile);
 

@@ -43,4 +43,7 @@ ProductRepository extends JpaRepository<Product, UUID> {
 
     @Query("SELECT p FROM Product p JOIN p.commentList c WHERE c = :comment")
     List<Product> findByComment(@Param("comment") Comment comment);
+
+    @Query("SELECT AVG(c.rating) FROM Product p JOIN p.commentList c WHERE p.id = :productId")
+    Integer findAverageRatingByProductId(@Param("productId") UUID productId);
 }
