@@ -49,16 +49,6 @@ public class Profile {
     @Size(min = 3, max = 100, message = ErrorMessage.VALID_ADDRESS)
     private String address;
 
-    @Column(name = "region", columnDefinition = "VARCHAR(30)")
-    @NotNull(message = ErrorMessage.REQUIRED_REGION)
-    @Size(min = 3, max = 30, message = ErrorMessage.VALID_REGION)
-    private String region;
-
-    @Column(name = "department", columnDefinition = "VARCHAR(30)")
-    @NotNull(message = ErrorMessage.REQUIRED_DEPARTMENT)
-    @Size(min = 3, max = 30, message = ErrorMessage.VALID_DEPARTMENT)
-    private String department;
-
     @Column(name = "zipCode", columnDefinition = "VARCHAR(5)")
     @NotNull(message = ErrorMessage.REQUIRED_ZIP_CODE)
     @Pattern(regexp = Regex.ZIPCODE_PATTERN, message = ErrorMessage.VALID_ZIP_CODE)
@@ -68,6 +58,16 @@ public class Profile {
     @NotNull(message = ErrorMessage.REQUIRED_CITY)
     @Size(min = 3, max = 30, message = ErrorMessage.VALID_CITY)
     private String city;
+
+    @Column(name = "department", columnDefinition = "VARCHAR(30)")
+    @NotNull(message = ErrorMessage.REQUIRED_DEPARTMENT)
+    @Size(min = 3, max = 30, message = ErrorMessage.VALID_DEPARTMENT)
+    private String department;
+
+    @Column(name = "region", columnDefinition = "VARCHAR(30)")
+    @NotNull(message = ErrorMessage.REQUIRED_REGION)
+    @Size(min = 3, max = 30, message = ErrorMessage.VALID_REGION)
+    private String region;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")

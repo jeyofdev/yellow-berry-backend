@@ -114,7 +114,7 @@ public class DatabaseInitializer implements CommandLineRunner {
     }
 
     private void createDatas() throws IOException {
-        /*this.createFakeServices();
+        this.createFakeServices();
         this.createFakeTestimonials();
         this.createFakeTeamMember();
         this.createFakeAbout();
@@ -124,7 +124,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         this.createFakeTags();
         this.createFakeProductsWithDetailsAndInformations();
         this.createUsers();
-        this.createFakeProfiles();*/
+        this.createFakeProfiles();
     }
 
     private void createFakeServices() {
@@ -143,7 +143,18 @@ public class DatabaseInitializer implements CommandLineRunner {
     private void createFakeTestimonials() {
         fakeData.generate(
                 (int) testimonialRepository.count(),
-                () -> List.of(faker.name().firstName(), faker.name().lastName()),
+                () -> {
+                    String firstName, lastName;
+                    do {
+                        firstName = faker.name().firstName();
+                    } while (firstName.length() < 3 || firstName.length() > 30);
+
+                    do {
+                        lastName = faker.name().lastName();
+                    } while (lastName.length() < 3 || lastName.length() > 80);
+
+                    return List.of(firstName, lastName);
+                },
                 data -> testimonialRepository.existsByFirstnameAndLastname(data.getFirst(), data.getLast()),
                 5,
                 data -> {
@@ -257,8 +268,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                 data -> {
                     int rating = faker.options().option(1, 2, 3, 4, 5);
                     double price = faker.number().randomDouble(2, 10, 500);
-                    double discount = faker.number().randomDouble(2, 1, 50);
-                    double priceDiscount = price - (price * discount / 100);
+                    int discount = faker.number().numberBetween(1, 99);
                     StockEnum stock = StockEnum.IN_STOCK;
                     WeightEnum weight = WeightEnum.GRAM_250;
                     UUID brandId = brands.get(random.nextInt(brands.size())).getId();
@@ -268,7 +278,6 @@ public class DatabaseInitializer implements CommandLineRunner {
                             data.getFirst(),
                             rating,
                             price,
-                            priceDiscount,
                             discount,
                             stock,
                             weight,
@@ -350,10 +359,10 @@ public class DatabaseInitializer implements CommandLineRunner {
                 faker.name().lastName(),
                 phoneNumber,
                 faker.address().streetAddress(),
-                faker.address().state(),
+                String.valueOf(33000),
                 faker.address().city(),
-                String.valueOf(faker.number().numberBetween(512, 97680)),
-                faker.address().city()
+                faker.address().state(),
+                faker.address().state()
         );
 
         UUID profileId = fakeData.runSaveRequestWithAuthentication(token, saveProfileDTO, Url.getFullBaseUrl() + "/profile/user/" + userId, ProfileDTO.class);

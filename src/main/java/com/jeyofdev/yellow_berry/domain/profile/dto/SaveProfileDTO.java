@@ -5,9 +5,9 @@ public record SaveProfileDTO(
         String lastname,
         String phone,
         String address,
-        String region,
-        String department,
         String zipCode,
-        String city
+        String city,
+        String department,
+        String region
 ) {
 }

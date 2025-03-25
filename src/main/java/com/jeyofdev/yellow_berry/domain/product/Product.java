@@ -52,15 +52,10 @@ public class Product {
     @Min(value = 1, message = ErrorMessage.MIN_PRICE)
     private Double price;
 
-    @Column(name = "price_discount", columnDefinition = "DECIMAL(10, 2)")
-    @NotNull(message = ErrorMessage.REQUIRED_PRICE_DISCOUNT)
-    @Min(value = 1, message = ErrorMessage.MIN_PRICE_DISCOUNT)
-    private Double priceDiscount;
-
     @Column(name = "discount", columnDefinition = "INT")
     @Min(value = 1, message = ErrorMessage.MIN_DISCOUNT)
     @Max(value = 100, message = ErrorMessage.MAX_DISCOUNT)
-    private Double discount;
+    private Integer discount;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "stock", columnDefinition = "VARCHAR(30)")

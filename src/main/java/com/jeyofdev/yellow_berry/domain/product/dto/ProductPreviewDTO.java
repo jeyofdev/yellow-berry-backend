@@ -1,6 +1,7 @@
 package com.jeyofdev.yellow_berry.domain.product.dto;
 
 import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
+import com.jeyofdev.yellow_berry.core.interfaces.domain.model.HasPriceDetails;
 import com.jeyofdev.yellow_berry.core.model.ListResponseFormat;
 import com.jeyofdev.yellow_berry.core.model.PriceFormat;
 import com.jeyofdev.yellow_berry.domain.category.Category;
@@ -15,8 +16,6 @@ public record ProductPreviewDTO(
         PriceFormat priceDetails,
         ListResponseFormat<Category> categories,
         Integer commentCount
-) {
-    public ProductPreviewDTO {
-        System.out.println("🚀 ProductPreviewDTO créé avec priceDetails = " + priceDetails);
-    }
+) implements HasPriceDetails {
+
 }

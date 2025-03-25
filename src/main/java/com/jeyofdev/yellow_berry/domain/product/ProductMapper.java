@@ -8,6 +8,7 @@ import com.jeyofdev.yellow_berry.domain.cart.CartService;
 import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.category.CategoryService;
 import com.jeyofdev.yellow_berry.domain.comment.Comment;
+import com.jeyofdev.yellow_berry.core.interfaces.domain.model.HasPriceDetails;
 import com.jeyofdev.yellow_berry.domain.product.dto.ProductDTO;
 import com.jeyofdev.yellow_berry.domain.product.dto.ProductPreviewDTO;
 import com.jeyofdev.yellow_berry.domain.product.dto.SaveProductDTO;
@@ -15,10 +16,7 @@ import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import com.jeyofdev.yellow_berry.domain.tag.TagService;
 import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
 import com.jeyofdev.yellow_berry.domain.wishlist.WishlistService;
-import org.mapstruct.Context;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Named;
+import org.mapstruct.*;
 
 import java.util.List;
 import java.util.UUID;
@@ -29,7 +27,6 @@ public interface ProductMapper {
     @Mapping(source = "categoryList", target = "categories", qualifiedByName = "toListResponseFormat")
     @Mapping(source = "commentList", target = "comments", qualifiedByName = "toListResponseFormat")
     @Mapping(source = "price", target = "priceDetails.price")
-    @Mapping(source = "priceDiscount", target = "priceDetails.priceDiscount")
     @Mapping(source = "discount", target = "priceDetails.discount")
     @Mapping(source = "productDetails", target = "details")
     @Mapping(source = "productInformation", target = "informations")
@@ -37,7 +34,6 @@ public interface ProductMapper {
 
     @Mapping(source = "categoryList", target = "categories", qualifiedByName = "toListResponseFormat")
     @Mapping(source = "price", target = "priceDetails.price")
-    @Mapping(source = "priceDiscount", target = "priceDetails.priceDiscount")
     @Mapping(source = "discount", target = "priceDetails.discount")
     @Mapping(target = "commentCount", expression = "java(product.getCommentList().size())")
     ProductPreviewDTO mapFromEntityPreview(Product product);
@@ -84,4 +80,12 @@ public interface ProductMapper {
     default Brand mapBrandIdToBrand(UUID brandId, @Context BrandService brandService) {
         return brandId != null ? brandService.findById(brandId) : null;
     }
+
+    @AfterMapping
+    default <T extends HasPriceDetails> void setFullName(@MappingTarget T dto) {
+        if (dto.priceDetails() != null) {
+            dto.priceDetails().setPriceDiscount();
+        }
+    }
+
 }
