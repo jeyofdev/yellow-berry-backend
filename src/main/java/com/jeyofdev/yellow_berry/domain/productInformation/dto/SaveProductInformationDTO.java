@@ -6,7 +6,7 @@ import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
 import java.util.List;
 
 public record SaveProductInformationDTO(
-        WeightEnum weight,
+        List<WeightEnum> weightList,
         String dimension,
         List<ColorEnum> colorList,
         Integer quantity

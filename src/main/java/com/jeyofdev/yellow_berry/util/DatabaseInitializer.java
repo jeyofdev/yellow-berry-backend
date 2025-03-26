@@ -114,7 +114,7 @@ public class DatabaseInitializer implements CommandLineRunner {
     }
 
     private void createDatas() throws IOException {
-        this.createFakeServices();
+        /*this.createFakeServices();
         this.createFakeTestimonials();
         this.createFakeTeamMember();
         this.createFakeAbout();
@@ -124,7 +124,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         this.createFakeTags();
         this.createFakeProductsWithDetailsAndInformations();
         this.createUsers();
-        this.createFakeProfiles();
+        this.createFakeProfiles();*/
     }
 
     private void createFakeServices() {
@@ -271,7 +271,6 @@ public class DatabaseInitializer implements CommandLineRunner {
                     double price = faker.number().randomDouble(2, 10, 500);
                     int discount = faker.number().numberBetween(1, 99);
                     StockEnum stock = StockEnum.IN_STOCK;
-                    WeightEnum weight = WeightEnum.getRandomEnum();
                     UUID brandId = brands.get(random.nextInt(brands.size())).getId();
                     UUID categoryId = categories.get(random.nextInt(categories.size())).getId();
 
@@ -282,7 +281,6 @@ public class DatabaseInitializer implements CommandLineRunner {
                             price,
                             discount,
                             stock,
-                            weight,
                             List.of(), // Tags
                             List.of(categoryId),
                             List.of(), // Comments
@@ -319,12 +317,12 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     private void createFakeProductInformations(List<Product> products) {
         for (Product product : products) {
-            WeightEnum weight = faker.options().option(WeightEnum.class);
+            List<WeightEnum> weightList = WeightEnum.getRandomColorList(faker.number().numberBetween(2, 10));
             String dimension = "17 × 15 × 3 cm";
-            List<ColorEnum> colors = ColorEnum.getRandomColorList(faker.number().numberBetween(2, 8));
+            List<ColorEnum> colorList = ColorEnum.getRandomColorList(faker.number().numberBetween(2, 12));
             Integer quantity = faker.number().numberBetween(1, 100);
 
-            SaveProductInformationDTO saveProductInformationDTO = new SaveProductInformationDTO(weight, dimension, colors, quantity);
+            SaveProductInformationDTO saveProductInformationDTO = new SaveProductInformationDTO(weightList, dimension, colorList, quantity);
 
             ProductInformation productInformation = productInformationMapper.mapToEntity(saveProductInformationDTO);
             productInformation.setProduct(product);

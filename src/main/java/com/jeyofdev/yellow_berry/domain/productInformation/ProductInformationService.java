@@ -40,7 +40,7 @@ public class ProductInformationService extends AbstractDomainService<ProductInfo
     public ProductInformation updateById(UUID productInformationId, ProductInformation updatedProductInformation) {
         ProductInformation existingProductInformation = findById(productInformationId);
 
-        existingProductInformation.setWeight(updatedProductInformation.getWeight() != null ? updatedProductInformation.getWeight() : existingProductInformation.getWeight());
+        existingProductInformation.setWeightList(updatedProductInformation.getWeightList() != null ? updatedProductInformation.getWeightList() : existingProductInformation.getWeightList());
         existingProductInformation.setDimension(updatedProductInformation.getDimension() != null ? updatedProductInformation.getDimension() : existingProductInformation.getDimension());
         existingProductInformation.setColorList(updatedProductInformation.getColorList() != null ? updatedProductInformation.getColorList() : existingProductInformation.getColorList());
         existingProductInformation.setQuantity(updatedProductInformation.getQuantity() != null ? updatedProductInformation.getQuantity() : existingProductInformation.getQuantity());

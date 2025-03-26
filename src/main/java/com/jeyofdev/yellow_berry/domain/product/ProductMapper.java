@@ -1,5 +1,6 @@
 package com.jeyofdev.yellow_berry.domain.product;
 
+import com.jeyofdev.yellow_berry.core.interfaces.domain.model.HasPriceDetails;
 import com.jeyofdev.yellow_berry.core.mappers.ListResponseFormatMapper;
 import com.jeyofdev.yellow_berry.domain.brand.Brand;
 import com.jeyofdev.yellow_berry.domain.brand.BrandService;
@@ -8,10 +9,10 @@ import com.jeyofdev.yellow_berry.domain.cart.CartService;
 import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.category.CategoryService;
 import com.jeyofdev.yellow_berry.domain.comment.Comment;
-import com.jeyofdev.yellow_berry.core.interfaces.domain.model.HasPriceDetails;
 import com.jeyofdev.yellow_berry.domain.product.dto.ProductDTO;
 import com.jeyofdev.yellow_berry.domain.product.dto.ProductPreviewDTO;
 import com.jeyofdev.yellow_berry.domain.product.dto.SaveProductDTO;
+import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformationMapper;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import com.jeyofdev.yellow_berry.domain.tag.TagService;
 import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
@@ -21,7 +22,7 @@ import org.mapstruct.*;
 import java.util.List;
 import java.util.UUID;
 
-@Mapper(componentModel = "spring", uses = ListResponseFormatMapper.class)
+@Mapper(componentModel = "spring", uses = {ListResponseFormatMapper.class, ProductInformationMapper.class})
 public interface ProductMapper {
     @Mapping(source = "tagList", target = "tags", qualifiedByName = "toListResponseFormat")
     @Mapping(source = "categoryList", target = "categories", qualifiedByName = "toListResponseFormat")
@@ -32,8 +33,10 @@ public interface ProductMapper {
     @Mapping(target = "ratingDetails.count", expression = "java(product.getCommentList().size())")
     @Mapping(source = "productDetails", target = "details")
     @Mapping(source = "productInformation", target = "informations")
-    @Mapping(target = "weight", expression = "java(product.getWeight().toString())")
+    @Mapping(source = "productInformation.weightList", target = "informations.weightList", qualifiedByName = "mapWeightEnumListToStringList")
+    @Mapping(source = "productInformation.colorList", target = "informations.colorList", qualifiedByName = "mapColorEnumListToStringList")
     @Mapping(target = "stock", expression = "java(product.getStock().toString())")
+    @Mapping(target = "brand.color", expression = "java(brand.getColor().toString())")
     ProductDTO mapFromEntity(Product product);
 
     @Mapping(source = "productDetails.description", target = "description")
@@ -43,7 +46,6 @@ public interface ProductMapper {
     @Mapping(source = "rating", target = "ratingDetails.rating")
     @Mapping(target = "ratingDetails.count", expression = "java(product.getCommentList().size())")
     @Mapping(target = "commentCount", expression = "java(product.getCommentList().size())")
-    @Mapping(target = "weight", expression = "java(product.getWeight().toString())")
     ProductPreviewDTO mapFromEntityPreview(Product product);
 
     @Mapping(target = "tagList", source = "tagIds", qualifiedByName = "mapTagIdsToTags")
@@ -95,5 +97,4 @@ public interface ProductMapper {
             dto.priceDetails().setPriceDiscount();
         }
     }
-
 }
