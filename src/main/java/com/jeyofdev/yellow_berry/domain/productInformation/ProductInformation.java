@@ -1,8 +1,9 @@
 package com.jeyofdev.yellow_berry.domain.productInformation;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.jeyofdev.yellow_berry.annotation.ValidEnum;
 import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
+import com.jeyofdev.yellow_berry.core.converter.ColorEnumListConverter;
+import com.jeyofdev.yellow_berry.core.converter.WeightEnumListConverter;
 import com.jeyofdev.yellow_berry.core.enums.ColorEnum;
 import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
 import com.jeyofdev.yellow_berry.domain.product.Product;
@@ -13,6 +14,7 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -27,22 +29,20 @@ public class ProductInformation {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private UUID id;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "weight", columnDefinition = "VARCHAR(30)")
-    @NotNull(message = ErrorMessage.REQUIRED_WEIGHT)
-    @ValidEnum(enumClass = WeightEnum.class, message = ErrorMessage.VALID_WEIGHT)
-    private WeightEnum weight;
+    @Convert(converter = WeightEnumListConverter.class)
+    @Column(name = "weights", columnDefinition = "TEXT")
+    @NotNull(message = ErrorMessage.REQUIRED_COLOR)
+    private List<WeightEnum> weightList;
 
     @Column(name = "dimensions", columnDefinition = "VARCHAR(20)")
     @NotNull(message = ErrorMessage.REQUIRED_DIMENSIONS)
     @Size(min = 12, max = 20, message = ErrorMessage.VALID_DIMENSIONS)
     private String dimension;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "color", columnDefinition = "VARCHAR(255)")
+    @Convert(converter = ColorEnumListConverter.class)
+    @Column(name = "colors", columnDefinition = "TEXT")
     @NotNull(message = ErrorMessage.REQUIRED_COLOR)
-    @ValidEnum(enumClass = ColorEnum.class, message = ErrorMessage.VALID_COLOR)
-    private ColorEnum color;
+    private List<ColorEnum> colorList;
 
     @Column(name = "quantity", columnDefinition = "INT")
     @NotNull(message = ErrorMessage.REQUIRED_QUANTITY)

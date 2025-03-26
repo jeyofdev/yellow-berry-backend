@@ -11,6 +11,7 @@ import org.mapstruct.Mapping;
 @Mapper(componentModel = "spring", uses = {ListResponseFormatMapper.class, ProductMapper.class})
 public interface BrandMapper {
     @Mapping(source = "productList", target = "products.results")
+    @Mapping(target = "color", expression = "java(brand.getColor().toString())")
     BrandDTO mapFromEntity(Brand brand);
 
     BrandPreviewDTO mapFromEntityPreview(Brand brand);

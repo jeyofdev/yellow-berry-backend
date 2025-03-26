@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.jeyofdev.yellow_berry.core.serializer.WeightDeserializer;
 import lombok.Getter;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 @Getter
@@ -23,6 +26,7 @@ public enum WeightEnum {
     GRAM_10000(10000);
 
     private final int grams;
+    private static final Random RANDOM = new Random();
 
     WeightEnum(int grams) {
         this.grams = grams;
@@ -39,5 +43,11 @@ public enum WeightEnum {
     public static WeightEnum getRandomEnum() {
         WeightEnum[] weights = WeightEnum.values();
         return weights[new Random().nextInt(weights.length)];
+    }
+
+    public static List<WeightEnum> getRandomColorList(int numberOfColors) {
+        List<WeightEnum> weightList = new ArrayList<>(List.of(values()));
+        Collections.shuffle(weightList, RANDOM);
+        return weightList.subList(0, Math.min(numberOfColors, weightList.size()));
     }
 }

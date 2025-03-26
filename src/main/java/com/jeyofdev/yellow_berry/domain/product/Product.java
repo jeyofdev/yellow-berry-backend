@@ -5,7 +5,6 @@ import com.jeyofdev.yellow_berry.annotation.ValidEnum;
 import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.core.constant.Regex;
 import com.jeyofdev.yellow_berry.core.enums.StockEnum;
-import com.jeyofdev.yellow_berry.core.enums.WeightEnum;
 import com.jeyofdev.yellow_berry.domain.brand.Brand;
 import com.jeyofdev.yellow_berry.domain.cart.Cart;
 import com.jeyofdev.yellow_berry.domain.category.Category;
@@ -65,12 +64,6 @@ public class Product {
     @NotNull(message = ErrorMessage.REQUIRED_STOCK)
     @ValidEnum(enumClass = StockEnum.class, message = ErrorMessage.VALID_STOCK)
     private StockEnum stock;
-
-    @Enumerated(EnumType.STRING)
-    @Column(name = "weight", columnDefinition = "VARCHAR(30)")
-    @NotNull(message = ErrorMessage.REQUIRED_WEIGHT)
-    @ValidEnum(enumClass = WeightEnum.class, message = ErrorMessage.VALID_WEIGHT)
-    private WeightEnum weight;
 
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinTable(

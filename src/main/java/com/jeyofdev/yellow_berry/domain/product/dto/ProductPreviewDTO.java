@@ -14,7 +14,6 @@ public record ProductPreviewDTO(
         String reference,
         String description,
         RatingFormat ratingDetails,
-        String weight,
         PriceFormat priceDetails,
         ListResponseFormat<Category> categories,
         Integer commentCount
