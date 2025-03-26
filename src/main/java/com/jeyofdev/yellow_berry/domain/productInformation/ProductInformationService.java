@@ -42,7 +42,7 @@ public class ProductInformationService extends AbstractDomainService<ProductInfo
 
         existingProductInformation.setWeight(updatedProductInformation.getWeight() != null ? updatedProductInformation.getWeight() : existingProductInformation.getWeight());
         existingProductInformation.setDimension(updatedProductInformation.getDimension() != null ? updatedProductInformation.getDimension() : existingProductInformation.getDimension());
-        existingProductInformation.setColor(updatedProductInformation.getColor() != null ? updatedProductInformation.getColor() : existingProductInformation.getColor());
+        existingProductInformation.setColorList(updatedProductInformation.getColorList() != null ? updatedProductInformation.getColorList() : existingProductInformation.getColorList());
         existingProductInformation.setQuantity(updatedProductInformation.getQuantity() != null ? updatedProductInformation.getQuantity() : existingProductInformation.getQuantity());
 
         return productInformationRepository.save(existingProductInformation);

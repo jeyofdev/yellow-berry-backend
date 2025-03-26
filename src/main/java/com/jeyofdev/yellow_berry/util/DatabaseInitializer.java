@@ -321,10 +321,10 @@ public class DatabaseInitializer implements CommandLineRunner {
         for (Product product : products) {
             WeightEnum weight = faker.options().option(WeightEnum.class);
             String dimension = "17 × 15 × 3 cm";
-            ColorEnum color = faker.options().option(ColorEnum.class);
+            List<ColorEnum> colors = ColorEnum.getRandomColorList(faker.number().numberBetween(2, 8));
             Integer quantity = faker.number().numberBetween(1, 100);
 
-            SaveProductInformationDTO saveProductInformationDTO = new SaveProductInformationDTO(weight, dimension, color, quantity);
+            SaveProductInformationDTO saveProductInformationDTO = new SaveProductInformationDTO(weight, dimension, colors, quantity);
 
             ProductInformation productInformation = productInformationMapper.mapToEntity(saveProductInformationDTO);
             productInformation.setProduct(product);
