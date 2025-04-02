@@ -2,7 +2,6 @@ package com.jeyofdev.yellow_berry.domain.product;
 
 import com.jeyofdev.yellow_berry.core.classes.AbstractDomainService;
 import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
-import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
 import com.jeyofdev.yellow_berry.domain.cart.Cart;
 import com.jeyofdev.yellow_berry.domain.cart.CartService;
 import com.jeyofdev.yellow_berry.domain.category.Category;
@@ -11,7 +10,6 @@ import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import com.jeyofdev.yellow_berry.domain.tag.TagRepository;
 import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
 import com.jeyofdev.yellow_berry.domain.wishlist.WishlistService;
-import com.jeyofdev.yellow_berry.exception.AlreadyTakenException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -46,9 +44,9 @@ public class ProductService extends AbstractDomainService<Product, ProductReposi
 
     @Override
     public Product save(Product product) {
-        if (productRepository.existsByName(product.getName())) {
+        /*if (productRepository.existsByName(product.getName())) {
             throw new AlreadyTakenException(MessageFormat.format(ErrorMessage.ALREADY_TAKEN, entityName, "name", product.getName()));
-        }
+        }*/
 
         if (product.getTagList() != null && !product.getTagList().isEmpty()) {
             List<UUID> tagIds = product.getTagList().stream().map(Tag::getId).toList();
@@ -116,6 +114,8 @@ public class ProductService extends AbstractDomainService<Product, ProductReposi
             product.getCartList().add(cart);
             return save(product);
         }
+
+
 
         return product;
     }

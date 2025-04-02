@@ -41,7 +41,6 @@ public class ProfileController {
         ProfileDTO profileDTO = profileMapper.mapFromEntity(profile);
 
         return DomainSuccessResponse.get(HttpStatus.OK, profileDTO);
-
     }
 
     @PostMapping("/user/{userId}")
