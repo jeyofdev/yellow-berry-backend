@@ -4,6 +4,8 @@ import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
 import com.jeyofdev.yellow_berry.domain.cart.dto.CartDTO;
 import com.jeyofdev.yellow_berry.domain.cart.dto.CartPreviewDTO;
 import com.jeyofdev.yellow_berry.domain.cart.dto.SaveCartDTO;
+import com.jeyofdev.yellow_berry.domain.profile.Profile;
+import com.jeyofdev.yellow_berry.domain.profile.ProfileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,7 @@ import java.util.UUID;
 public class CartController {
     private final CartService cartService;
     private final CartMapper cartMapper;
+    private final ProfileService profileService;
 
     @GetMapping
     public ResponseEntity<DomainSuccessResponse<List<CartDTO>>> findAllCarts() {
@@ -30,6 +33,15 @@ public class CartController {
     @GetMapping("/{cartId}")
     public ResponseEntity<DomainSuccessResponse<CartDTO>> findCartById(@PathVariable("cartId") UUID cartId) {
         Cart cart = cartService.findById(cartId);
+        CartDTO cartDTO = cartMapper.mapFromEntity(cart);
+
+        return DomainSuccessResponse.get(HttpStatus.OK, cartDTO);
+    }
+
+    @GetMapping("/user/{userId}")
+    public ResponseEntity<DomainSuccessResponse<CartDTO>> findCartByUserId(@PathVariable("userId") UUID userId) {
+        Profile profile = profileService.findByUserId(userId);
+        Cart cart = cartService.findById(profile.getCart().getId());
         CartDTO cartDTO = cartMapper.mapFromEntity(cart);
 
         return DomainSuccessResponse.get(HttpStatus.OK, cartDTO);
