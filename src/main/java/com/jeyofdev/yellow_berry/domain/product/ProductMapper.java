@@ -2,6 +2,7 @@ package com.jeyofdev.yellow_berry.domain.product;
 
 import com.jeyofdev.yellow_berry.core.interfaces.domain.model.HasPriceDetails;
 import com.jeyofdev.yellow_berry.core.mappers.ListResponseFormatMapper;
+import com.jeyofdev.yellow_berry.core.model.ListResponseFormat;
 import com.jeyofdev.yellow_berry.domain.brand.Brand;
 import com.jeyofdev.yellow_berry.domain.brand.BrandService;
 import com.jeyofdev.yellow_berry.domain.cart.Cart;
@@ -9,6 +10,8 @@ import com.jeyofdev.yellow_berry.domain.cart.CartService;
 import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.category.CategoryService;
 import com.jeyofdev.yellow_berry.domain.comment.Comment;
+import com.jeyofdev.yellow_berry.domain.comment.CommentMapper;
+import com.jeyofdev.yellow_berry.domain.comment.dto.CommentDTO;
 import com.jeyofdev.yellow_berry.domain.product.dto.ProductDTO;
 import com.jeyofdev.yellow_berry.domain.product.dto.ProductPreviewDTO;
 import com.jeyofdev.yellow_berry.domain.product.dto.SaveProductDTO;
@@ -22,11 +25,10 @@ import org.mapstruct.*;
 import java.util.List;
 import java.util.UUID;
 
-@Mapper(componentModel = "spring", uses = {ListResponseFormatMapper.class, ProductInformationMapper.class})
+@Mapper(componentModel = "spring", uses = {ListResponseFormatMapper.class, ProductInformationMapper.class, CommentMapper.class})
 public interface ProductMapper {
     @Mapping(source = "tagList", target = "tags", qualifiedByName = "toListResponseFormat")
     @Mapping(source = "categoryList", target = "categories", qualifiedByName = "toListResponseFormat")
-    @Mapping(source = "commentList", target = "comments", qualifiedByName = "toListResponseFormat")
     @Mapping(source = "price", target = "priceDetails.price")
     @Mapping(source = "discount", target = "priceDetails.discount")
     @Mapping(source = "rating", target = "ratingDetails.rating")
@@ -37,7 +39,8 @@ public interface ProductMapper {
     @Mapping(source = "productInformation.colorList", target = "informations.colorList", qualifiedByName = "mapColorEnumListToStringList")
     @Mapping(target = "stock", expression = "java(product.getStock().toString())")
     @Mapping(target = "brand.color", expression = "java(brand.getColor().toString())")
-    ProductDTO mapFromEntity(Product product);
+    @Mapping(source = "commentList", target = "comments", qualifiedByName = "mapCommentsToDTO")
+    ProductDTO mapFromEntity(Product product, @Context CommentMapper commentMapper);
 
     @Mapping(source = "productDetails.description", target = "description")
     @Mapping(source = "categoryList", target = "categories", qualifiedByName = "toListResponseFormat")
@@ -90,6 +93,15 @@ public interface ProductMapper {
     default Brand mapBrandIdToBrand(UUID brandId, @Context BrandService brandService) {
         return brandId != null ? brandService.findById(brandId) : null;
     }
+
+    @Named("mapCommentsToDTO")
+    default ListResponseFormat<CommentDTO> mapCommentsToDTO(List<Comment> comments, @Context CommentMapper commentMapper) {
+        List<CommentDTO> dtos = comments.stream()
+                .map(commentMapper::mapFromEntity)
+                .toList();
+        return new ListResponseFormat<>(dtos);
+    }
+
 
     @AfterMapping
     default <T extends HasPriceDetails> void setFullName(@MappingTarget T dto) {
