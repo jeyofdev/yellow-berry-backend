@@ -7,7 +7,7 @@ import com.jeyofdev.yellow_berry.core.model.PriceFormat;
 import com.jeyofdev.yellow_berry.core.model.RatingFormat;
 import com.jeyofdev.yellow_berry.domain.brand.dto.BrandDTO;
 import com.jeyofdev.yellow_berry.domain.category.Category;
-import com.jeyofdev.yellow_berry.domain.comment.Comment;
+import com.jeyofdev.yellow_berry.domain.comment.dto.CommentDTO;
 import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetails;
 import com.jeyofdev.yellow_berry.domain.productInformation.dto.ProductInformationDTO;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
@@ -26,7 +26,7 @@ public record ProductDTO(
         ProductInformationDTO informations,
         ListResponseFormat<Tag> tags,
         ListResponseFormat<Category> categories,
-        ListResponseFormat<Comment> comments,
+        ListResponseFormat<CommentDTO> comments,
         BrandDTO brand
 ) implements HasPriceDetails {
 
