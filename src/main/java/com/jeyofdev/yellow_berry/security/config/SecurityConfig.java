@@ -92,7 +92,7 @@ public class SecurityConfig {
                                 "/api/v1/team/member",
                                 "/api/v1/testimonial",
                                 "/api/v1/product"
-                        ).hasRole(RoleEnum.ADMIN.name())
+                        ).hasRole(RoleEnum.USER.name())
 
                         .requestMatchers(HttpMethod.POST,
                                 "/api/v1/wishlist/profile/{profileId}",

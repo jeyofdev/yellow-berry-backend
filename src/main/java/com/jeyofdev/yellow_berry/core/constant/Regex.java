@@ -5,5 +5,5 @@ public class Regex {
     public static final String PASSWORD_PATTERN = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[!@#$%^&*]).{8,16}$";
     public static final String PHONE_PATTERN = "^\\(\\+33\\)\\s\\d\\s\\d{2}\\s\\d{2}\\s\\d{2}\\s\\d{2}$";
     public static final String ZIPCODE_PATTERN = "\\d{5}";
-    public static final String ZIPCODE_REFERENCE = "^[A-Z]{2}[A-Z0-9][0-9]{2}$";
+    public static final String REFERENCE_PATTERN = "^[A-Z]{2}[A-Z0-9][0-9]{2}$";
 }

@@ -102,9 +102,8 @@ public interface ProductMapper {
         return new ListResponseFormat<>(dtos);
     }
 
-
     @AfterMapping
-    default <T extends HasPriceDetails> void setFullName(@MappingTarget T dto) {
+    default <T extends HasPriceDetails> void setPriceDiscount(@MappingTarget T dto) {
         if (dto.priceDetails() != null) {
             dto.priceDetails().setPriceDiscount();
         }

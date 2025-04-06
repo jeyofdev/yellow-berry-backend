@@ -45,7 +45,7 @@ public enum WeightEnum {
         return weights[new Random().nextInt(weights.length)];
     }
 
-    public static List<WeightEnum> getRandomColorList(int numberOfColors) {
+    public static List<WeightEnum> getRandomWeightList(int numberOfColors) {
         List<WeightEnum> weightList = new ArrayList<>(List.of(values()));
         Collections.shuffle(weightList, RANDOM);
         return weightList.subList(0, Math.min(numberOfColors, weightList.size()));

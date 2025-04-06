@@ -79,20 +79,17 @@ public class ErrorMessage {
     public static final String REQUIRED_PRICE = "The price field is required.";
     public static final String MIN_PRICE = "The price must be at least {value}.";
 
-    public static final String REQUIRED_PRICE_DISCOUNT = "The price discount field is required.";
-    public static final String MIN_PRICE_DISCOUNT = "The price discount must be at least {value}.";
-
     public static final String MIN_DISCOUNT = "The discount field is required.";
     public static final String MAX_DISCOUNT = "The discount must be at least {value}.";
 
     public static final String REQUIRED_STOCK = "The stock field is required.";
     public static final String VALID_STOCK = "The stock field must be a valid stock.";
 
+    public static final String REQUIRED_WEIGHT = "The stock field is required.";
+    public static final String VALID_WEIGHT = "The stock field must be a valid stock.";
+
     public static final String REQUIRED_JOB = "The job field is required.";
     public static final String VALID_JOB = "The job field must be a valid job.";
-
-    public static final String REQUIRED_WEIGHT = "The weight field is required.";
-    public static final String VALID_WEIGHT = "The weight field must be a valid weight.";
 
     public static final String REQUIRED_SELLER = "The seller field is required.";
     public static final String VALID_SELLER = "The seller field must contain between {min} and {max} characters.";
@@ -102,9 +99,6 @@ public class ErrorMessage {
 
     public static final String REQUIRED_DIMENSIONS = "The dimension field is required.";
     public static final String VALID_DIMENSIONS = "The dimension field must contain between {min} and {max} characters.";
-
-    public static final String REQUIRED_BRAND = "The brand field is required.";
-    public static final String VALID_BRAND = "The brand field must contain between {min} and {max} characters.";
 
     public static final String REQUIRED_QUANTITY = "The quantity field is required.";
     public static final String MIN_QUANTITY = "The minimum quantity must be at least {value}.";
@@ -147,6 +141,7 @@ public class ErrorMessage {
     public static final String PRODUCT_NOT_NULL_PRODUCT_DETAILS = "An product must be associated with entity product details.";
     public static final String PRODUCT_NOT_NULL_PRODUCT_INFORMATION = "An product must be associated with entity product information.";
     public static final String AUTH_USER_NOT_NULL_PROFILE = "An user must be associated with entity profile.";
+    public static final String PRODUCT_TO_CART_NOT_NULL_CART = "An product to cart must be associated with entity cart.";
 
     public static final String ALREADY_TAKEN = "Entity {0} with {1} {2} already taken";
     public static final String ALREADY_ASSOCIATED = "This {0} already has associated {1}.";

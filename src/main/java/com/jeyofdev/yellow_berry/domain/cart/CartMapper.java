@@ -4,14 +4,14 @@ import com.jeyofdev.yellow_berry.core.mappers.ListResponseFormatMapper;
 import com.jeyofdev.yellow_berry.domain.cart.dto.CartDTO;
 import com.jeyofdev.yellow_berry.domain.cart.dto.CartPreviewDTO;
 import com.jeyofdev.yellow_berry.domain.cart.dto.SaveCartDTO;
-import com.jeyofdev.yellow_berry.domain.product.ProductMapper;
+import com.jeyofdev.yellow_berry.domain.productToCart.ProductToCartMapper;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
-@Mapper(componentModel = "spring", uses = {ListResponseFormatMapper.class, ProductMapper.class})
+@Mapper(componentModel = "spring", uses = {ListResponseFormatMapper.class, ProductToCartMapper.class})
 public interface CartMapper {
 
-    @Mapping(source = "productList", target = "products.results")
+    @Mapping(source = "productToCartList", target = "products.results")
     @Mapping(target = "profile.wishlist", ignore = true)
     @Mapping(target = "profile.comments", ignore = true)
     @Mapping(source = "profile", target = "profile")
