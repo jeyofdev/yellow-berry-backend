@@ -11,6 +11,7 @@ import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.comment.Comment;
 import com.jeyofdev.yellow_berry.domain.productDetails.ProductDetails;
 import com.jeyofdev.yellow_berry.domain.productInformation.ProductInformation;
+import com.jeyofdev.yellow_berry.domain.productToCart.ProductToCart;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
 import jakarta.persistence.*;
@@ -35,7 +36,7 @@ public class Product {
 
     @Column(name = "reference", columnDefinition = "VARCHAR(5)", unique = true)
     @NotNull(message = ErrorMessage.REQUIRED_REFERENCE)
-    @Pattern(regexp = Regex.ZIPCODE_REFERENCE, message = ErrorMessage.VALID_REFERENCE)
+    @Pattern(regexp = Regex.REFERENCE_PATTERN, message = ErrorMessage.VALID_REFERENCE)
     private String reference;
 
     @Column(name = "name", columnDefinition = "VARCHAR(100)", unique = true)
@@ -119,4 +120,10 @@ public class Product {
     @JoinColumn(name = "brand_id", referencedColumnName = "id")
     @JsonIgnore
     private Brand brand;
+
+    @OneToMany(mappedBy = "product", cascade = CascadeType.ALL)
+    @JsonIgnore
+    private List<ProductToCart> productToCartList = new ArrayList<>();
+
+
 }

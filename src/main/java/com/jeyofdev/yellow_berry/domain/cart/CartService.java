@@ -3,8 +3,8 @@ package com.jeyofdev.yellow_berry.domain.cart;
 import com.jeyofdev.yellow_berry.core.classes.AbstractDomainService;
 import com.jeyofdev.yellow_berry.core.constant.ConfirmMessage;
 import com.jeyofdev.yellow_berry.core.constant.ErrorMessage;
-import com.jeyofdev.yellow_berry.domain.product.Product;
-import com.jeyofdev.yellow_berry.domain.product.ProductRepository;
+import com.jeyofdev.yellow_berry.domain.productToCart.ProductToCart;
+import com.jeyofdev.yellow_berry.domain.productToCart.ProductToCartRepository;
 import com.jeyofdev.yellow_berry.domain.profile.Profile;
 import com.jeyofdev.yellow_berry.domain.profile.ProfileService;
 import com.jeyofdev.yellow_berry.exception.AlreadyAssociatedException;
@@ -20,18 +20,18 @@ import java.util.UUID;
 @Service
 public class CartService extends AbstractDomainService<Cart, CartRepository> {
     private final CartRepository cartRepository;
-    private final ProductRepository productRepository;
+    private final ProductToCartRepository productToCartRepository;
     private final ProfileService profileService;
 
     @Autowired
     public CartService(
             CartRepository cartRepository,
-            ProductRepository productRepository,
+            ProductToCartRepository productToCartRepository,
             ProfileService profileService
     ) {
         super(cartRepository, "Cart");
         this.cartRepository = cartRepository;
-        this.productRepository = productRepository;
+        this.productToCartRepository = productToCartRepository;
         this.profileService = profileService;
     }
 
@@ -74,12 +74,7 @@ public class CartService extends AbstractDomainService<Cart, CartRepository> {
 
         SecurityUtil.checkAuthenticatedUserOrAdminIsAuthorized(cart.getProfile().getUser().getUsername(), true);
 
-        List<Product> productList = productRepository.findByCartList(cart);
-
-        for (Product product : productList) {
-            product.getCartList().remove(cart);
-            productRepository.save(product);
-        }
+        List<ProductToCart> productToCartList = productToCartRepository.findByCart(cart);
 
         if (cart.getProfile() != null) {
             cart.getProfile().setCart(null);

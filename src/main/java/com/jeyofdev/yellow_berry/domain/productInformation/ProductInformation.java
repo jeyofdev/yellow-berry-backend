@@ -31,7 +31,7 @@ public class ProductInformation {
 
     @Convert(converter = WeightEnumListConverter.class)
     @Column(name = "weights", columnDefinition = "TEXT")
-    @NotNull(message = ErrorMessage.REQUIRED_COLOR)
+    @NotNull(message = ErrorMessage.REQUIRED_WEIGHT)
     private List<WeightEnum> weightList;
 
     @Column(name = "dimensions", columnDefinition = "VARCHAR(20)")
