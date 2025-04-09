@@ -12,6 +12,8 @@ import com.jeyofdev.yellow_berry.security.util.SecurityUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.List;
@@ -43,6 +45,8 @@ public class CartService extends AbstractDomainService<Cart, CartRepository> {
             throw new AlreadyAssociatedException(MessageFormat.format(ErrorMessage.ALREADY_ASSOCIATED, "product", "cart"));
         }
 
+        cart.setSubTotalPrice(0.00);
+        cart.setTotalPrice(0.00);
         cart.setProfile(profile);
         cart.setCreatedAt(new Date());
         cart.setUpdatedAt(new Date());
@@ -64,7 +68,24 @@ public class CartService extends AbstractDomainService<Cart, CartRepository> {
         Cart existingCart = findById(cartId);
         SecurityUtil.checkAuthenticatedUserOrAdminIsAuthorized(existingCart.getProfile().getUser().getUsername(), false);
 
+        Double subTotalPrice = existingCart.getProductToCartList().stream()
+                .mapToDouble(productToCart -> {
+                    BigDecimal discountedPrice = BigDecimal.valueOf(productToCart.getProduct().getPrice() * (1 - productToCart.getProduct().getDiscount() / 100.0))
+                            .setScale(2, RoundingMode.HALF_UP);
+                    return discountedPrice.doubleValue() * productToCart.getQuantity();
+                })
+                .sum();
+
+        double baseTVA = 20.0;
+        Double amountTVA = subTotalPrice * (baseTVA / 100);
+        Double totalPrice = BigDecimal.valueOf(subTotalPrice + amountTVA)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
+
         existingCart.setUpdatedAt(new Date());
+        existingCart.setSubTotalPrice(subTotalPrice);
+        existingCart.setTotalPrice(totalPrice);
+
         return cartRepository.save(existingCart);
 
     }

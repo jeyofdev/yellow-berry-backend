@@ -79,6 +79,12 @@ public class ErrorMessage {
     public static final String REQUIRED_PRICE = "The price field is required.";
     public static final String MIN_PRICE = "The price must be at least {value}.";
 
+    public static final String REQUIRED_SUB_TOTAL_PRICE = "The sub total price field is required.";
+    public static final String MIN_SUB_TOTAL_PRICE = "The sub total price must be at least {value}.";
+
+    public static final String REQUIRED_TOTAL_PRICE = "The sub total price field is required.";
+    public static final String MIN_TOTAL_PRICE = "The sub total price must be at least {value}.";
+
     public static final String MIN_DISCOUNT = "The discount field is required.";
     public static final String MAX_DISCOUNT = "The discount must be at least {value}.";
 

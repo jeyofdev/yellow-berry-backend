@@ -52,4 +52,13 @@ public class ProductToCart {
     @JoinColumn(name = "product_id", referencedColumnName = "id")
     @JsonIgnore
     private Product product;
+
+    @Override
+    public String toString() {
+        return "ProductToCart{" +
+                "id=" + id +
+                ", quantity='" + quantity + '\'' +
+                // Avoid calling authUser.toString() to prevent circular reference
+                '}';
+    }
 }
