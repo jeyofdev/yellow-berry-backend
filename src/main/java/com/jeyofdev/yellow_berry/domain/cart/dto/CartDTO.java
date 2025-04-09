@@ -11,6 +11,8 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record CartDTO(
         UUID id,
+        Double subTotalPrice,
+        Double totalPrice,
         Date createdAt,
         Date updatedAt,
         ListResponseFormat<ProductToCartDTO> products,

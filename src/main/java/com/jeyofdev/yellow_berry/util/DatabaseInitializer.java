@@ -114,7 +114,7 @@ public class DatabaseInitializer implements CommandLineRunner {
     }
 
     private void createDatas() throws IOException {
-      /*  this.createFakeServices();
+        /*this.createFakeServices();
         this.createFakeTestimonials();
         this.createFakeTeamMember();
         this.createFakeAbout();
@@ -317,7 +317,7 @@ public class DatabaseInitializer implements CommandLineRunner {
 
     private void createFakeProductInformations(List<Product> products) {
         for (Product product : products) {
-            List<WeightEnum> weightList = WeightEnum.getRandomWeightList(faker.number().numberBetween(2, 10));
+            List<WeightEnum> weightList = WeightEnum.getRandomColorList(faker.number().numberBetween(2, 10));
             String dimension = "17 × 15 × 3 cm";
             List<ColorEnum> colorList = ColorEnum.getRandomColorList(faker.number().numberBetween(2, 12));
             Integer quantity = faker.number().numberBetween(1, 100);

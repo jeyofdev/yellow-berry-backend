@@ -9,6 +9,8 @@ import java.util.UUID;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public record CartPreviewDTO(
         UUID id,
+        Double subTotalPrice,
+        Double totalPrice,
         Date createdAt,
         Date updatedAt,
         ProfileDTO profile

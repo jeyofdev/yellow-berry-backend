@@ -8,9 +8,6 @@ import com.jeyofdev.yellow_berry.domain.productToCart.dto.ProductToCartDTO;
 import com.jeyofdev.yellow_berry.domain.productToCart.dto.SaveProductToCartDTO;
 import org.mapstruct.*;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 @Mapper(componentModel = "spring", uses = {ListResponseFormatMapper.class, ProductInformationMapper.class})
 public interface ProductToCartMapper {
     @Mapping(target = "weight", expression = "java(productToCart.getWeight().toString())")
@@ -32,21 +29,7 @@ public interface ProductToCartMapper {
     @AfterMapping
     default <T extends HasPriceDetails> void setPriceDiscount(@MappingTarget T dto) {
         if (dto.priceDetails() != null) {
-            Integer quantity = null;
-
-            if (dto instanceof ProductToCartDTO productToCartDTO) {
-                quantity = productToCartDTO.quantity();
-            }
-
-            if (quantity != null) {
-                dto.priceDetails().setPriceDiscount();
-                Double priceDiscount = dto.priceDetails().getPriceDiscount();
-                if (priceDiscount != null) {
-                    BigDecimal totalDiscount = BigDecimal.valueOf(priceDiscount * quantity)
-                            .setScale(2, RoundingMode.HALF_UP);
-                    dto.priceDetails().setPriceDiscount(totalDiscount.doubleValue());
-                }
-            }
+            dto.priceDetails().setPriceDiscount();
         }
     }
 }
