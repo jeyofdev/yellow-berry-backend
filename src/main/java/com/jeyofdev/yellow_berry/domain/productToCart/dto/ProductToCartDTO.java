@@ -3,6 +3,7 @@ package com.jeyofdev.yellow_berry.domain.productToCart.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.jeyofdev.yellow_berry.core.interfaces.domain.model.HasPriceDetails;
 import com.jeyofdev.yellow_berry.core.model.PriceFormat;
+import com.jeyofdev.yellow_berry.domain.product.Product;
 
 import java.util.UUID;
 
@@ -12,6 +13,7 @@ public record ProductToCartDTO(
         Integer quantity,
         String weight,
         String name,
-        PriceFormat priceDetails
+        PriceFormat priceDetails,
+        Product product
 ) implements HasPriceDetails {
 }
