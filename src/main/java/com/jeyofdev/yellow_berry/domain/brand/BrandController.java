@@ -4,6 +4,7 @@ import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
 import com.jeyofdev.yellow_berry.domain.brand.dto.BrandDTO;
 import com.jeyofdev.yellow_berry.domain.brand.dto.BrandPreviewDTO;
 import com.jeyofdev.yellow_berry.domain.brand.dto.SaveBrandDTO;
+import com.jeyofdev.yellow_berry.domain.product.ProductMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,11 +19,12 @@ import java.util.UUID;
 public class BrandController {
     private final BrandService brandService;
     private final BrandMapper brandMapper;
+    private final ProductMapper productMapper;
 
     @GetMapping
     public ResponseEntity<DomainSuccessResponse<List<BrandDTO>>> findAllBrands() {
         List<Brand> brandList = brandService.findAll();
-        List<BrandDTO> brandDTOList = brandList.stream().map(brandMapper::mapFromEntity).toList();
+        List<BrandDTO> brandDTOList = brandList.stream().map(brand -> brandMapper.mapFromEntity(brand, productMapper)).toList();
 
         return DomainSuccessResponse.get(HttpStatus.OK, brandDTOList);
     }
@@ -30,7 +32,7 @@ public class BrandController {
     @GetMapping("/{brandId}")
     public ResponseEntity<DomainSuccessResponse<BrandDTO>> findBrandById(@PathVariable("brandId") UUID brandId) {
         Brand brand = brandService.findById(brandId);
-        BrandDTO brandDTO = brandMapper.mapFromEntity(brand);
+        BrandDTO brandDTO = brandMapper.mapFromEntity(brand, productMapper);
 
         return DomainSuccessResponse.get(HttpStatus.OK, brandDTO);
     }
@@ -51,7 +53,7 @@ public class BrandController {
     ) {
         Brand brand = brandMapper.mapToEntity(saveBrandDTO);
         Brand updateBrand = brandService.updateById(brandId, brand);
-        BrandDTO updateBrandDTO = brandMapper.mapFromEntity(updateBrand);
+        BrandDTO updateBrandDTO = brandMapper.mapFromEntity(updateBrand, productMapper);
 
         return DomainSuccessResponse.get(HttpStatus.OK, updateBrandDTO);
     }

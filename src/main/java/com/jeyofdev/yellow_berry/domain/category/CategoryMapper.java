@@ -5,13 +5,14 @@ import com.jeyofdev.yellow_berry.domain.category.dto.CategoryDTO;
 import com.jeyofdev.yellow_berry.domain.category.dto.CategoryPreviewDTO;
 import com.jeyofdev.yellow_berry.domain.category.dto.SaveCategoryDTO;
 import com.jeyofdev.yellow_berry.domain.product.ProductMapper;
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {ListResponseFormatMapper.class, ProductMapper.class})
 public interface CategoryMapper {
-    @Mapping(source = "productList", target = "products.results")
-    CategoryDTO mapFromEntity(Category category);
+    @Mapping(source = "productList", target = "products", qualifiedByName = "mapProductsPreviewToDTO")
+    CategoryDTO mapFromEntity(Category category, @Context ProductMapper productMapper);
 
     CategoryPreviewDTO mapFromEntityPreview(Category category);
 

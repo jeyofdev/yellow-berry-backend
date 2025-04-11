@@ -5,13 +5,14 @@ import com.jeyofdev.yellow_berry.domain.cart.dto.CartDTO;
 import com.jeyofdev.yellow_berry.domain.cart.dto.CartPreviewDTO;
 import com.jeyofdev.yellow_berry.domain.cart.dto.SaveCartDTO;
 import com.jeyofdev.yellow_berry.domain.productToCart.ProductToCartMapper;
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {ListResponseFormatMapper.class, ProductToCartMapper.class})
 public interface CartMapper {
 
-    @Mapping(source = "productToCartList", target = "products.results")
+    @Mapping(source = "productToCartList", target = "products", qualifiedByName = "mapProductsToCartToDTO")
     @Mapping(target = "profile.wishlist", ignore = true)
     @Mapping(target = "profile.comments", ignore = true)
     @Mapping(source = "profile", target = "profile")
@@ -25,7 +26,7 @@ public interface CartMapper {
     @Mapping(source = "profile.department", target = "profile.addressDetails.department")
     @Mapping(source = "profile.zipCode", target = "profile.addressDetails.zipCode")
     @Mapping(source = "profile.city", target = "profile.addressDetails.city")
-    CartDTO mapFromEntity(Cart cart);
+    CartDTO mapFromEntity(Cart cart, @Context ProductToCartMapper productToCartMapper);
 
     @Mapping(source = "profile", target = "profile")
     @Mapping(source = "profile.user.email", target = "profile.email")
