@@ -5,14 +5,15 @@ import com.jeyofdev.yellow_berry.domain.brand.dto.BrandDTO;
 import com.jeyofdev.yellow_berry.domain.brand.dto.BrandPreviewDTO;
 import com.jeyofdev.yellow_berry.domain.brand.dto.SaveBrandDTO;
 import com.jeyofdev.yellow_berry.domain.product.ProductMapper;
+import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring", uses = {ListResponseFormatMapper.class, ProductMapper.class})
 public interface BrandMapper {
-    @Mapping(source = "productList", target = "products.results")
+    @Mapping(source = "productList", target = "products", qualifiedByName = "mapProductsPreviewToDTO")
     @Mapping(target = "color", expression = "java(brand.getColor().toString())")
-    BrandDTO mapFromEntity(Brand brand);
+    BrandDTO mapFromEntity(Brand brand, @Context ProductMapper productMapper);
 
     BrandPreviewDTO mapFromEntityPreview(Brand brand);
 

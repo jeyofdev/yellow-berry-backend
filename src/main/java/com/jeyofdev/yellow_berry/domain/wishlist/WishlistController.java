@@ -1,6 +1,7 @@
 package com.jeyofdev.yellow_berry.domain.wishlist;
 
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
+import com.jeyofdev.yellow_berry.domain.product.ProductMapper;
 import com.jeyofdev.yellow_berry.domain.wishlist.dto.SaveWishlistDTO;
 import com.jeyofdev.yellow_berry.domain.wishlist.dto.WishlistDTO;
 import com.jeyofdev.yellow_berry.domain.wishlist.dto.WishlistPreviewDTO;
@@ -18,11 +19,12 @@ import java.util.UUID;
 public class WishlistController {
     private final WishlistService wishlistService;
     private final WishListMapper wishlistMapper;
+    private final ProductMapper productMapper;
 
     @GetMapping
     public ResponseEntity<DomainSuccessResponse<List<WishlistDTO>>> findAllWishlists() {
-        List<WishList> tagList = wishlistService.findAll();
-        List<WishlistDTO> wishlistDTOs = tagList.stream().map(wishlistMapper::mapFromEntity).toList();
+        List<WishList> wishLists = wishlistService.findAll();
+        List<WishlistDTO> wishlistDTOs = wishLists.stream().map(wishlist -> wishlistMapper.mapFromEntity(wishlist, productMapper)).toList();
 
         return DomainSuccessResponse.get(HttpStatus.OK, wishlistDTOs);
     }
@@ -30,7 +32,7 @@ public class WishlistController {
     @GetMapping("/{wishlistId}")
     public ResponseEntity<DomainSuccessResponse<WishlistDTO>> findWishlistById(@PathVariable("wishlistId") UUID wishlistId) {
         WishList wishlist = wishlistService.findById(wishlistId);
-        WishlistDTO wishListDTO = wishlistMapper.mapFromEntity(wishlist);
+        WishlistDTO wishListDTO = wishlistMapper.mapFromEntity(wishlist, productMapper);
 
         return DomainSuccessResponse.get(HttpStatus.OK, wishListDTO);
     }
@@ -42,7 +44,7 @@ public class WishlistController {
     ) {
         WishList wishlist = wishlistMapper.mapToEntity(saveWishListDTO);
         WishList newWishlist = wishlistService.save(profileId, wishlist);
-        WishlistPreviewDTO newWishlistPreviewDTO = wishlistMapper.mapFromEntityPreview(newWishlist);
+        WishlistPreviewDTO newWishlistPreviewDTO = wishlistMapper.mapFromEntityPreview(newWishlist, productMapper);
 
         return DomainSuccessResponse.get(HttpStatus.CREATED, newWishlistPreviewDTO);
     }
@@ -54,7 +56,7 @@ public class WishlistController {
     ) {
         WishList wishlist = wishlistMapper.mapToEntity(saveWishListDTO);
         WishList updateWishlist = wishlistService.updateById(wishlistId, wishlist);
-        WishlistDTO updateWishlistDTO = wishlistMapper.mapFromEntity(updateWishlist);
+        WishlistDTO updateWishlistDTO = wishlistMapper.mapFromEntity(updateWishlist, productMapper);
 
         return DomainSuccessResponse.get(HttpStatus.OK, updateWishlistDTO);
     }

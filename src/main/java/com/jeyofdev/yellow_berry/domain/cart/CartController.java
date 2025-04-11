@@ -4,6 +4,7 @@ import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
 import com.jeyofdev.yellow_berry.domain.cart.dto.CartDTO;
 import com.jeyofdev.yellow_berry.domain.cart.dto.CartPreviewDTO;
 import com.jeyofdev.yellow_berry.domain.cart.dto.SaveCartDTO;
+import com.jeyofdev.yellow_berry.domain.productToCart.ProductToCartMapper;
 import com.jeyofdev.yellow_berry.domain.profile.Profile;
 import com.jeyofdev.yellow_berry.domain.profile.ProfileService;
 import lombok.RequiredArgsConstructor;
@@ -20,20 +21,21 @@ import java.util.UUID;
 public class CartController {
     private final CartService cartService;
     private final CartMapper cartMapper;
+    private final ProductToCartMapper productToCartMapper;
     private final ProfileService profileService;
 
     @GetMapping
     public ResponseEntity<DomainSuccessResponse<List<CartDTO>>> findAllCarts() {
-        List<Cart> tagList = cartService.findAll();
-        List<CartDTO> cart = tagList.stream().map(cartMapper::mapFromEntity).toList();
+        List<Cart> cartList = cartService.findAll();
+        List<CartDTO> cartDTO = cartList.stream().map(cart -> cartMapper.mapFromEntity(cart, productToCartMapper)).toList();
 
-        return DomainSuccessResponse.get(HttpStatus.OK, cart);
+        return DomainSuccessResponse.get(HttpStatus.OK, cartDTO);
     }
 
     @GetMapping("/{cartId}")
     public ResponseEntity<DomainSuccessResponse<CartDTO>> findCartById(@PathVariable("cartId") UUID cartId) {
         Cart cart = cartService.findById(cartId);
-        CartDTO cartDTO = cartMapper.mapFromEntity(cart);
+        CartDTO cartDTO = cartMapper.mapFromEntity(cart, productToCartMapper);
 
         return DomainSuccessResponse.get(HttpStatus.OK, cartDTO);
     }
@@ -42,7 +44,7 @@ public class CartController {
     public ResponseEntity<DomainSuccessResponse<CartDTO>> findCartByUserId(@PathVariable("userId") UUID userId) {
         Profile profile = profileService.findByUserId(userId);
         Cart cart = cartService.findById(profile.getCart().getId());
-        CartDTO cartDTO = cartMapper.mapFromEntity(cart);
+        CartDTO cartDTO = cartMapper.mapFromEntity(cart, productToCartMapper);
 
         return DomainSuccessResponse.get(HttpStatus.OK, cartDTO);
     }
@@ -66,7 +68,7 @@ public class CartController {
     ) {
         Cart cart = cartMapper.mapToEntity(saveCartDTO);
         Cart updateCart = cartService.updateById(cartId, cart);
-        CartDTO updateCartDTO = cartMapper.mapFromEntity(updateCart);
+        CartDTO updateCartDTO = cartMapper.mapFromEntity(updateCart, productToCartMapper);
 
         return DomainSuccessResponse.get(HttpStatus.OK, updateCartDTO);
     }

@@ -1,6 +1,7 @@
 package com.jeyofdev.yellow_berry.domain.tag;
 
 import com.jeyofdev.yellow_berry.core.model.DomainSuccessResponse;
+import com.jeyofdev.yellow_berry.domain.product.ProductMapper;
 import com.jeyofdev.yellow_berry.domain.tag.dto.SaveTagDTO;
 import com.jeyofdev.yellow_berry.domain.tag.dto.TagDTO;
 import com.jeyofdev.yellow_berry.domain.tag.dto.TagPreviewDTO;
@@ -18,11 +19,12 @@ import java.util.UUID;
 public class TagController {
     private final TagService tagService;
     private final TagMapper tagMapper;
+    private final ProductMapper productMApper;
 
     @GetMapping
     public ResponseEntity<DomainSuccessResponse<List<TagDTO>>> findAllTags() {
         List<Tag> tagList = tagService.findAll();
-        List<TagDTO> tagDTOList = tagList.stream().map(tagMapper::mapFromEntity).toList();
+        List<TagDTO> tagDTOList = tagList.stream().map(tag -> tagMapper.mapFromEntity(tag, productMApper)).toList();
 
         return DomainSuccessResponse.get(HttpStatus.OK, tagDTOList);
     }
@@ -30,7 +32,7 @@ public class TagController {
     @GetMapping("/{tagId}")
     public ResponseEntity<DomainSuccessResponse<TagDTO>> findTagById(@PathVariable("tagId") UUID tagId) {
         Tag tag = tagService.findById(tagId);
-        TagDTO tagDTO = tagMapper.mapFromEntity(tag);
+        TagDTO tagDTO = tagMapper.mapFromEntity(tag, productMApper);
 
         return DomainSuccessResponse.get(HttpStatus.OK, tagDTO);
     }
@@ -51,7 +53,7 @@ public class TagController {
     ) {
         Tag tag = tagMapper.mapToEntity(saveTagDTO);
         Tag updateTag = tagService.updateById(tagId, tag);
-        TagDTO updateTagDTO = tagMapper.mapFromEntity(updateTag);
+        TagDTO updateTagDTO = tagMapper.mapFromEntity(updateTag, productMApper);
 
         return DomainSuccessResponse.get(HttpStatus.OK, updateTagDTO);
     }
