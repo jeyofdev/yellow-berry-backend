@@ -11,6 +11,7 @@ import org.mapstruct.Context;
 import org.mapstruct.Mapper;
 import org.mapstruct.Named;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Mapper(componentModel = "spring")
@@ -22,6 +23,10 @@ public interface ListResponseFormatMapper {
 
     @Named("mapProductsPreviewToDTO")
     default ListResponseFormat<ProductPreviewDTO> mapProductsPreviewToDTO(List<Product> products, @Context ProductMapper productMapper) {
+        if (products == null || products.isEmpty()) {
+            return new ListResponseFormat<>(new ArrayList<>());
+        }
+
         List<ProductPreviewDTO> dtos = products.stream()
                 .map(productMapper::mapFromEntityPreview)
                 .toList();
