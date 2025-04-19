@@ -114,7 +114,7 @@ public class DatabaseInitializer implements CommandLineRunner {
     }
 
     private void createDatas() throws IOException {
-        /*this.createFakeServices();
+        this.createFakeServices();
         this.createFakeTestimonials();
         this.createFakeTeamMember();
         this.createFakeAbout();
@@ -124,7 +124,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         this.createFakeTags();
         this.createFakeProductsWithDetailsAndInformations();
         this.createUsers();
-        this.createFakeProfiles();*/
+        this.createFakeProfiles();
     }
 
     private void createFakeServices() {
@@ -219,7 +219,7 @@ public class DatabaseInitializer implements CommandLineRunner {
     private void createFakeBrands() {
         fakeData.generate(
                 (int) brandRepository.count(),
-                () -> List.of(faker.company().name()),
+                () -> List.of(faker.commerce().department()),
                 data -> brandRepository.existsByName(data.getFirst()),
                 10,
                 data -> {
