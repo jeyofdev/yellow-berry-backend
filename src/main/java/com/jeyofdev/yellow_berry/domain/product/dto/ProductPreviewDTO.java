@@ -5,6 +5,8 @@ import com.jeyofdev.yellow_berry.core.model.ListResponseFormat;
 import com.jeyofdev.yellow_berry.core.model.PriceFormat;
 import com.jeyofdev.yellow_berry.core.model.RatingFormat;
 import com.jeyofdev.yellow_berry.domain.category.Category;
+import com.jeyofdev.yellow_berry.domain.productInformation.dto.ProductInformationPreviewDTO;
+import com.jeyofdev.yellow_berry.domain.tag.Tag;
 
 import java.util.UUID;
 
@@ -16,7 +18,9 @@ public record ProductPreviewDTO(
         RatingFormat ratingDetails,
         PriceFormat priceDetails,
         ListResponseFormat<Category> categories,
-        Integer commentCount
+        ListResponseFormat<Tag> tags,
+        Integer commentCount,
+        ProductInformationPreviewDTO informations
 ) implements HasPriceDetails {
 
 }
