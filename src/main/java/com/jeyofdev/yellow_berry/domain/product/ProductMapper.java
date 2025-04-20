@@ -44,11 +44,15 @@ public interface ProductMapper {
 
     @Mapping(source = "productDetails.description", target = "description")
     @Mapping(source = "categoryList", target = "categories", qualifiedByName = "toListResponseFormat")
+    @Mapping(source = "tagList", target = "tags", qualifiedByName = "toListResponseFormat")
     @Mapping(source = "price", target = "priceDetails.price")
     @Mapping(source = "discount", target = "priceDetails.discount")
     @Mapping(source = "rating", target = "ratingDetails.rating")
     @Mapping(target = "ratingDetails.count", expression = "java(product.getCommentList().size())")
     @Mapping(target = "commentCount", expression = "java(product.getCommentList().size())")
+    @Mapping(source = "productInformation", target = "informations")
+    @Mapping(source = "productInformation.weightList", target = "informations.weightList", qualifiedByName = "mapWeightEnumListToStringList")
+    @Mapping(source = "productInformation.colorList", target = "informations.colorList", qualifiedByName = "mapColorEnumListToStringList")
     ProductPreviewDTO mapFromEntityPreview(Product product);
 
     @Mapping(target = "tagList", source = "tagIds", qualifiedByName = "mapTagIdsToTags")

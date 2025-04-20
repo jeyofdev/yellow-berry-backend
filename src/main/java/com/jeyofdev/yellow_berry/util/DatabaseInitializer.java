@@ -40,6 +40,7 @@ import com.jeyofdev.yellow_berry.domain.profile.dto.SaveProfileDTO;
 import com.jeyofdev.yellow_berry.domain.service.ServiceController;
 import com.jeyofdev.yellow_berry.domain.service.ServiceRepository;
 import com.jeyofdev.yellow_berry.domain.service.dto.SaveServiceDTO;
+import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import com.jeyofdev.yellow_berry.domain.tag.TagController;
 import com.jeyofdev.yellow_berry.domain.tag.TagRepository;
 import com.jeyofdev.yellow_berry.domain.tag.dto.SaveTagDTO;
@@ -114,7 +115,7 @@ public class DatabaseInitializer implements CommandLineRunner {
     }
 
     private void createDatas() throws IOException {
-        this.createFakeServices();
+        /*this.createFakeServices();
         this.createFakeTestimonials();
         this.createFakeTeamMember();
         this.createFakeAbout();
@@ -124,7 +125,7 @@ public class DatabaseInitializer implements CommandLineRunner {
         this.createFakeTags();
         this.createFakeProductsWithDetailsAndInformations();
         this.createUsers();
-        this.createFakeProfiles();
+        this.createFakeProfiles();*/
     }
 
     private void createFakeServices() {
@@ -274,6 +275,17 @@ public class DatabaseInitializer implements CommandLineRunner {
                     UUID brandId = brands.get(random.nextInt(brands.size())).getId();
                     UUID categoryId = categories.get(random.nextInt(categories.size())).getId();
 
+                    List<UUID> tagIds = tagRepository.findAll().stream()
+                            .map(Tag::getId)
+                            .toList();
+
+                    List<UUID> randomTagIds = new ArrayList<>();
+                    int numberOfTags = faker.number().numberBetween(1, 3);
+                    for (int i = 0; i < numberOfTags; i++) {
+                        int randomIndex = faker.number().numberBetween(0, tagIds.size());
+                        randomTagIds.add(tagIds.get(randomIndex));
+                    }
+
                     SaveProductDTO saveProductDTO = new SaveProductDTO(
                             data.getFirst(),
                             reference,
@@ -281,7 +293,7 @@ public class DatabaseInitializer implements CommandLineRunner {
                             price,
                             discount,
                             stock,
-                            List.of(), // Tags
+                            randomTagIds,
                             List.of(categoryId),
                             List.of(), // Comments
                             List.of(), // Wishlist
