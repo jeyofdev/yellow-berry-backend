@@ -12,8 +12,6 @@ import java.util.Random;
 @Getter
 @JsonDeserialize(using = ColorDeserializer.class)
 public enum ColorEnum {
-    BLACK("Black"),
-    WHITE("White"),
     RED("Red"),
     BLUE("Blue"),
     GREEN("Green"),

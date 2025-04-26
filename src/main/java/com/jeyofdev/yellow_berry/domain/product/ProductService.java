@@ -11,6 +11,8 @@ import com.jeyofdev.yellow_berry.domain.tag.TagRepository;
 import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
 import com.jeyofdev.yellow_berry.domain.wishlist.WishlistService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
@@ -40,6 +42,16 @@ public class ProductService extends AbstractDomainService<Product, ProductReposi
         this.categoryRepository = categoryRepository;
         this.wishlistService = wishlistService;
         this.cartService = cartService;
+    }
+
+    public List<Product> findByCategoryIdOrderedByIdExcludingProductId(UUID categoryId, UUID excludedProductId) {
+        Pageable limit = PageRequest.of(0, 4);
+        return productRepository.findByCategoryIdOrderedByIdExcludingProductId(categoryId, excludedProductId, limit);
+    }
+
+    public List<Product> findLatestProducts() {
+        Pageable limit = PageRequest.of(0, 4);
+        return productRepository.findLatestProducts(limit);
     }
 
     @Override

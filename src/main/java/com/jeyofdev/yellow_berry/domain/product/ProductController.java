@@ -39,6 +39,25 @@ public class ProductController {
         return DomainSuccessResponse.get(HttpStatus.OK, productPreviewDTOList);
     }
 
+    @GetMapping("/{productId}/category/{categoryId}")
+    public ResponseEntity<DomainSuccessResponse<List<ProductPreviewDTO>>> findByCategoryIdOrderedByIdExcludingProductId(
+            @PathVariable("productId") UUID productId,
+            @PathVariable("categoryId") UUID categoryId
+    ) {
+        List<Product> productList = productService.findByCategoryIdOrderedByIdExcludingProductId(categoryId, productId);
+        List<ProductPreviewDTO> productPreviewDTOList = productList.stream().map(productMapper::mapFromEntityPreview).toList();
+
+        return DomainSuccessResponse.get(HttpStatus.OK, productPreviewDTOList);
+    }
+
+    @GetMapping("/last")
+    public ResponseEntity<DomainSuccessResponse<List<ProductPreviewDTO>>> findLatestProducts() {
+        List<Product> productList = productService.findLatestProducts();
+        List<ProductPreviewDTO> productPreviewDTOList = productList.stream().map(productMapper::mapFromEntityPreview).toList();
+
+        return DomainSuccessResponse.get(HttpStatus.OK, productPreviewDTOList);
+    }
+
     @GetMapping("/{productId}")
     public ResponseEntity<DomainSuccessResponse<ProductDTO>> findProductById(@PathVariable("productId") UUID productId) {
         Product product = productService.findById(productId);

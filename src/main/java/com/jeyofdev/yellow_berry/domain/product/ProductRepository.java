@@ -5,6 +5,7 @@ import com.jeyofdev.yellow_berry.domain.category.Category;
 import com.jeyofdev.yellow_berry.domain.comment.Comment;
 import com.jeyofdev.yellow_berry.domain.tag.Tag;
 import com.jeyofdev.yellow_berry.domain.wishlist.WishList;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -30,6 +31,16 @@ ProductRepository extends JpaRepository<Product, UUID> {
 
     @Query("SELECT p FROM Product p JOIN p.categoryList c WHERE c = :category")
     List<Product> findByCategory(@Param("category") Category category);
+
+    @Query("SELECT p FROM Product p JOIN p.categoryList c WHERE c.id = :categoryId AND p.id != :excludedProductId ORDER BY p.id")
+    List<Product> findByCategoryIdOrderedByIdExcludingProductId(
+            @Param("categoryId") UUID categoryId,
+            @Param("excludedProductId") UUID excludedProductId,
+            Pageable pageable
+    );
+
+    @Query("SELECT p FROM Product p ORDER BY p.id DESC")
+    List<Product> findLatestProducts(Pageable pageable);
 
     @Query("SELECT p FROM Product p JOIN p.wishlists w WHERE w = :wishlist")
     List<Product> findByWishlist(@Param("wishlist") WishList wishlist);
