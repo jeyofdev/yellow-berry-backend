@@ -45,13 +45,18 @@ public class ProductService extends AbstractDomainService<Product, ProductReposi
     }
 
     public List<Product> findByCategoryIdOrderedByIdExcludingProductId(UUID categoryId, UUID excludedProductId) {
-        Pageable limit = PageRequest.of(0, 4);
+        Pageable limit = PageRequest.of(0, 5);
         return productRepository.findByCategoryIdOrderedByIdExcludingProductId(categoryId, excludedProductId, limit);
     }
 
     public List<Product> findLatestProducts() {
-        Pageable limit = PageRequest.of(0, 4);
+        Pageable limit = PageRequest.of(0, 5);
         return productRepository.findLatestProducts(limit);
+    }
+
+    public List<Product> findTopProductsByDiscount() {
+        Pageable limit = PageRequest.of(0, 5);
+        return productRepository.findTopProductsByDiscount(limit);
     }
 
     @Override
