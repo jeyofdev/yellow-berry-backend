@@ -58,6 +58,14 @@ public class ProductController {
         return DomainSuccessResponse.get(HttpStatus.OK, productPreviewDTOList);
     }
 
+    @GetMapping("/discount")
+    public ResponseEntity<DomainSuccessResponse<List<ProductPreviewDTO>>> findTopProductsByDiscount() {
+        List<Product> productList = productService.findTopProductsByDiscount();
+        List<ProductPreviewDTO> productPreviewDTOList = productList.stream().map(productMapper::mapFromEntityPreview).toList();
+
+        return DomainSuccessResponse.get(HttpStatus.OK, productPreviewDTOList);
+    }
+
     @GetMapping("/{productId}")
     public ResponseEntity<DomainSuccessResponse<ProductDTO>> findProductById(@PathVariable("productId") UUID productId) {
         Product product = productService.findById(productId);

@@ -42,6 +42,9 @@ ProductRepository extends JpaRepository<Product, UUID> {
     @Query("SELECT p FROM Product p ORDER BY p.id DESC")
     List<Product> findLatestProducts(Pageable pageable);
 
+    @Query("SELECT p FROM Product p ORDER BY p.discount DESC")
+    List<Product> findTopProductsByDiscount(Pageable pageable);
+
     @Query("SELECT p FROM Product p JOIN p.wishlists w WHERE w = :wishlist")
     List<Product> findByWishlist(@Param("wishlist") WishList wishlist);
 
